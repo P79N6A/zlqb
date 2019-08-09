@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.settlement.dao.mapper.RepayMapper">
+    <resultMap id="BaseResultMap" type="com.nyd.settlement.model.po.repay.RepayPo">
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="repay_no" jdbcType="VARCHAR" property="repayNo" />
+        <result column="bill_no" jdbcType="VARCHAR" property="billNo" />
+        <result column="repay_time" jdbcType="TIMESTAMP" property="repayTime" />
+        <result column="repay_amount" jdbcType="DECIMAL" property="repayAmount" />
+        <result column="repay_name" jdbcType="VARCHAR" property="repayName" />
+        <result column="repay_id_number" jdbcType="VARCHAR" property="repayIdNumber" />
+        <result column="repay_account" jdbcType="VARCHAR" property="repayAccount" />
+        <result column="repay_channel" jdbcType="VARCHAR" property="repayChannel" />
+        <result column="user_zfb_id" jdbcType="DECIMAL" property="userZfbId" />
+        <result column="user_zfb_name" jdbcType="DECIMAL" property="userZfbName" />
+        <result column="repay_status" jdbcType="BIGINT" property="repayStatus" />
+        <result column="repay_type" jdbcType="VARCHAR" property="repayType" />
+        <result column="actual_recorded_time" jdbcType="TIMESTAMP" property="actualRecordedTime" />
+        <result column="third_procedure_fee" jdbcType="DECIMAL" property="thirdProcedureFee" />
+        <result column="delete_flag" jdbcType="TINYINT" property="deleteFlag" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="derate_type" jdbcType="VARCHAR" property="derateType" />
+        <result column="derate_amount" jdbcType="DECIMAL" property="derateAmountl" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="loan_amount" jdbcType="DECIMAL" property="loanAmount" />
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+        <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    </resultMap>
+
+    <resultMap id="RepayAmountMap" type="com.nyd.settlement.model.po.repay.RepayAmountOfDay">
+        <result column="day_repay_amount" property="repayAmountOfDay" />
+        <result column="repay_time" property="repayTime" />
+        <result column="day_derate_amount" property="derateAmountOfDay"/>
+    </resultMap>
+
+    <select id="repayRecordList" parameterType="com.nyd.settlement.model.dto.repay.RepayQueryDto" resultMap="BaseResultMap">
+        SELECT
+        r.repay_no,
+        r.bill_no,
+        r.repay_time,
+        r.repay_amount,
+        r.repay_name,
+        r.repay_account,
+        r.repay_channel,
+        r.repay_status,
+        r.repay_type,
+        r.actual_recorded_time,
+        r.third_procedure_fee,
+        r.create_time,
+        r.derate_type,
+        r.derate_amount,
+        o.loan_amount,
+        o.order_no,
+        d.mobile
+        FROM
+        xxd_zeus.t_repay r,
+        xxd_order.t_order o,
+        xxd_order.t_order_detail d,
+        xxd_zeus.t_bill b
+        WHERE
+        r.bill_no = b.bill_no
+        AND b.order_no = o.order_no
+        AND b.order_no = d.order_no
+        AND b.delete_flag = 0
+        AND r.repay_status = 0
+        <if test="startDate != null">
+            AND repay_time &gt;= CONCAT(#{startDate,jdbcType=VARCHAR}," 00:00:00")
+        </if>
+        <if test="endDate != null">
+            AND repay_time &lt;= CONCAT(#{endDate,jdbcType=VARCHAR}," 23:59:59")
+        </if>
+        <if test="orderNo != null and orderNo !=''">
+            AND b.order_no = #{orderNo,jdbcType=VARCHAR}
+        </if>
+        <if test="mobile != null and mobile !=''">
+            AND d.mobile = #{mobile,jdbcType=VARCHAR}
+        </if>
+        <if test="repayNo != null and repayNo !=''">
+            AND r.repay_no = #{repayNo,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.nyd.settlement.model.po.repay.RepayPo">
+        insert into t_repay (user_id, repay_no,
+        bill_no, repay_time, repay_amount,
+        repay_name, repay_id_number, repay_account,
+        repay_channel, user_zfb_id, user_zfb_name, repay_type, actual_recorded_time,
+        third_procedure_fee,update_by, derate_type,
+        derate_amount, remark)
+        values (#{userId,jdbcType=CHAR}, #{repayNo,jdbcType=CHAR},
+        #{billNo,jdbcType=CHAR}, #{repayTime,jdbcType=TIMESTAMP}, #{repayAmount,jdbcType=DECIMAL},
+        #{repayName,jdbcType=VARCHAR}, #{repayIdNumber,jdbcType=VARCHAR}, #{repayAccount,jdbcType=VARCHAR},
+        #{repayChannel,jdbcType=VARCHAR}, #{userZfbId,jdbcType=VARCHAR}, #{userZfbName,jdbcType=VARCHAR},
+        #{repayType,jdbcType=TINYINT}, #{actualRecordedTime,jdbcType=TIMESTAMP},
+        #{thirdProcedureFee,jdbcType=DECIMAL}, #{updateBy,jdbcType=VARCHAR}, #{derateType,jdbcType=TINYINT},
+        #{derateAmountl,jdbcType=DECIMAL}, #{remark,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="queryRepayAmountOfDay" resultMap="RepayAmountMap">
+        SELECT
+        sum(t.repay_amount) as day_repay_amount,
+        date_format(t.repay_time,'%Y-%m-%d') as repay_time,
+        sum(t.derate_amount) as day_derate_amount
+        FROM t_repay t
+        WHERE t.bill_no = #{billNo,jdbcType=VARCHAR}
+        and t.repay_status = 0 AND delete_flag != 1
+        group by date_format(t.repay_time,'%Y-%m-%d')
+    </select>
+
+    <select id="queryRepayAmountOfDayDistinct" resultMap="RepayAmountMap">
+        SELECT
+        t.repay_amount as day_repay_amount,
+        t.repay_time,
+        t.derate_amount as day_derate_amount
+        FROM t_repay t
+        WHERE t.bill_no = #{billNo,jdbcType=VARCHAR}
+        and t.repay_status = 0 AND delete_flag != 1
+    </select>
+
+
+    <resultMap type="com.nyd.settlement.entity.OverdueBill" id="OverdueBillResult">
+        <result property="id" column="id"/>
+        <result property="user_id" column="userId"/>
+        <result property="bill_no" column="billNo"/>
+        <result property="order_no" column="orderNo"/>
+        <result property="bill_status" column="billStatus"/>
+        <result property="overdue_fine" column="overdueFine"/>
+        <result property="overdue_amount" column="overdueAmount"/>
+        <result property="overdue_days" column="overdueDays"/>
+        <result property="collection_derate_amount" column="collectionDerateAmount"/>
+        <result property="delete_flag" column="deleteFlag"/>
+    </resultMap>
+    <select id="queryOverdueBill"  resultMap="OverdueBillResult">
+        select * from t_overdue_bill where delete_flag = 0 AND
+        bill_no = #{billNo}
+    </select>
+
+    <resultMap id="BillInfoMap" type="com.nyd.settlement.model.po.repay.RepayBillPo">
+        <result column="bill_no" jdbcType="CHAR" property="billNo" />
+        <result column="repay_principle" jdbcType="DECIMAL" property="repayPrinciple" />
+        <result column="repay_interest" jdbcType="DECIMAL" property="repayInterest" />
+        <result column="cur_repay_amount" jdbcType="DECIMAL" property="curRepayAmount" />
+        <result column="coupon_derate_amount" jdbcType="DECIMAL" property="couponDerateAmount" />
+        <result column="wait_repay_amount" jdbcType="DECIMAL" property="waitRepayAmount" />
+        <result column="already_repay_amount" jdbcType="DECIMAL" property="alreadyRepayAmount" />
+        <result column="promise_repayment_date" jdbcType="DATE" property="promiseRepaymentDate" />
+        <result column="actual_settle_date" jdbcType="DATE" property="actualSettleDate" />
+        <result column="overdue_days" jdbcType="INTEGER" property="overdueDays" />
+        <result column="overdue_amount" jdbcType="DECIMAL" property="overdueAmount" />
+        <result column="overdue_fine" jdbcType="DECIMAL" property="overdueFine" />
+    </resultMap>
+
+    <select id="queryBillList" resultMap="BillInfoMap">
+        SELECT
+        a.bill_no,
+        a.repay_principle,
+        a.repay_interest,
+        a.cur_repay_amount,
+        a.coupon_derate_amount,
+        a.wait_repay_amount,
+        a.already_repay_amount,
+        a.promise_repayment_date,
+        a.actual_settle_date,
+        b.overdue_days,
+        b.overdue_amount,
+        b.overdue_fine
+        FROM t_bill a
+        LEFT JOIN t_overdue_bill b ON a.bill_no = b.bill_no AND b.delete_flag=0
+        WHERE a.delete_flag=0 AND a.order_no = #{orderNo,jdbcType=VARCHAR}
+    </select>
+
+    <resultMap id="repayAdjustLogMap" type="com.nyd.settlement.entity.repay.RepayAdjustLog">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="bill_no" jdbcType="VARCHAR" property="billNo" />
+        <result column="bill_status_be" jdbcType="VARCHAR" property="billStatusBe" />
+        <result column="bill_status_af" jdbcType="VARCHAR" property="billStatusAf" />
+        <result column="already_repay_amount_be" jdbcType="DECIMAL" property="alreadyRepayAmountBe" />
+        <result column="already_repay_amount_af" jdbcType="DECIMAL" property="alreadyRepayAmountAf" />
+        <result column="wait_repay_amount_be" jdbcType="DECIMAL" property="waitRepayAmountBe" />
+        <result column="wait_repay_amount_af" jdbcType="DECIMAL" property="waitRepayAmountAf" />
+        <result column="wait_repay_principle_be" jdbcType="DECIMAL" property="waitRepayPrincipleBe" />
+        <result column="wait_repay_principle_af" jdbcType="DECIMAL" property="waitRepayPrincipleAf" />
+        <result column="receivable_amount_be" jdbcType="DECIMAL" property="receivableAmountBe" />
+        <result column="receivable_amount_af" jdbcType="DECIMAL" property="receivableAmountAf" />
+        <result column="overdue_fine_be" jdbcType="DECIMAL" property="overdueFineBe" />
+        <result column="overdue_fine_af" jdbcType="DECIMAL" property="overdueFineAf" />
+        <result column="overdue_amount_be" jdbcType="DECIMAL" property="overdueAmountBe" />
+        <result column="overdue_amount_af" jdbcType="DECIMAL" property="overdueAmountAf" />
+        <result column="overdue_day_be" jdbcType="INTEGER" property="overdueDayBe" />
+        <result column="overdue_day_af" jdbcType="INTEGER" property="overdueDayAf" />
+        <result column="settle_time_be" jdbcType="TIMESTAMP" property="settleTimeBe" />
+        <result column="settle_time_af" jdbcType="TIMESTAMP" property="settleTimeAf" />
+    </resultMap>
+    <insert id="insertAdjustLog" parameterType="com.nyd.settlement.entity.repay.RepayAdjustLog">
+        insert into t_repay_adjust_log (bill_no, bill_status_be,
+        bill_status_af, already_repay_amount_be, already_repay_amount_af,
+        wait_repay_amount_be, wait_repay_amount_af, wait_repay_principle_be,
+        wait_repay_principle_af, receivable_amount_be,
+        receivable_amount_af, overdue_fine_be, overdue_fine_af,
+        overdue_amount_be, overdue_amount_af,overdue_day_be,overdue_day_af,settle_time_be,settle_time_af)
+        values (#{billNo,jdbcType=VARCHAR}, #{billStatusBe,jdbcType=VARCHAR},
+        #{billStatusAf,jdbcType=VARCHAR}, #{alreadyRepayAmountBe,jdbcType=DECIMAL}, #{alreadyRepayAmountAf,jdbcType=DECIMAL},
+        #{waitRepayAmountBe,jdbcType=DECIMAL}, #{waitRepayAmountAf,jdbcType=DECIMAL}, #{waitRepayPrincipleBe,jdbcType=DECIMAL},
+        #{waitRepayPrincipleAf,jdbcType=DECIMAL}, #{receivableAmountBe,jdbcType=DECIMAL},
+        #{receivableAmountAf,jdbcType=DECIMAL}, #{overdueFineBe,jdbcType=DECIMAL}, #{overdueFineAf,jdbcType=DECIMAL},
+        #{overdueAmountBe,jdbcType=DECIMAL}, #{overdueAmountAf,jdbcType=DECIMAL}, #{overdueDayBe,jdbcType=INTEGER}, #{overdueDayAf,jdbcType=INTEGER}, #{settleTimeBe,jdbcType=TIMESTAMP}, #{settleTimeAf,jdbcType=TIMESTAMP})
+    </insert>
+
+</mapper>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.capital.dao.mappers.UserDldMapper">
+    <resultMap id="BaseResultMap" type="com.nyd.capital.entity.UserDld">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="contract_url" jdbcType="VARCHAR" property="contractUrl" />
+        <result column="dld_customer_id" jdbcType="VARCHAR" property="dldCustomerId" />
+        <result column="stage" jdbcType="TINYINT" property="stage" />
+        <result column="delete_flag" jdbcType="TINYINT" property="deleteFlag" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, mobile, user_id, contract_url, dld_customer_id, stage, create_time, update_time, update_by
+  </sql>
+    <select id="findList" parameterType="com.nyd.capital.entity.UserDld" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_user_dld
+        WHERE delete_flag = #{deleteFlag,jdbcType=TINYINT}
+    </select>
+
+    <insert id="save" parameterType="com.nyd.capital.entity.UserDld">
+        insert into xxd_user.t_user_dld
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="stage != null">
+                stage,
+            </if>
+            <if test="mobile != null">
+                mobile,
+            </if>
+            <if test="contractUrl != null">
+                contract_url,
+            </if>
+            <if test="dldCustomerId != null">
+                dld_customer_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="stage != null">
+                #{stage,jdbcType=INTEGER},
+            </if>
+            <if test="mobile != null">
+                #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="contractUrl != null">
+                #{contractUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="dldCustomerId != null">
+                #{dldCustomerId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.nyd.capital.entity.UserDld">
+        update  xxd_user.t_user_dld
+        set
+        <trim prefix="" suffix="" suffixOverrides=",">
+            <if test="stage != null">
+                stage = #{stage,jdbcType=INTEGER},
+            </if>
+            <if test="mobile != null">
+                mobile = #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="contractUrl != null">
+                contract_url = #{contractUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="dldCustomerId != null">
+                dld_customer_id = #{dldCustomerId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where 1=1 and user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+    
+    <!--根据订单编号查找对应订单详情 -->
+	<select id="getUserDldByUserId" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		SELECT
+		*
+		FROM
+		xxd_user.t_user_dld
+		<where>
+			AND user_id = #{userId,jdbcType=VARCHAR}
+			AND delete_flag = 0
+		</where>
+	</select>
+
+</mapper>

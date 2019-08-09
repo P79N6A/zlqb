@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nyd.user.dao.mapper.HitRuleConfigMapper">
+
+    <!--通过APPName以及source获取这个渠道的具体规则-->
+    <select id="selectByAppNameAndSource"  resultType="com.nyd.user.entity.HitRuleConfig" parameterType="java.util.Map">
+        SELECT *
+        FROM xxd_user.t_hit_rule_config
+        WHERE app_name = #{appName, jdbcType=VARCHAR} AND  source =  #{source, jdbcType=VARCHAR} AND  valid =1
+    </select>
+
+    <!--通过APPName获取到这个APPName的规则集合-->
+    <select id="selectByAppName"  resultType="com.nyd.user.entity.HitRuleConfig" parameterType="java.util.Map">
+        SELECT *
+        FROM xxd_user.t_hit_rule_config
+        WHERE app_name = #{appName, jdbcType=VARCHAR} AND  valid =1
+    </select>
+
+</mapper>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.admin.dao.mapper.ReturnPremiumMapper">
+    <resultMap type="com.nyd.admin.entity.ReturnPremium" id="ReturnPremiumResult">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="premium_id" property="premiumId"/>
+        <result column="user_name" property="userName"/>
+        <result column="mobile"  property="mobile"/>
+        <result column="user_id"  property="userId"/>
+        <result column="state"  property="state"/>
+        <result column="remark" property="remark"/>
+        <result column="refund_ticket_type" property="refundTicketType"/>
+        <result column="ticket_provide_time"  property="ticketProvideTime"/>
+        <result column="ticket_amount" property="ticketAmount"/>
+        <result column="delete_flag"  property="deleteFlag"/>
+        <result column="create_time"  property="createTime"/>
+        <result column="update_time"  property="updateTime"/>
+        <result column="update_by"  property="updateBy"/>
+    </resultMap>
+
+    <sql id="returnPremiumSql">
+        premium_id
+        ,refund_ticket_type
+        ,user_id
+        , user_name
+        , mobile
+        , remark
+        , state
+        , ticket_provide_time
+        ,ticket_amount
+        , delete_flag
+        ,create_time
+        , update_time
+        , update_by
+
+    </sql>
+
+    <!--查看今天是否已经标记了-->
+    <select id="selectIfLabelToday" parameterType="String" resultMap="ReturnPremiumResult">
+        select
+        user_id
+        ,user_name
+        ,mobile
+        from t_return_premium where DATE_FORMAT(create_time,"%Y-%m-%d") = DATE_FORMAT(now(),"%Y-%m-%d") and mobile=#{mobile};
+    </select>
+
+    <!--综合卷管理(侬要贷)-->
+    <select id="findIntegratedVolumeDetails" parameterType="com.nyd.admin.model.dto.IntegratedVolumeDto" resultType="com.nyd.admin.model.Info.IntegratedVolumeInfo">
+        SELECT
+            DATE_FORMAT(t.create_time, '%Y-%m-%d' ) AS createTime,
+            t.user_name,
+            t.mobile,
+            t.user_id,
+            t.refund_ticket_type,
+            t.state,
+            t.ticket_provide_time,
+            t.ticket_amount,
+            t.remark,
+            t.premium_id
+        FROM
+            xxd_admin.t_return_premium t
+        WHERE t.delete_flag = '0'
+        <if test="mobile != null and mobile != ''">
+          AND t.mobile = LTRIM(#{mobile})
+        </if>
+        <if test="state != null and state != ''">
+          AND t.state = LTRIM(#{state})
+        </if>
+        <if test="startTime != null and startTime != ''">
+          AND DATE_FORMAT(t.create_time, '%Y-%m-%d' ) <![CDATA[ >= ]]> DATE_FORMAT(#{startTime}, '%Y-%m-%d')
+        </if>
+        <if test="endTime != null and endTime != ''">
+          AND DATE_FORMAT(t.create_time, '%Y-%m-%d' ) <![CDATA[ <= ]]> DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+        </if>
+        <if test="refundTicketType != null and refundTicketType != ''">
+          AND t.refund_ticket_type = LTRIM(#{refundTicketType})
+        </if>
+        ORDER BY t.create_time DESC
+    </select>
+    <!--综合卷管理(侬要贷) 总个数-->
+    <select id="getIntegratedVolumeDetailsCount" parameterType="com.nyd.admin.model.dto.IntegratedVolumeDto" resultType="Integer">
+        SELECT
+            COUNT(0)
+        FROM
+        xxd_admin.t_return_premium t
+        WHERE t.delete_flag = '0'
+        <if test="mobile != null and mobile != ''">
+            AND t.mobile = LTRIM(#{mobile})
+        </if>
+        <if test="state != null and state != ''">
+            AND t.state = LTRIM(#{state})
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND DATE_FORMAT(t.create_time, "%Y-%m-%d" ) <![CDATA[ >= ]]> DATE_FORMAT(#{startTime}, "%Y-%m-%d")
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND DATE_FORMAT(t.create_time, "%Y-%m-%d" ) <![CDATA[ <= ]]> DATE_FORMAT(#{endTime}, "%Y-%m-%d")
+        </if>
+        <if test="refundTicketType != null and refundTicketType != ''">
+            AND t.refund_ticket_type = LTRIM(#{refundTicketType})
+        </if>
+    </select>
+
+    <!--更新t_return_premium表-->
+    <update id="updatePremiumBypremiumId" parameterType="com.nyd.admin.model.dto.BatchUserDto">
+            UPDATE
+                xxd_admin.t_return_premium t
+            SET t.refund_ticket_type = #{type},
+                t.state = #{state},
+                t.ticket_amount = #{ticketAmount},
+                t.ticket_provide_time = #{ticketProvideTime}
+            WHERE
+                t.premium_id = #{premiumId}
+    </update>
+
+    <!--t_return_ticket_log表中增加记录-->
+    <insert id="insertRetuenTicketLog" parameterType="java.util.List">
+        INSERT INTO xxd_admin.t_return_ticket_log (
+            user_name,
+            mobile,
+            user_id,
+            premium_id,
+            type,
+            ticket_provide_time,
+            ticket_amount,
+            state,
+            delete_flag,
+            create_time,
+            update_time,
+            update_by)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.userName},
+            #{item.mobile},
+            #{item.userId},
+            #{item.premiumId},
+            #{item.type},
+            #{item.ticketProvideTime},
+            #{item.ticketAmount},
+            #{item.state},
+            '0',
+            now(),
+            now(),
+            #{item.updateBy})
+        </foreach>
+    </insert>
+
+    <!--修改备注-->
+    <update id="updateRemark" parameterType="com.nyd.admin.model.dto.RemarkDto">
+        UPDATE
+            xxd_admin.t_return_premium t
+        SET
+            t.remark = #{remark}
+        WHERE
+            t.premium_id = #{premiumId}
+    </update>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.zeus.dao.mapper.PaymentRiskExcludeInfoMapper">
+
+	<insert id="save" parameterType="com.nyd.zeus.entity.PaymentRiskExcludeInfo">
+	INSERT INTO `t_payment_risk_exclude_info`(order_no,create_time,status) VALUES (
+		#{orderNo},now(),1 
+	);
+	</insert>
+	
+    <!--根据订单编号查找对应订单详情-->
+    <select id="queryList" resultType="com.nyd.zeus.model.PaymentRiskExcludeInfoResult" 
+    				parameterType="com.nyd.zeus.model.PaymentRiskExcludeInfoRequest" >
+        SELECT
+        	id, 
+        	order_no as orderNo, 
+			create_time as createTime,
+			status
+        FROM t_payment_risk_exclude_info 
+        where status = 1
+        <if test="orderNoList != null">
+            and order_no in 
+            <foreach collection="orderNoList" item="item" separator="," open="(" close=")">
+            #{item}
+            </foreach>
+        </if>
+        ORDER BY create_time desc 
+        ${queryCondition}
+    </select>
+    
+    <select id="queryListCount" resultType="java.lang.Integer" 
+    				parameterType="com.nyd.zeus.model.PaymentRiskExcludeInfoRequest" >
+        SELECT
+        	count(id)
+                FROM t_payment_risk_exclude_info 
+        where status = 1
+        <if test="orderNoList != null">
+            and order_no in 
+            <foreach collection="orderNoList" item="item" separator="," open="(" close=")">
+            #{item}
+            </foreach>
+        </if>
+    </select>
+    
+    <select id="findByOrderNo" resultType="com.nyd.zeus.model.PaymentRiskExcludeInfoResult" parameterType="String" >
+        SELECT
+        	id, 
+        	order_no as orderNo, 
+			create_time as createTime
+        FROM t_payment_risk_exclude_info 
+        where status = 1 and order_no = #{orderNo} 
+    </select>
+    <update id="deleteById" parameterType="java.lang.Long">
+    	update t_payment_risk_exclude_info set status = 0 where id= #{id}
+    </update>
+    
+</mapper>

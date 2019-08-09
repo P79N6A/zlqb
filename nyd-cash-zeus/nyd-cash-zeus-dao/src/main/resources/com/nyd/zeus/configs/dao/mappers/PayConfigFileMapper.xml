@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.zeus.dao.mapper.PayConfigFileMapper" > 
+
+	<!-- Result Map-->
+	<resultMap id="BaseResultMap" type="com.nyd.zeus.model.helibao.vo.pay.req.chanpay.PayConfigFile" >
+			<result column="id" property="id"/>
+			<result column="code" property="code"/>
+			<result column="member_id" property="memberId"/>
+			<result column="version" property="version"/>
+			<result column="pub_key" property="pubKey"/>
+			<result column="prd_key" property="prdKey"/>
+			<result column="pay_url" property="payUrl"/>
+			<result column="pay_key" property="payKey"/>
+			<result column="channel" property="channel"/>
+		</resultMap>
+	       
+	<!-- pay_config_file table all fields -->
+	<sql id="Base_Column_List" >
+		 id,code,member_id,version,pub_key,prd_key,pay_url,pay_key,channel
+	</sql>
+	   
+	<!-- 查询条件 -->
+	<sql id="where_Clause">
+	where 1=1
+	<trim  suffixOverrides="," >
+				 		<if test="id != null and id != ''" >
+		    and id =  #{id}
+		</if>
+				 		<if test="code != null and code != ''" >
+		    and code =  #{code}
+		</if>
+				 		<if test="memberId != null and memberId != ''" >
+		    and member_id =  #{memberId}
+		</if>
+				 		<if test="version != null and version != ''" >
+		    and version =  #{version}
+		</if>
+				 		<if test="pubKey != null and pubKey != ''" >
+		    and pub_key =  #{pubKey}
+		</if>
+				 		<if test="prdKey != null and prdKey != ''" >
+		    and prd_key =  #{prdKey}
+		</if>
+				 		<if test="payUrl != null and payUrl != ''" >
+		    and pay_url =  #{payUrl}
+		</if>
+				 		<if test="payKey != null and payKey != ''" >
+		    and pay_key =  #{payKey}
+		</if>
+				 		<if test="channel != null and channel != ''" >
+		    and channel =  #{channel}
+		</if>
+		</trim>
+	</sql>
+
+	  	
+	<!-- 分页中的富友配置表集合，为分页组件使用 -->
+	<select id="pageData" resultMap="BaseResultMap" parameterType="com.nyd.zeus.model.helibao.vo.pay.req.chanpay.PayConfigFileSearchForm">
+		select 
+		<include refid="Base_Column_List"/>
+		from pay_config_file 
+		<include refid="where_Clause"/>
+		<if test="orderCondition != null and orderCondition != ''" >
+	      ${orderCondition}
+	    </if>
+	    ${queryCondition}
+	</select>
+
+  	
+</mapper>   

@@ -1,0 +1,36 @@
+package com.nyd.capital.model;
+
+import com.nyd.capital.model.annotation.EncryptField;
+import lombok.Data;
+
+import java.io.Serializable;
+
+/**
+ * 对公
+ * Cong Yuxiang
+ * 2017/11/13
+ **/
+public @Data class WsmZfmxPublic implements Serializable{
+    //对公对私标志，1-对公 2-对私
+    private String flag= "1";
+    //开户行编号
+    private String khhbh;
+    //姓名
+    @EncryptField
+    private String xm;
+    //支行名称
+    private String zhmc;
+    //银行卡号
+    @EncryptField
+    private String yhkh;
+    //省
+    private String sheng;
+    //市
+    private String shi;
+    //金额
+    private String value;
+    //是否是居间服务费标识，1-是，2-否
+    private String jjfwf;
+    //是否一笔打款标识， 1-是，2-否
+    private String ybdk;
+}

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.zeus.dao.mapper.BillWsmMapper">
+    
+    <select id="sqlQuery" parameterType="com.nyd.zeus.model.common.SqlSearchForm" resultType="com.alibaba.fastjson.JSONObject">
+	         <![CDATA[
+          			 ${queryValide}
+        	]]>
+	</select>
+	<select id="sqlCount" parameterType="com.nyd.zeus.model.common.SqlSearchForm" resultType="java.lang.Long">
+	        <![CDATA[
+          			 SELECT count(1)  FROM (${queryValide}) obj
+        	]]>
+	</select>
+	<select id="sqlPage" parameterType="com.nyd.zeus.model.common.SqlSearchForm" resultType="com.alibaba.fastjson.JSONObject">
+	         <![CDATA[
+	         		${queryValide}
+        	]]>
+        	
+	</select>
+	
+	<update id="deleteSql" parameterType="com.nyd.zeus.model.common.SqlSearchForm">
+		  <![CDATA[
+	         		${queryValide}
+        	]]>
+	</update>
+	
+	<insert id="insertSql" parameterType="com.nyd.zeus.model.common.SqlSearchForm">
+		  <![CDATA[
+	         		${queryValide}
+        	]]>
+	</insert>
+	<insert id="updateSql" parameterType="com.nyd.zeus.model.common.SqlSearchForm">
+		  <![CDATA[
+	         		${queryValide}
+        	]]>
+	</insert>
+	<select id="sqlSum" parameterType="com.nyd.zeus.model.common.SqlSearchForm" resultType="java.lang.Long">
+	        <![CDATA[
+          			 ${queryValide}
+        	]]>
+	</select>
+    <resultMap id="BaseResultMap" type="com.nyd.zeus.entity.BillWsm">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="serial_no" jdbcType="BIGINT" property="serialNo" />
+        <result column="merchant" jdbcType="VARCHAR" property="merchant" />
+        <result column="identifier" jdbcType="VARCHAR" property="identifier" />
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+        <result column="user_name" jdbcType="VARCHAR" property="userName" />
+        <result column="amount" jdbcType="DECIMAL" property="amount" />
+        <result column="merchant_order_no" jdbcType="VARCHAR" property="merchantOrderNo" />
+        <result column="contract_start_time" jdbcType="DATE" property="contractStartTime" />
+        <result column="contract_end_time" jdbcType="DATE" property="contractEndTime" />
+        <result column="reconciliation_day" jdbcType="DATE" property="reconciliationDay" />
+        <result column="borrow_days" jdbcType="INTEGER" property="borrowDays" />
+        <result column="period_count" jdbcType="INTEGER" property="periodCount" />
+        <result column="wsm_service_rate" jdbcType="DECIMAL" property="wsmServiceRate" />
+        <result column="service_cost_total" jdbcType="DECIMAL" property="serviceCostTotal" />
+        <result column="bank_service_cost" jdbcType="DECIMAL" property="bankServiceCost" />
+        <result column="wsm_service_cost" jdbcType="DECIMAL" property="wsmServiceCost" />
+        <result column="extra_service_cost" jdbcType="DECIMAL" property="extraServiceCost" />
+        <result column="extra_service_rate" jdbcType="DECIMAL" property="extraServiceRate" />
+        <result column="bank_service_rate" jdbcType="DECIMAL" property="bankServiceRate" />
+        <result column="service_cost_payday" jdbcType="DATE" property="serviceCostPayday" />
+        <result column="interest_total" jdbcType="DECIMAL" property="interestTotal" />
+        <result column="payday" jdbcType="DATE" property="payday" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    </resultMap>
+    <insert id="insertBatchList" parameterType="java.util.Map">
+        insert into ${tablename} (serial_no, merchant,
+        identifier, order_no, user_name,
+        amount, merchant_order_no, contract_start_time,
+        contract_end_time, reconciliation_day, borrow_days,
+        period_count, wsm_service_rate, service_cost_total,
+        bank_service_cost, wsm_service_cost, extra_service_cost,
+        extra_service_rate, bank_service_rate, service_cost_payday,
+        interest_total, payday, update_by)
+        values
+        <foreach collection="values" item="item" index="index" separator=",">
+        (#{item.serialNo,jdbcType=BIGINT}, #{item.merchant,jdbcType=VARCHAR},
+        #{item.identifier,jdbcType=VARCHAR}, #{item.orderNo,jdbcType=VARCHAR}, #{item.userName,jdbcType=VARCHAR},
+        #{item.amount,jdbcType=DECIMAL}, #{item.merchantOrderNo,jdbcType=VARCHAR}, #{item.contractStartTime,jdbcType=DATE},
+        #{item.contractEndTime,jdbcType=DATE}, #{item.reconciliationDay,jdbcType=DATE}, #{item.borrowDays,jdbcType=INTEGER},
+        #{item.periodCount,jdbcType=INTEGER}, #{item.wsmServiceRate,jdbcType=DECIMAL}, #{item.serviceCostTotal,jdbcType=DECIMAL},
+        #{item.bankServiceCost,jdbcType=DECIMAL}, #{item.wsmServiceCost,jdbcType=DECIMAL}, #{item.extraServiceCost,jdbcType=DECIMAL},
+        #{item.extraServiceRate,jdbcType=DECIMAL}, #{item.bankServiceRate,jdbcType=DECIMAL}, #{item.serviceCostPayday,jdbcType=DATE},
+        #{item.interestTotal,jdbcType=DECIMAL}, #{item.payday,jdbcType=DATE},#{updateBy,jdbcType=VARCHAR})
+        </foreach>
+
+    </insert>
+    <update id="dropTable" parameterType="java.lang.String">
+        DROP TABLE IF EXISTS ${_parameter}
+    </update>
+    <update id="createTable" parameterType="java.lang.String">
+        CREATE TABLE ${_parameter} (
+  id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  serial_no bigint(20) DEFAULT NULL COMMENT '序号',
+  merchant varchar(50) DEFAULT NULL COMMENT '商户',
+  identifier varchar(50) DEFAULT NULL COMMENT '编号',
+  order_no varchar(50) DEFAULT NULL COMMENT '订单编号',
+  user_name varchar(10) DEFAULT NULL COMMENT '姓名',
+  amount decimal(10,2) DEFAULT NULL COMMENT '申请金额',
+  merchant_order_no varchar(50) DEFAULT NULL COMMENT '商户单号',
+  contract_start_time date DEFAULT NULL COMMENT '合同开始时间',
+  contract_end_time date DEFAULT NULL COMMENT '合同结束时间',
+  reconciliation_day date DEFAULT NULL COMMENT '对账日',
+  borrow_days int(10) DEFAULT NULL COMMENT '借款天数',
+  period_count int(5) DEFAULT NULL COMMENT '期数',
+  wsm_service_rate decimal(5,2) DEFAULT NULL COMMENT 'wsm服务利率',
+  service_cost_total decimal(10,2) DEFAULT NULL COMMENT '总费用',
+  bank_service_cost decimal(10,2) DEFAULT NULL COMMENT '银行服务费',
+  wsm_service_cost decimal(10,2) DEFAULT NULL COMMENT '微神马服务费',
+  extra_service_cost decimal(10,2) DEFAULT NULL COMMENT '第三方服务费',
+  extra_service_rate decimal(5,2) DEFAULT NULL COMMENT '第三方利率',
+  bank_service_rate decimal(5,2) DEFAULT NULL COMMENT '银行利率',
+  service_cost_payday date DEFAULT NULL COMMENT '服务费 应付日期',
+  interest_total decimal(10,2) DEFAULT NULL COMMENT '总利息',
+  payday date DEFAULT NULL COMMENT '应还款日',
+  create_time datetime DEFAULT CURRENT_TIMESTAMP,
+  update_time datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  update_by varchar(36) DEFAULT NULL,
+  PRIMARY KEY (id)
+)
+    </update>
+</mapper>

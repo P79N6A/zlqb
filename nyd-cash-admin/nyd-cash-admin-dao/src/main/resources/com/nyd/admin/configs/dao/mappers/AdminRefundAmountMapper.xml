@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.admin.dao.mapper.AdminRefundAmountMapper">
+
+	<select id="queryRefundAmount" parameterType="com.nyd.admin.model.AdminRefundAmountInfo"
+		resultType="com.nyd.admin.model.AdminRefundAmountInfo">
+		select * from xxd_user.t_refund_amount
+		<where>
+			<if test="amountStatus != null">
+				and amount_status = #{amountStatus,jdbcType=INTEGER}
+			</if>
+			and delete_flag = 0 
+		</where>
+		order by update_time desc
+	</select>
+	<select id="queryRefundAmountTotal" parameterType="com.nyd.admin.model.AdminRefundAmountInfo"
+		resultType="Integer">
+		select count(*) from xxd_user.t_refund_amount
+		<where>
+			<if test="amountStatus != null">
+				and amount_status = #{amountStatus,jdbcType=INTEGER}
+			</if>
+			and delete_flag = 0 
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.settlement.dao.mapper.YmtPayFlowMapper">
+    <resultMap id="BaseResultMap" type="com.nyd.settlement.entity.repay.YmtPayFlow">
+        <result column="id" jdbcType="VARCHAR" property="Id" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+        <result column="repay_no" jdbcType="VARCHAR" property="repayNo" />
+        <result column="trade_no" jdbcType="VARCHAR" property="tradeNo" />
+        <result column="repay_time" jdbcType="TIMESTAMP" property="repayTime" />
+        <result column="repay_amount" jdbcType="DECIMAL" property="repayAmount" />
+        <result column="repay_name" jdbcType="VARCHAR" property="repayName" />
+        <result column="repay_id_number" jdbcType="VARCHAR" property="repayIdNumber" />
+        <result column="repay_account" jdbcType="VARCHAR" property="repayAccount" />
+        <result column="repay_channel" jdbcType="VARCHAR" property="repayChannel" />
+        <result column="repay_status" jdbcType="INTEGER" property="repayStatus" />
+        <result column="repay_level" jdbcType="INTEGER" property="repayLevel" />
+        <result column="repay_type" jdbcType="INTEGER" property="repayType" />
+        <result column="buyer_zfb_id" jdbcType="VARCHAR" property="buyerZfbId" />
+        <result column="buyer_logon_id" jdbcType="VARCHAR" property="buyerLogonId" />
+        <result column="actual_recorded_time" jdbcType="TIMESTAMP" property="actualRecordedTime" />
+        <result column="third_procedure_fee" jdbcType="DECIMAL" property="thirdProcedureFee" />
+        <result column="delete_flag" jdbcType="INTEGER" property="deleteFlag" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="derate_type" jdbcType="VARCHAR" property="derateType" />
+        <result column="derate_amount" jdbcType="DECIMAL" property="derateAmount" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+    </resultMap>
+
+    <!--根据流水号查找-->
+    <select id="selectByRepayNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        *
+        from ibank_zeus.t_ibank_repay
+        where repay_no = #{repayNo, jdbcType=VARCHAR}
+    </select>
+
+    <!--根据账单号查找-->
+    <select id="selectByTradeNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        *
+        from ibank_zeus.t_ibank_repay
+        where trade_no = #{outTradeNo, jdbcType=VARCHAR}
+    </select>
+
+</mapper>

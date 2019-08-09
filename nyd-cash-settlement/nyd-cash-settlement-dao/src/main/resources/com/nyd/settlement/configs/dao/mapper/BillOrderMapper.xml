@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.settlement.dao.mapper.BillOrderMapper">
+
+    <resultMap id="refundMap" type="com.nyd.settlement.model.po.refund.RefundOrderPo">
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
+        <result column="product_type" jdbcType="TINYINT" property="productType"/>
+        <result column="test_status" jdbcType="TINYINT" property="testStatus"/>
+        <result column="fund_code" jdbcType="VARCHAR" property="fundCode"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="real_loan_amount" jdbcType="DECIMAL" property="realLoanAmount"/>
+        <result column="borrow_time" jdbcType="TINYINT" property="borrowTime"/>
+        <result column="pay_time" jdbcType="DATE" property="payTime"/>
+        <result column="member_fee" jdbcType="DECIMAL" property="memberFee"/>
+    </resultMap>
+    <resultMap id="refundDetailMap" type="com.nyd.settlement.model.vo.refund.RefundOrderDetailVo">
+        <result column="cur_period" jdbcType="BIGINT" property="curPeriod"/>
+        <result column="bill_no" jdbcType="VARCHAR" property="billNo"/>
+        <result column="repay_principle" jdbcType="DECIMAL" property="repayPrinciple"/>
+        <result column="promise_repayment_date" jdbcType="DATE" property="promiseRepaymentDate"/>
+        <result column="receivable_amount" jdbcType="DECIMAL" property="receivableAmount"/>
+        <result column="actual_settle_date" jdbcType="DATE" property="actualSettleDate"/>
+        <result column="already_repay_amount" jdbcType="DECIMAL" property="alreadyRepayAmount"/>
+        <result column="coupon_derate_amount" jdbcType="DECIMAL" property="couponDerateAmount"/>
+        <result column="refundAmount" jdbcType="DECIMAL" property="refundAmount"/>
+    </resultMap>
+    <resultMap id="alreadyRefundMap" type="com.nyd.settlement.model.po.refund.AlreadyRefundOrderPo">
+        <result column="product_type" jdbcType="TINYINT" property="productType"/>
+        <result column="test_status" jdbcType="TINYINT" property="testStatus"/>
+        <result column="fund_code" jdbcType="VARCHAR" property="fundCode"/>
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
+        <result column="bill_no" jdbcType="VARCHAR" property="billNo"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="real_loan_amount" jdbcType="DECIMAL" property="realLoanAmount"/>
+        <result column="borrow_time" jdbcType="TINYINT" property="borrowTime"/>
+        <result column="pay_time" jdbcType="DATE" property="payTime"/>
+        <result column="actual_settle_date" jdbcType="DATE" property="actualSettleDate"/>
+        <result column="create_time" jdbcType="DATE" property="createTime"/>
+        <result column="offline_repay_channel" jdbcType="VARCHAR" property="offlineRepayChannel"/>
+        <result column="receivable_amount" jdbcType="DECIMAL" property="receivableAmount"/>
+        <result column="member_fee" jdbcType="DECIMAL" property="memberFee"/>
+        <result column="coupon_derate_amount" jdbcType="DECIMAL" property="couponDerateAmount"/>
+        <result column="refund_amount" jdbcType="DECIMAL" property="refundAmount"/>
+        <result column="refund_account" jdbcType="VARCHAR" property="refundAccount"/>
+        <result column="refund_flow" jdbcType="VARCHAR" property="refundFlow"/>
+        <result column="refund_channel" jdbcType="VARCHAR" property="refundChannel"/>
+        <result column="refund_time" jdbcType="DATE" property="refundTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+
+    <select id="getReFundOrderNo"  parameterType="com.nyd.settlement.entity.refund.QueryRefundEntity" resultMap="refundMap">
+        SELECT
+        DISTINCT a.order_no,
+        b.product_type,
+        a.test_status,
+        a.fund_code,
+        b.real_name,
+        b.mobile,
+        a.real_loan_amount,
+        a.borrow_time,
+        a.pay_time,
+        a.member_fee
+        FROM
+        xxd_order.t_order a,
+        xxd_order.t_order_detail b,
+        xxd_zeus.t_bill c
+        WHERE
+        a.order_no = b.order_no
+        AND a.order_no = c.order_no
+        AND c.bill_status = 'B003'
+        AND a.delete_flag = 0
+        AND c.delete_flag = 0
+        AND c.already_repay_amount > (
+        c.receivable_amount + c.already_refund_amount - c.coupon_derate_amount
+        )
+        <if test="startDate != null">
+            AND c.actual_settle_date &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND c.actual_settle_date &lt;= #{endDate}
+        </if>
+        <if test="mobile != null and mobile!=''">
+            AND b.mobile = #{mobile,jdbcType=VARCHAR}
+        </if>
+        <if test="orderNo != null and orderNo !=''" >
+            AND a.order_no = #{orderNo,jdbcType=VARCHAR}
+        </if>
+	  ORDER BY a.pay_time DESC
+    </select>
+
+    <select id="getRefundDetail" parameterType="com.nyd.settlement.model.dto.QueryDto" resultMap="refundDetailMap">
+      SELECT
+      cur_period,
+      bill_no,
+      repay_principle,
+      promise_repayment_date,
+      receivable_amount,
+      actual_settle_date,
+      already_repay_amount,
+      coupon_derate_amount,
+      CASE  WHEN (already_repay_amount+coupon_derate_amount-receivable_amount-already_refund_amount)>0 THEN (already_repay_amount+coupon_derate_amount-receivable_amount-already_refund_amount)
+      ELSE 0.00 END AS refundAmount
+      FROM t_bill
+      WHERE bill_status='B003' AND delete_flag=0
+      <if test="orderNo != null">
+         AND order_no = #{orderNo,jdbcType=VARCHAR}
+      </if>
+    </select>
+
+    <select id="queryOrderDetailByOrderNoAndMobile" parameterType="java.util.Map" resultType="java.lang.String">
+        SELECT
+        order_no
+        FROM xxd_order.t_order_detail
+        WHERE delete_flag=0
+        <if test="orderNo != null">
+            AND order_no = #{orderNo,jdbcType=VARCHAR}
+         </if>
+        <if test="mobile != null">
+            AND mobile = #{mobile,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="queryAlreadRefundAmount" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+        SELECT
+        already_refund_amount
+        FROM t_bill
+        WHERE delete_flag=0 and bill_status='B003'
+        <if test="orderNo != null">
+            AND order_no = #{orderNo,jdbcType=VARCHAR}
+        </if>
+        <if test="billNo != null">
+            AND bill_no = #{billNo,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <update id="updateRefundAmount" parameterType="java.util.Map">
+        UPDATE
+        t_bill
+        SET already_refund_amount=#{alreadyRefundAmount}
+        WHERE delete_flag=0 and bill_status='B003'
+        <if test="orderNo != null">
+            AND order_no = #{orderNo,jdbcType=VARCHAR}
+        </if>
+        <if test="billNo != null">
+            AND bill_no = #{billNo,jdbcType=VARCHAR}
+        </if>
+    </update>
+
+    <select id="queryAlreadyReFund" parameterType="com.nyd.settlement.entity.refund.QueryRefundEntity" resultMap="alreadyRefundMap">
+        SELECT
+        d.product_type,
+        c.test_status,
+        c.fund_code,
+        a.order_no,
+        a.bill_no,
+        d.real_name,
+        a.mobile,
+        c.real_loan_amount,
+        c.borrow_time,
+        c.pay_time,
+        b.actual_settle_date,
+        a.create_time,
+        a.offline_repay_channel,
+        b.receivable_amount,
+        c.member_fee,
+        b.coupon_derate_amount,
+        a.refund_amount,
+        a.refund_account,
+        a.refund_flow,
+        a.refund_channel,
+        a.refund_time,
+        a.update_by
+      FROM
+      xxd_zeus.t_refund a
+      LEFT JOIN xxd_zeus.t_bill b ON a.bill_no = b.bill_no
+      LEFT JOIN xxd_order.t_order c ON a.order_no = c.order_no
+      LEFT JOIN xxd_order.t_order_detail d ON a.order_no = d.order_no
+      WHERE
+      a.refund_status = 1
+      AND a.delete_flag = 0 AND b.delete_flag = 0 AND c.delete_flag = 0
+        <if test="startDate != null">
+            AND a.create_time &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND a.create_time &lt;= #{endDate}
+        </if>
+        <if test="mobile != null">
+            AND a.mobile = #{mobile,jdbcType=VARCHAR}
+        </if>
+        <if test="orderNo != null">
+            AND a.order_no = #{orderNo,jdbcType=VARCHAR}
+        </if>
+        ORDER BY a.create_time DESC
+    </select>
+</mapper>

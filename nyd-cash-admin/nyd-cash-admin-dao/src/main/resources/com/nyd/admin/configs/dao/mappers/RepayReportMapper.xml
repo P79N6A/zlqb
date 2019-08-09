@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.admin.dao.mapper.RepayReportMapper">
+  <resultMap id="BaseResultMap" type="com.nyd.admin.entity.RepayReport">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="loan_no" jdbcType="VARCHAR" property="loanNo" />
+    <result column="capital_name" jdbcType="VARCHAR" property="capitalName" />
+    <result column="product_type" jdbcType="INTEGER" property="productType" />
+    <result column="label" jdbcType="VARCHAR" property="label" />
+    <result column="test_status" jdbcType="INTEGER" property="testStatus" />
+    <result column="contract_start_date" jdbcType="DATE" property="contractStartDate" />
+    <result column="contract_end_date" jdbcType="DATE" property="contractEndDate" />
+    <result column="overdue_day" jdbcType="INTEGER" property="overdueDay" />
+    <result column="overdue_period" jdbcType="VARCHAR" property="overduePeriod" />
+    <result column="contract_time" jdbcType="INTEGER" property="contractTime" />
+    <result column="serial_no" jdbcType="VARCHAR" property="serialNo" />
+    <result column="repay_channel" jdbcType="VARCHAR" property="repayChannel" />
+    <result column="actual_receipt_day" jdbcType="DATE" property="actualReceiptDay" />
+    <result column="contract_amount" jdbcType="DECIMAL" property="contractAmount" />
+    <result column="remit_amount" jdbcType="DECIMAL" property="remitAmount" />
+    <result column="fee_item" jdbcType="DECIMAL" property="feeItem" />
+    <result column="overdue_should_amount" jdbcType="DECIMAL" property="overdueShouldAmount" />
+    <result column="receive_amount" jdbcType="DECIMAL" property="receiveAmount" />
+    <result column="accum_repay_amount" jdbcType="DECIMAL" property="accumRepayAmount" />
+    <result column="third_party_poundage" jdbcType="DECIMAL" property="thirdPartyPoundage" />
+    <result column="this_contract_amount" jdbcType="DECIMAL" property="thisContractAmount" />
+    <result column="this_fee_service" jdbcType="DECIMAL" property="thisFeeService" />
+    <result column="this_interest_amount" jdbcType="DECIMAL" property="thisInterestAmount" />
+    <result column="this_fee_late" jdbcType="DECIMAL" property="thisFeeLate" />
+    <result column="this_overdue_faxi" jdbcType="DECIMAL" property="thisOverdueFaxi" />
+    <result column="compensatory_amount" jdbcType="DECIMAL" property="compensatoryAmount" />
+    <result column="activity_derate" jdbcType="DECIMAL" property="activityDerate" />
+    <result column="collection_derate" jdbcType="DECIMAL" property="collectionDerate" />
+    <result column="drawback_amount" jdbcType="DECIMAL" property="drawbackAmount" />
+    <result column="other_income" jdbcType="DECIMAL" property="otherIncome" />
+    <result column="member_fee_id" jdbcType="VARCHAR" property="memberFeeId" />
+    <result column="member_fee_amount" jdbcType="DECIMAL" property="memberFeeAmount" />
+    <result column="member_fee_pay" jdbcType="DECIMAL" property="memberFeePay" />
+    <result column="member_fee_pay_date" jdbcType="TIMESTAMP" property="memberFeePayDate" />
+    <result column="member_fee_pay_channel" jdbcType="VARCHAR" property="memberFeePayChannel" />
+    <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+
+  <!--<select id="selectByTimeRange" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT * FROM  t_repay_report
+    WHERE  create_time &gt;= CONCAT(#{startDate},' 00:00:00') and
+    create_time &lt;= CONCAT(#{endDate},' 23:59:59')
+
+  </select>-->
+
+  <select id="selectByTimeRange" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT * FROM  t_repay_report
+    WHERE  actual_receipt_day &gt;= CONCAT(#{startDate},' 00:00:00') and
+    actual_receipt_day &lt;= CONCAT(#{endDate},' 23:59:59')
+
+  </select>
+
+
+</mapper>
