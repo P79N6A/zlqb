@@ -298,7 +298,7 @@ public class UserBankCardServiceImpl implements UserBankCardService{
 			common.setCode(StatusConstants.SUCCESS_CODE);
 			common.setMsg(StatusConstants.SYSTEM_OPERATION_SUCCESS_MSG);
 		}else{
-			logger.info("暂无绑定卡数据", JSON.toJSONString(userId));
+			logger.info("暂无绑定卡数据,{}", JSON.toJSONString(userId));
 			common.setStatus("1");
 			common.setCode(StatusConstants.SUCCESS_CODE);
 			common.setMsg(StatusConstants.SYSTEM_OPERATION_SUCCESS_MSG);

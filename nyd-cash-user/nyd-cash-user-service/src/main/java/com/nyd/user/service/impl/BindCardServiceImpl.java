@@ -108,10 +108,10 @@ public class BindCardServiceImpl implements BindCardService {
                     vo.setOrganName(req.getBankName());
                     vo.setMobile(req.getPhone());
                     vo.setIdCode(user.getIdNumber());
-                    LOGGER.info("讯联绑卡请求参数" + JSON.toJSONString(vo));
+                    LOGGER.info("讯联预绑卡请求参数:" + JSON.toJSONString(vo));
                     CommonResponse<IdentifyResp> reslut = xunlianPayService.sendMsg(vo);
 
-                    LOGGER.info("讯联绑卡响应参数"+  JSON.toJSONString(reslut));
+                    LOGGER.info("讯联预绑卡响应参数:"+  JSON.toJSONString(reslut));
                     if ("T".equals(reslut.getData().getRetFlag()) && reslut.isSuccess()) {
                         //发送短信验证码成功
                         ResponseData resp = new ResponseData();
@@ -124,7 +124,7 @@ public class BindCardServiceImpl implements BindCardService {
                         return resp.success(json);
                     } else {
                         //发送短信验证码失败
-                        LOGGER.error("讯联请求绑卡发送短信验证码服务失败,订单号",req.getUserId());
+                        LOGGER.error("讯联请求绑卡发送短信验证码服务失败,订单号:{}",req.getUserId());
                         return ResponseData.error("讯联请求绑卡发送短信验证码服务异常，请稍后处理！");
                     }
                 }
@@ -423,10 +423,12 @@ public class BindCardServiceImpl implements BindCardService {
 
         String channleCode = "";
         try {
+        	
             channleCode = zeusForOrderPayBackServise.getPaychannel();
+            LOGGER.info("获取绑卡渠道返回参数:" + channleCode);
             jsonObject.put("channelCode",channleCode);
             if(ChkUtil.isEmptys(channleCode)){
-                LOGGER.error("获取绑卡渠道异常,响应参数",channleCode);
+                LOGGER.error("获取绑卡渠道异常,响应参数:{}",channleCode);
 
                 jsonObject.put("status","1");
                 return jsonObject;
@@ -434,7 +436,7 @@ public class BindCardServiceImpl implements BindCardService {
             jsonObject.put("status","0");
         } catch (Exception e) {
             e.printStackTrace();
-            LOGGER.error("获取绑卡渠道异常",e.getMessage());
+            LOGGER.error("获取绑卡渠道异常,{}",e.getMessage());
         }
         return jsonObject;
     }
