@@ -1,0 +1,118 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.creativearts.projects</groupId>
+        <artifactId>nyd-cash</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>nyd-cash-settlement</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>nyd-cash-settlement-api</module>
+        <module>nyd-cash-settlement-config</module>
+        <module>nyd-cash-settlement-dao</module>
+        <module>nyd-cash-settlement-entity</module>
+        <module>nyd-cash-settlement-model</module>
+        <module>nyd-cash-settlement-service</module>
+        <module>nyd-cash-settlement-ws</module>
+    </modules>
+    <dependencyManagement>
+        <dependencies>
+             <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                 <version>2.6</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-settlement-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>i-bank-pay-api</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-settlement-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-settlement-entity</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-settlement-dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-settlement-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-zeus-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!--add dependency of configClient-->
+            <dependency>
+                <groupId>com.creativearts.framework.config</groupId>
+                <artifactId>config-client</artifactId>
+                <version>0.0.2</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <distributionManagement>
+        <repository>
+            <id>public</id>
+            <!--   <url>http://nexus.fenqi.im:8081/repository/maven-releases/</url>-->
+            <url>http://47.103.129.129:8081/nexus/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>public</id>
+            <name>Local Nexus Repository</name>
+            <url>http://47.103.129.129:8081/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

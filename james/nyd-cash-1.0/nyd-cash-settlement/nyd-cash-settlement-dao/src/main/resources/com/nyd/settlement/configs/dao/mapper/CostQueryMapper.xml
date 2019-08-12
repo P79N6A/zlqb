@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.settlement.dao.mapper.CostQueryMapper">
+    <resultMap id="BaseResultMap" type="com.nyd.settlement.model.po.ValuationFeePo">
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+        <result column="product_type" jdbcType="INTEGER" property="productType" />
+        <result column="test_status" jdbcType="INTEGER" property="testStatus" />
+        <result column="real_name" jdbcType="VARCHAR" property="name" />
+        <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+        <result column="repay_amount" jdbcType="DECIMAL" property="repayAmount" />
+        <result column="repay_channel" jdbcType="VARCHAR" property="repayChannel" />
+        <result column="repay_time" jdbcType="TIMESTAMP" property="repayTime" />
+        <result column="third_procedure_fee" jdbcType="DECIMAL" property="thirdProcedureFee" />
+        <result column="refund_amount" jdbcType="DECIMAL" property="refundAmount" />
+    </resultMap>
+
+    <resultMap id="RecommendFeeMap" type="com.nyd.settlement.model.po.RecommendFeePo">
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+        <result column="product_type" jdbcType="INTEGER" property="productType" />
+        <result column="test_status" jdbcType="INTEGER" property="testStatus" />
+        <result column="real_name" jdbcType="VARCHAR" property="name" />
+        <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+        <result column="repay_amount" jdbcType="DECIMAL" property="recommendFee" />
+        <result column="repay_channel" jdbcType="VARCHAR" property="repayChannel" />
+        <result column="repay_time" jdbcType="TIMESTAMP" property="repayTime" />
+        <result column="third_procedure_fee" jdbcType="DECIMAL" property="thirdProcedureFee" />
+        <result column="refund_amount" jdbcType="DECIMAL" property="refundAmount" />
+        <result column="order_status" jdbcType="INTEGER" property="orderStatus" />
+        <result column="invitation_code_flag" jdbcType="INTEGER" property="invitationCodeFlag" />
+    </resultMap>
+
+
+
+
+    <!--评估费查询-->
+    <select id="findValuationFee" parameterType="com.nyd.settlement.model.dto.ValuationFeeQueryDto" resultMap="BaseResultMap">
+        SELECT
+        p.product_type ,
+        o.test_status ,
+        o.user_id ,
+        o.order_no,
+        o.real_name ,
+        o.mobile ,
+        i.repay_amount ,
+        i.repay_channel,
+        i.repay_time ,
+        CASE WHEN i.third_procedure_fee IS NULL THEN 0 ELSE i.third_procedure_fee END AS third_procedure_fee
+
+        FROM
+        ibank_order.t_order o,
+        ibank_order.t_order_detail d,
+        ibank_zeus.t_ibank_repay i,
+        ibank_finance.t_app_product p
+        WHERE
+        o.user_id = i.user_id
+        AND o.order_no = d.order_no
+        AND o.repay_no = i.repay_no
+        AND d.app_code = p.app_code
+        AND o.delete_flag = 0
+        AND d.delete_flag = 0
+        AND i.repay_type = 1
+        AND i.delete_flag = 0
+        AND p.delete_flag = 0
+
+        <if test="mobile != null and mobile != '' ">
+            AND o.mobile = #{mobile}
+        </if>
+        <if test="userId != null and userId != ''">
+            AND o.user_id = #{userId}
+        </if>
+        <if test="startDate != null">
+            AND i.repay_time &gt;= CONCAT(#{startDate}," 00:00:00")
+        </if>
+        <if test="endDate != null">
+            AND i.repay_time &lt;= CONCAT(#{endDate}," 23:59:59")
+        </if>
+
+    </select>
+
+    <!--推荐费查询-->
+    <select id="findRecommendFee" parameterType="com.nyd.settlement.model.dto.RecommendFeeQueryDto" resultMap="RecommendFeeMap">
+        SELECT
+        a.product_type ,
+        d.app_code ,
+        d.invitation_code_flag ,
+        o.test_status ,
+        o.user_id ,
+        o.order_no,
+        o.real_name ,
+        o.mobile ,
+        --         o.audit_fee,
+        o.order_status ,
+        i.repay_amount,
+        i.repay_channel ,
+        i.repay_time ,
+        CASE WHEN i.third_procedure_fee IS NULL THEN 0 ELSE i.third_procedure_fee END AS third_procedure_fee,
+        CASE WHEN r.refund_amount IS NULL THEN 0 ELSE r.refund_amount END AS refund_amount
+
+        FROM
+        ibank_order.t_order o
+        LEFT JOIN ibank_order.t_order_detail d ON o.order_no = d.order_no
+        LEFT JOIN ibank_zeus.t_refund r ON r.order_no = o.order_no
+        LEFT JOIN ibank_zeus.t_ibank_repay i ON o.repay_no = i.repay_no
+        LEFT JOIN ibank_finance.t_app_product a ON d.app_code = a.app_code
+        WHERE
+        o.delete_flag = 0
+        AND i.repay_type = 2
+        AND i.delete_flag = 0
+        AND a.delete_flag = 0
+        AND r.delete_flag = 0
+
+        <if test="mobile != null and mobile != '' ">
+            AND o.mobile = #{mobile}
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            AND o.order_no = #{orderNo}
+        </if>
+        <if test="startDate != null">
+            AND i.repay_time &gt;= CONCAT(#{startDate}," 00:00:00")
+        </if>
+        <if test="endDate != null">
+            AND i.repay_time &lt;= CONCAT(#{endDate}," 23:59:59")
+        </if>
+
+    </select>
+
+
+</mapper>

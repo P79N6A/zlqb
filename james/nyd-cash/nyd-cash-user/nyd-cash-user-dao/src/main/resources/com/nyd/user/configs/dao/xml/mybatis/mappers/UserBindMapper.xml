@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.user.dao.mapper.UserBindMapper">
+<select id="sqlQuery" parameterType="com.nyd.user.model.common.SqlSearchForm" resultType="com.alibaba.fastjson.JSONObject">
+	         <![CDATA[
+          			 ${queryValide}
+        	]]>
+	</select>
+	<select id="sqlCount" parameterType="com.nyd.user.model.common.SqlSearchForm" resultType="java.lang.Long">
+	        <![CDATA[
+          			 SELECT count(1)  FROM (${queryValide}) obj
+        	]]>
+	</select>
+	<select id="sqlPage" parameterType="com.nyd.user.model.common.SqlSearchForm" resultType="com.alibaba.fastjson.JSONObject">
+	         <![CDATA[
+	         		${queryValide}
+        	]]>
+        	
+	</select>
+	
+	<update id="deleteSql" parameterType="com.nyd.user.model.common.SqlSearchForm">
+		  <![CDATA[
+	         		${queryValide}
+        	]]>
+	</update>
+	
+	<insert id="insertSql" parameterType="com.nyd.user.model.common.SqlSearchForm">
+		  <![CDATA[
+	         		${queryValide}
+        	]]>
+	</insert>
+	<insert id="updateSql" parameterType="com.nyd.user.model.common.SqlSearchForm">
+		  <![CDATA[
+	         		${queryValide}
+        	]]>
+	</insert>
+	<select id="sqlSum" parameterType="com.nyd.user.model.common.SqlSearchForm" resultType="java.lang.Long">
+	        <![CDATA[
+          			 ${queryValide}
+        	]]>
+	</select>
+    <resultMap type="com.nyd.user.entity.UserBind" id="BaseResultMap">
+         <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="user_id" property="userId" jdbcType="VARCHAR" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="id_number" property="idNumber" jdbcType="VARCHAR" />
+        <result column="platform" property="platform" jdbcType="VARCHAR" />
+        <result column="card_no" property="cardNo" jdbcType="VARCHAR" />
+        <result column="sign_status" property="signStatus" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+        <result column="sign_status" property="signStatus" jdbcType="VARCHAR" />
+        <result column="request_no" property="requestNo" jdbcType="VARCHAR" />
+        <result column="bank_code" property="bankCode" jdbcType="VARCHAR" />
+        <result column="bank_name" property="bankName" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="channel_code" property="channelCode" jdbcType="VARCHAR" />
+        
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, user_id, user_name, card_no, platform, sign_status, start_date, end_date,
+        create_time, update_time, update_by,request_no,bank_name,bank_Code,phone
+    </sql>
+
+    <select id="selectByUserIdAndCardNo" resultMap="BaseResultMap" parameterType="java.util.Map" >
+        select * from  t_user_bind
+        <where>
+
+            <if test="cardno != null and cardno != '' ">
+                and card_no = #{cardno,jdbcType=VARCHAR}
+            </if>
+            <if test="idNumber != null and idNumber != '' ">
+                and id_number = #{idNumber,jdbcType=VARCHAR}
+            </if>
+            <if test="requestNo != null and requestNo != '' ">
+                and request_no = #{requestNo,jdbcType=VARCHAR}
+            </if>
+            <if test="userId != null and userId != '' ">
+                and user_id = #{userId,jdbcType=VARCHAR}
+            </if>
+        </where>
+
+    </select>
+
+
+	    <select id="selectBindInfo" resultMap="BaseResultMap" parameterType="java.util.Map" >
+	        select * from  t_user_bind
+	        <where>
+	
+	            <if test="cardno != null and cardno != '' ">
+	                and card_no = #{cardno,jdbcType=VARCHAR}
+	            </if>
+	            <if test="idNumber != null and idNumber != '' ">
+	                and id_number = #{idNumber,jdbcType=VARCHAR}
+	            </if>
+	            <if test="requestNo != null and requestNo != '' ">
+	                and request_no = #{requestNo,jdbcType=VARCHAR}
+	            </if>
+	            <if test="userId != null and userId != '' ">
+	                and user_id = #{userId,jdbcType=VARCHAR}
+	            </if>
+	            <if test="channelCode != null and channelCode != '' ">
+	                and channel_code = #{channelCode,jdbcType=VARCHAR}
+	            </if>
+	        </where>
+			ORDER BY create_time DESC
+	    </select>
+
+
+    <insert id="insert" parameterType="com.nyd.user.entity.UserBind" >
+        insert into t_user_bind (user_id, user_name,id_number,card_no, platform, update_by, sign_status,request_no,bank_accout,bank_name)
+        values ( #{userId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},#{idNumber,jdbcType=VARCHAR},
+        #{cardNo,jdbcType=VARCHAR}, #{platform,jdbcType=VARCHAR},
+        #{updateBy,jdbcType=VARCHAR}, #{signStatus,jdbcType=VARCHAR}, #{requestNo,jdbcType=VARCHAR}, #{bankCode,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR},#{phone,jdbcType=VARCHAR})
+    </insert>
+    
+    
+    <update id="update" parameterType="com.nyd.user.entity.UserBind">
+        update  xxd_user.t_user_bind
+        set
+        <trim prefix="" suffix="" suffixOverrides=",">
+            <if test="signStatus != null">
+                sign_status = #{signStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="signStatus != null">
+                request_no = #{requestNo,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        where 1=1 and request_no = #{requestNo,jdbcType=VARCHAR}
+    </update>
+
+	 <insert id="insertUserBankInfo" parameterType="com.nyd.user.model.vo.UserBankInfo" >
+	      INSERT into t_user_bank (user_id,account_name,bank_account,account_type,reserved_phone,bank_name,default_flag,delete_flag,create_time,update_time,update_by,account_ic,soure,protocol_no,merchant_number,hlb_user_id,bank_code)
+	VALUES (#{userId},#{accountName},#{bankAccount},#{accountType},#{reservedPhone},#{bankName},#{defaultFlag},#{deleteFlag},#{createTime},#{updateTime},#{updateBy},#{accountIc},#{soure},#{protocolNo},#{merchantNumber},#{hlbUserId},#{bankCode})
+	 </insert>
+
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.user.dao.mapper.ContactMapper">
+
+    <insert id="insertList" parameterType="java.util.List">
+        insert into t_user_contact (user_id, type, name, mobile, relationship)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.userId}, #{item.type},#{item.name},#{item.mobile},#{item.relationship})
+        </foreach>
+    </insert>
+
+</mapper>

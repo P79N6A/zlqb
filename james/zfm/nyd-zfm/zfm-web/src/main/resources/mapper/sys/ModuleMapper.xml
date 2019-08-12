@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiwang.zfm.dao.sys.ModuleMapper" > 
+
+	<!-- Result Map-->
+	<resultMap id="BaseResultMap" type="com.zhiwang.zfm.entity.sys.Module" >
+			<result column="id" property="id"/>
+			<result column="name" property="name"/>
+			<result column="pid" property="pid"/>
+			<result column="status" property="status"/>
+			<result column="sort" property="sort"/>
+			<result column="create_time" property="createTime"/>
+			<result column="remark" property="remark"/>
+			<result column="has_node" property="hasNode"/>
+			<result column="url" property="url"/>
+			<result column="icon_url" property="iconUrl"/>
+		</resultMap>
+	       
+	<!-- sys_module table all fields -->
+	<sql id="Base_Column_List" >
+		 id,name,pid,status,sort,create_time,remark,has_node,url,icon_url
+	</sql>
+	   
+	<!-- 查询条件 -->
+	<sql id="where_Clause">
+	where 1=1
+	<trim  suffixOverrides="," >
+				<if test="id != null" >
+		    and id =  #{id}
+		</if>
+				 		<if test="name != null and name != ''" >
+		    and name =  #{name}
+		</if>
+				 		<if test="likeName != null and likeName != ''" >
+		    and name like CONCAT('%',#{likeName},'%')
+		</if>
+				 		<if test="pid != null and pid != ''" >
+		    and pid =  #{pid}
+		</if>
+				<if test="status != null" >
+		    and status =  #{status}
+		</if>
+				<if test="sort != null" >
+		    and sort =  #{sort}
+		</if>
+				<if test="createTime != null" >
+		    and create_time =  #{createTime}
+		</if>
+				 		<if test="remark != null and remark != ''" >
+		    and remark =  #{remark}
+		</if>
+				<if test="hasNode != null" >
+		    and has_node =  #{hasNode}
+		</if>
+				 		<if test="url != null and url != ''" >
+		    and url =  #{url}
+		</if>
+				 		<if test="iconUrl != null and iconUrl != ''" >
+		    and icon_url =  #{iconUrl}
+		</if>
+		</trim>
+	</sql>
+	
+	<!-- 插入菜单资源 -->
+	<insert id="insert" parameterType="com.zhiwang.zfm.entity.sys.Module" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+	  insert into sys_module(id,name,pid,status,sort,create_time,remark,has_node,url,icon_url)
+ values(#{id},#{name},#{pid},#{status},#{sort},#{createTime},#{remark},#{hasNode},#{url},#{iconUrl})
+	</insert>
+	
+	<!-- 修改菜单资源-->  
+	 <update id="update" parameterType="com.zhiwang.zfm.entity.sys.Module" >
+	  update sys_module set name=#{name},pid=#{pid},status=#{status},sort=#{sort},create_time=#{createTime},remark=#{remark},has_node=#{hasNode},url=#{url},icon_url=#{iconUrl} where id=#{id}
+	 </update>
+	 
+	 <!-- 选择修改菜单资源-->
+	<update id="updateBySelective" parameterType="com.zhiwang.zfm.entity.sys.Module" >
+		update sys_module set 
+	<trim  suffixOverrides="," >
+	<if test="name != null  and name != '' ">
+		name=#{name},
+	</if>
+	<if test="pid != null  and pid != '' ">
+		pid=#{pid},
+	</if>
+	<if test="status != null  ">
+		status=#{status},
+	</if>
+	<if test="sort != null  ">
+		sort=#{sort},
+	</if>
+	<if test="createTime != null  ">
+		create_time=#{createTime},
+	</if>
+	<if test="remark != null  and remark != '' ">
+		remark=#{remark},
+	</if>
+	<if test="hasNode != null  ">
+		has_node=#{hasNode},
+	</if>
+	<if test="url != null  and url != '' ">
+		url=#{url},
+	</if>
+	<if test="iconUrl != null  and iconUrl != '' ">
+		icon_url=#{iconUrl},
+	</if>
+	</trim> where id=#{id}
+	</update>
+	
+	<!-- 删除菜单资源 -->
+	<update id="delete" parameterType="Object">
+		delete 	 from sys_module where id = #{id}
+	</update>
+	
+	<!-- 批量删除菜单资源 -->
+	<delete id="batchDelete" parameterType="Object">
+		delete 	 from sys_module where id in 
+		<foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+	       	#{item}  
+	   	</foreach> 
+	</delete>
+	 
+	<!-- 依据主键查找菜单资源 -->
+	<select id="selectById" resultMap="BaseResultMap" >
+		select <include refid="Base_Column_List" /> 
+	 from sys_module where id = #{id}
+	</select>
+	  	
+	<!-- 菜单资源 列表总数  为分页组件使用-->
+	<select id="pageTotalRecord" resultType="java.lang.Long" parameterType="com.zhiwang.zfm.entity.sys.query.ModuleSearchForm">
+		select count(1) from sys_module 
+		<include refid="where_Clause"/>
+	</select>
+	  	
+	<!-- 分页中的菜单资源集合，为分页组件使用 -->
+	<select id="pageData" resultMap="BaseResultMap" parameterType="com.zhiwang.zfm.entity.sys.query.ModuleSearchForm">
+		select 
+		<include refid="Base_Column_List"/>
+		from sys_module 
+		<include refid="where_Clause"/>
+		<if test="orderCondition != null and orderCondition != ''" >
+	      ${orderCondition}
+	    </if>
+	    ${queryCondition}
+	</select>
+	
+	<!--依据条件统计 菜单资源总数-->
+	<select id="count" resultType="java.lang.Long" parameterType="com.zhiwang.zfm.entity.sys.query.ModuleSearchForm">
+		select count(1) from sys_module 
+		<include refid="where_Clause"/>
+	</select>
+  	
+  	<select id="selectModleListByIdList"  resultMap="BaseResultMap" parameterType="Object">
+	  	select <include refid="Base_Column_List" /> 
+		 from sys_module where id in
+		<foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+	       	#{item}  
+	   	</foreach> 
+	   	order by sort desc
+  	</select>
+  	
+  	
+  	<select id="selectPidListByIdList"  resultType="string" parameterType="Object">
+	  	select pid 
+		 from sys_module where id in
+		<foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+	       	#{item}  
+	   	</foreach> 
+	   	group by pid
+  	</select>
+</mapper>   

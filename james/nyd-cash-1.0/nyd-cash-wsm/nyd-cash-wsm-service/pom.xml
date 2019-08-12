@@ -1,0 +1,51 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.creativearts.projects</groupId>
+        <artifactId>nyd-cash-wsm</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>nyd-cash-wsm-service</artifactId>
+    <packaging>jar</packaging>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-wsm-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-support-model</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+
+        <!-- 调用Dubbo服务基本 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+    <build>
+       
+    </build>
+</project>

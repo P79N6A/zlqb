@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.admin.dao.mapper.ProductOverdueFeeItemMapper">
+  <resultMap id="BaseResultMap" type="com.nyd.admin.entity.ProductOverdueFeeItem">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="product_code" jdbcType="CHAR" property="productCode" />
+    <result column="overdue_fine" jdbcType="DECIMAL" property="overdueFine" />
+    <result column="gear_overdue_fee_days" jdbcType="INTEGER" property="gearOverdueFeeDays" />
+    <result column="first_gear_overdue_rate" jdbcType="DECIMAL" property="firstGearOverdueRate" />
+    <result column="second_gear_overdue_rate" jdbcType="DECIMAL" property="secondGearOverdueRate" />
+    <result column="max_overdue_fee_rate" jdbcType="DECIMAL" property="maxOverdueFeeRate" />
+    <result column="delete_flag" jdbcType="TINYINT" property="deleteFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, product_code, overdue_fine, gear_overdue_fee_days, first_gear_overdue_rate, second_gear_overdue_rate, 
+    max_overdue_fee_rate, delete_flag, create_time, update_time, update_by
+  </sql>
+
+  <select id="select" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_product_overdue_fee_item
+    where product_code = #{productCode,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="insert" parameterType="com.nyd.admin.entity.ProductOverdueFeeItem">
+    insert into t_product_overdue_fee_item (product_code, overdue_fine,
+      gear_overdue_fee_days, first_gear_overdue_rate, 
+      second_gear_overdue_rate, max_overdue_fee_rate)
+    values (#{productCode,jdbcType=CHAR}, #{overdueFine,jdbcType=DECIMAL},
+      #{gearOverdueFeeDays,jdbcType=INTEGER}, #{firstGearOverdueRate,jdbcType=DECIMAL}, 
+      #{secondGearOverdueRate,jdbcType=DECIMAL}, #{maxOverdueFeeRate,jdbcType=DECIMAL})
+  </insert>
+
+  <update id="update" parameterType="com.nyd.admin.entity.ProductOverdueFeeItem">
+    update t_product_overdue_fee_item
+    <set>
+      <if test="overdueFine != null">
+        overdue_fine = #{overdueFine,jdbcType=DECIMAL},
+      </if>
+      <if test="gearOverdueFeeDays != null">
+        gear_overdue_fee_days = #{gearOverdueFeeDays,jdbcType=INTEGER},
+      </if>
+      <if test="firstGearOverdueRate != null">
+        first_gear_overdue_rate = #{firstGearOverdueRate,jdbcType=DECIMAL},
+      </if>
+      <if test="secondGearOverdueRate != null">
+        second_gear_overdue_rate = #{secondGearOverdueRate,jdbcType=DECIMAL},
+      </if>
+      <if test="maxOverdueFeeRate != null">
+        max_overdue_fee_rate = #{maxOverdueFeeRate,jdbcType=DECIMAL},
+      </if>
+      <!--<if test="deleteFlag != null">-->
+        <!--delete_flag = #{deleteFlag,jdbcType=TINYINT},-->
+      <!--</if>-->
+    </set>
+    where product_code = #{productCode,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

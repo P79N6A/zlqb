@@ -1,0 +1,115 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.creativearts.projects</groupId>
+        <artifactId>nyd-cash</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>nyd-cash-pay</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>nyd-cash-pay-api</module>
+        <module>nyd-cash-pay-config</module>
+        <module>nyd-cash-pay-dao</module>
+        <module>nyd-cash-pay-entity</module>
+        <module>nyd-cash-pay-model</module>
+        <module>nyd-cash-pay-service</module>
+        <module>nyd-cash-pay-ws</module>
+        <module>nyd-cash-pay-rabbit</module>
+
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- <dependency>
+                 <groupId>org.bouncycastle</groupId>
+                 <artifactId>bcmail-jdk15on</artifactId>
+                 <version>1.57</version>
+             </dependency>
+
+             <dependency>
+                 <groupId>org.bouncycastle</groupId>
+                 <artifactId>bcprov-jdk15on</artifactId>
+                 <version>1.57</version>
+             </dependency>
+
+
+             <dependency>
+                 <groupId>com.creativearts.projects</groupId>
+                 <artifactId>sis-itrus-cert-api-2.9.2-jdk15</artifactId>
+                 <version>2.9.2</version>
+             </dependency>-->
+
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-pay-service</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-pay-dao</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-pay-api</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-pay-model</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-pay-rabbit</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-pay-config</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-pay-entity</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+
+
+            <!--add dependency of configClient-->
+            <dependency>
+                <groupId>com.creativearts.framework.config</groupId>
+                <artifactId>config-client</artifactId>
+                <version>0.0.2</version>
+            </dependency>
+
+        </dependencies>
+
+    </dependencyManagement>
+
+    <build>
+        <!-- <resources>
+             <resource>
+                 <directory>src/main/resources</directory>
+                 <includes>
+                     <include>**/*.properties</include>
+                     <include>**/*.xml</include>
+                 </includes>
+                 <filtering>false</filtering>
+             </resource>
+             <resource>
+                 <directory>src/main/java</directory>
+                 <includes>
+                     <include>**/*.properties</include>
+                     <include>**/*.xml</include>
+                 </includes>
+                 <filtering>false</filtering>
+             </resource>
+         </resources>
+ -->
+    </build>
+
+</project>

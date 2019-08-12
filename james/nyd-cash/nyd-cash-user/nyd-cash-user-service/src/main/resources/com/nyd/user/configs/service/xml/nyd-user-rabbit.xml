@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+
+    <rabbit:connection-factory virtual-host="${rabbit.virtualhost}" id="mqConnectionFactory" host="${rabbit.host}" port="${rabbit.port}" username="${rabbit.username}" password="${rabbit.password}"/>
+    <rabbit:admin connection-factory="mqConnectionFactory"/>
+    <rabbit:queue name="userToApplicationNyd" durable="true"/>
+    <rabbit:queue name="nydUserLoginLog" durable="true"/>
+    <rabbit:queue name="rechargeCouponToUser" durable="true"/>
+    <rabbit:queue name="userToUserSourceLogGnh" durable="true"/>
+    <rabbit:queue name="hitAccountGnh" durable="true"/>
+    <rabbit:queue name="nydHitLibrary" durable="true"/>
+    <rabbit:queue name="creditToMsg" durable="true"/>
+
+    <rabbit:queue name="mFeeLogToMember" durable="true"/>
+
+    <bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter"/>
+    <!--<bean id="simpleMessageConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter"/>-->
+
+    <!-- 实际发送的 -->
+    <bean id="rabbitmqProducerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqProducerProxy">
+        <property name="rabbitTemplate" ref="amqpTemplate"/>
+    </bean>
+
+    <rabbit:template id="amqpTemplate" connection-factory="mqConnectionFactory" exchange="order_topic_exchange" message-converter="jsonMessageConverter"/>
+
+    <rabbit:topic-exchange name="order_topic_exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="userToApplicationNyd" pattern="userToApplicationNyd.#"/>
+            <rabbit:binding queue="nydUserLoginLog" pattern="nydUserLoginLog.#"/>
+            <rabbit:binding queue="mFeeLogToMember" pattern="mfee.#"/>
+            <rabbit:binding queue="userToUserSourceLogGnh" pattern="userToUserSourceLogGnh.#"/>
+            <rabbit:binding queue="hitAccountGnh" pattern="hitAccountGnh.#"/>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+
+    <!-- *****************************消费者***************************** -->
+    <!--充值-->
+    <bean id="rechargeCouponMqConsumerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="rechargeCouponProcesser"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+    
+    <!--撞库操作-->
+     <bean id="userToUserSourceLogMqConsumerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="userToUserSourceLogCouponProducer"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+    <!--登陆写日志操作-->
+     <bean id="userLoginLogMqConsumerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="userLoginLogCouponProducer"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+    
+    <!--注册添加引流撞库记录-->
+    <bean id="hitAccountProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="hitAccountCouponProducer"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+
+    <bean id="hitLibraryProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="hitLibraryConsumerProcessor"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+    <bean id="creditToMsgProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+      <property name="rabbitmqMessageProcesser" ref="creditToMsgConsumerProcessor"></property>
+      <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+
+    <!-- 真正执行-->
+    <bean id="rechargeCouponProcesser" class="com.nyd.user.service.mq.RechargeFeeMqProcesser"/>
+    <bean id="userToUserSourceLogCouponProducer" class="com.nyd.user.service.mq.UserSourceLogProcesser"/>
+    <bean id="userLoginLogCouponProducer" class="com.nyd.user.service.mq.UserLoginLogMqProcesser"/>
+    <bean id="hitAccountCouponProducer" class="com.nyd.user.service.mq.HitAccountMqProcesser"/>
+    <bean id="hitLibraryConsumerProcessor" class="com.nyd.user.service.mq.HitLibraryConsumerProcessor"/>
+    <bean id="creditToMsgConsumerProcessor" class="com.nyd.user.service.mq.UserShortMesPromoteAmountMqConsumer"/>
+    <!-- 手动提交 acknowledge="manual"-->
+    <rabbit:listener-container connection-factory="mqConnectionFactory" acknowledge="manual" concurrency="1" >
+        <rabbit:listener queues="rechargeCouponToUser" ref="rechargeCouponMqConsumerProxy"/>
+        <rabbit:listener queues="userToUserSourceLogGnh" ref="userToUserSourceLogMqConsumerProxy"/>
+        <rabbit:listener queues="hitAccountGnh" ref="hitAccountProxy"/>
+        <rabbit:listener queues="nydUserLoginLog" ref="userLoginLogMqConsumerProxy"/>
+        <rabbit:listener queues="nydHitLibrary" ref="hitLibraryProxy"/>
+        <rabbit:listener queues="creditToMsg" ref="creditToMsgProxy"/>
+    </rabbit:listener-container>
+
+</beans>

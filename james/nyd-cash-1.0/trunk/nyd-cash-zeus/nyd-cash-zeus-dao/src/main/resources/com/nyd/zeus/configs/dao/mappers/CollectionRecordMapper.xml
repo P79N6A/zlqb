@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.zeus.dao.mapper.CollectionRecordMapper">
+
+	<insert id="save" parameterType="com.nyd.zeus.model.collection.CollectionRecord">
+	INSERT INTO `t_collection_record` VALUES (
+		#{id}, #{orderNo}, #{userId}, #{phone}, #{name}, 
+		#{isPromiseRepay}, #{sysUserId}, #{sysUserName}, #{relationCode}, #{relationMsg},
+		#{remark}, 0, now(), now() 
+	);
+	</insert>
+	
+    <!--根据订单编号查找对应订单详情-->
+    <select id="queryList" resultType="com.nyd.zeus.model.collection.CollectionRecord" 
+    				parameterType="com.nyd.zeus.model.collection.CollectionRecordRequest" >
+        SELECT
+        	id, 
+        	order_no as orderNo, 
+        	user_id as userId, 
+        	phone, 
+        	name, 
+        	is_promise_repay as isPromiseRepay, 
+			sys_user_id as sysUserId, 
+			sys_user_name as sysUserName, 
+			relation_code as relationCode, 
+			relation_msg as relationMsg, 
+			remark,
+			status, 
+			create_time as createTime, 
+			update_time as updateTime 
+        FROM t_collection_record 
+        where 1=1
+        <if test="phone != null and phone != ''">
+            and phone = #{phone}
+        </if>
+        <if test="userId != null and userId != ''">
+            and user_id = #{userId}
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            and order_no = #{orderNo}
+        </if>
+        <if test="beginTime !=null and beginTime !='' and endTime !=null and endTime !=''">
+			and create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59')
+		</if>
+            and status = 0
+            order by create_time desc
+        ${queryCondition}
+    </select>
+    
+    <select id="queryListCount" resultType="java.lang.Long" 
+    				parameterType="com.nyd.zeus.model.collection.CollectionRecordRequest" >
+        SELECT
+        	count(*)
+        FROM t_collection_record 
+        where 1=1
+        <if test="phone != null and phone != ''">
+            and phone = #{phone}
+        </if>
+        <if test="userId != null and userId != ''">
+            and user_id = #{userId}
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            and order_no = #{orderNo}
+        </if>
+        <if test="beginTime !=null and beginTime !='' and endTime !=null and endTime !=''">
+			and create_time between CONCAT(#{beginTime},' 00:00:00') and CONCAT(#{endTime},' 23:59:59')
+		</if>
+            and status = 0
+    </select>
+    
+    <select id="getCollectionInfo" resultType="com.nyd.zeus.model.collection.CollectionRecord" parameterType="String" >
+        SELECT
+        	id, 
+        	order_no as orderNo, 
+        	user_id as userId, 
+        	phone, 
+        	name, 
+        	is_promise_repay as isPromiseRepay, 
+			sys_user_id as sysUserId, 
+			sys_user_name as sysUserName, 
+			relation_code as relationCode, 
+			relation_msg as relationMsg, 
+			remark,
+			status, 
+			create_time as createTime, 
+			update_time as updateTime 
+        FROM t_collection_record 
+        where user_id = #{userId} and phone = #{phone} and status = 0
+        ORDER BY update_time DESC LIMIT 1
+    </select>
+    
+</mapper>

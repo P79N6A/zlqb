@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<dubbo:application  name="${dubbo.application.name}" owner="dengw" />
+	<dubbo:registry protocol="zookeeper" address="${dubbo.registry.address}" timeout="${dubbo.zookeeper.timeout}" />
+	<dubbo:monitor protocol="registry" />
+	<dubbo:protocol port="${dubbo.protocol.port}"/>
+
+	<dubbo:service ref="qiniuContract" interface="com.nyd.application.api.QiniuContract" protocol="dubbo" />
+	<dubbo:service ref="agreeMentContract" interface="com.nyd.application.api.AgreeMentContract" protocol="dubbo" />
+	<dubbo:service ref="deviceInfoContractNyd" interface="com.nyd.application.api.DeviceInfoContract" protocol="dubbo" />
+    <dubbo:service ref="flowConfigContract" interface="com.nyd.application.api.FlowConfigContract" protocol="dubbo" />
+    
+    <dubbo:service ref="mongoService" interface="com.nyd.application.service.MongoService" protocol="dubbo" />
+    <!-- 通话记录 -->
+    <dubbo:service ref="callRecordService" interface="com.nyd.application.api.call.CallRecordService" protocol="dubbo" />
+    <dubbo:service ref="smsRecordServise" interface="com.nyd.application.api.sms.SmsRecordServise" protocol="dubbo" />
+	
+	<dubbo:service ref="queryContratService" interface="com.nyd.application.api.call.QueryContratService" protocol="dubbo" />
+	
+	<dubbo:reference id="productContract" interface="com.nyd.product.api.ProductContract" timeout="1000000" check="false" />
+	<dubbo:reference id="userIdentityContract" interface="com.nyd.user.api.UserIdentityContract" timeout="1000000" check="false" />
+	<dubbo:reference id="creditReport" interface="com.creativearts.das.query.api.CreditReportService" timeout="1000000" check="false"  />
+	<dubbo:reference id="userAccountContract" interface="com.nyd.user.api.UserAccountContract"  timeout="1000000" check="false" />
+	<dubbo:reference id="featureCommon" interface="com.creativearts.feature.syn.api.FeatureCommon"  timeout="1000000" check="false" />
+	<dubbo:reference id="userStepContractNyd" interface="com.nyd.user.api.UserStepContract"  timeout="1000000" check="false" />
+	<dubbo:reference id="memberConfigContract" interface="com.nyd.member.api.MemberConfigContract"  timeout="1000000" check="false" />
+	<dubbo:reference id="couponContract" interface="com.nyd.activity.api.CouponContract"  timeout="1000000" check="false" />
+	<dubbo:reference id="userSourceContract" interface="com.nyd.user.api.UserSourceContract"  timeout="1000000" check="false" />
+	<dubbo:reference id="memberLogContract" interface="com.nyd.member.api.MemberLogContract"  timeout="1000000" check="false" />
+	
+</beans>

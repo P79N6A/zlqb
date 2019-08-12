@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.application.dao.mapper.CallInfoMapper">
+<select id="sqlQuery" parameterType="com.nyd.application.model.common.SqlSearchForm" resultType="com.alibaba.fastjson.JSONObject">
+	         <![CDATA[
+          			 ${queryValide}
+        	]]>
+	</select>
+	<select id="sqlCount" parameterType="com.nyd.application.model.common.SqlSearchForm" resultType="java.lang.Long">
+	        <![CDATA[
+          			 SELECT count(1)  FROM (${queryValide}) obj
+        	]]>
+	</select>
+	<select id="sqlPage" parameterType="com.nyd.application.model.common.SqlSearchForm" resultType="com.alibaba.fastjson.JSONObject">
+	         <![CDATA[
+	         		${queryValide}
+        	]]>
+        	
+	</select>
+	
+	<update id="deleteSql" parameterType="com.nyd.application.model.common.SqlSearchForm">
+		  <![CDATA[
+	         		${queryValide}
+        	]]>
+	</update>
+	
+	<insert id="insertSql" parameterType="com.nyd.application.model.common.SqlSearchForm">
+		  <![CDATA[
+	         		${queryValide}
+        	]]>
+	</insert>
+	<insert id="updateSql" parameterType="com.nyd.application.model.common.SqlSearchForm">
+		  <![CDATA[
+	         		${queryValide}
+        	]]>
+	</insert>
+	<select id="sqlSum" parameterType="com.nyd.application.model.common.SqlSearchForm" resultType="java.lang.Long">
+	        <![CDATA[
+          			 ${queryValide}
+        	]]>
+	</select>
+
+</mapper>

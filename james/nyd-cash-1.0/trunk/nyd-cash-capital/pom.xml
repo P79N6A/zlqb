@@ -1,0 +1,151 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.creativearts.projects</groupId>
+        <artifactId>nyd-cash</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>nyd-cash-capital</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>nyd-cash-capital-api</module>
+        <module>nyd-cash-capital-config</module>
+        <module>nyd-cash-capital-dao</module>
+        <module>nyd-cash-capital-entity</module>
+        <module>nyd-cash-capital-model</module>
+        <module>nyd-cash-capital-service</module>
+        <module>nyd-cash-capital-ws</module>
+        <module>nyd-cash-capital-rabbit</module>
+        <module>nyd-cash-capital-mongo</module>
+        <module>nyd-cash-capital-redis</module>
+
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcmail-jdk15on</artifactId>
+                <version>1.57</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>1.57</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>sis-itrus-cert-api-2.9.2-jdk15</artifactId>
+                <version>2.9.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-capital-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-capital-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-capital-entity</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-capital-dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-capital-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.creativearts.projects</groupId>
+                <artifactId>nyd-cash-capital-rabbit</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!--爬虫依赖-->
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-java</artifactId>
+                <version>3.13.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.seleniumhq.selenium</groupId>
+                        <artifactId>htmlunit-driver</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>httpcore</artifactId>
+                        <groupId>org.apache.httpcomponents</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-chrome-driver -->
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-chrome-driver</artifactId>
+                <version>3.13.0</version>
+            </dependency>
+
+
+            <!--add dependency of configClient-->
+            <dependency>
+                <groupId>com.creativearts.framework.config</groupId>
+                <artifactId>config-client</artifactId>
+                <version>0.0.2</version>
+            </dependency>
+
+
+        </dependencies>
+
+    </dependencyManagement>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+        <finalName>capital</finalName>
+
+    </build>
+    <distributionManagement>
+        <repository>
+            <id>public</id>
+            <!--   <url>http://nexus.fenqi.im:8081/repository/maven-releases/</url>-->
+            <url>http://47.105.147.7:8081/nexus/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>public</id>
+            <name>Local Nexus Repository</name>
+            <url>http://47.105.147.7:8081/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

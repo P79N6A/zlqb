@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<dubbo:application  name="${dubbo.application.name}" owner="dengw" />
+	<dubbo:registry protocol="zookeeper" address="${dubbo.registry.address}" timeout="${dubbo.zookeeper.timeout}" />
+	<!--<dubbo:monitor protocol="registry" />-->
+	<dubbo:protocol port="${dubbo.protocol.port}"/>
+
+	<!-- *****************************生产者***************************** -->
+	<dubbo:service ref="orderContract" interface="com.nyd.order.api.OrderContract" protocol="dubbo" />
+	<dubbo:service ref="orderExceptionContract" interface="com.nyd.order.api.OrderExceptionContract" protocol="dubbo" />
+	<dubbo:service ref="orderChannelContract" interface="com.nyd.order.api.OrderChannelContract" protocol="dubbo" />
+	<dubbo:service ref="orderDetailContract" interface="com.nyd.order.api.OrderDetailContract" protocol="dubbo" />
+	<dubbo:service ref="orderStatusLogContract" interface="com.nyd.order.api.OrderStatusLogContract" protocol="dubbo" />
+	<dubbo:service ref="orderWentongContract" interface="com.nyd.order.api.OrderWentongContract" protocol="dubbo" />
+	<dubbo:service ref="withHoldOrderContract" interface="com.nyd.order.api.WithHoldOrderContract" protocol="dubbo" />
+	<dubbo:service ref="tHelibaoRecordService" interface="com.nyd.order.api.zzl.THelibaoRecordService" protocol="dubbo" />
+	<!--侬要贷借款详情-->
+	<dubbo:service ref="borrowDetailContract" interface="com.nyd.order.api.BorrowDetailContract" protocol="dubbo" />
+
+	<dubbo:service ref="billYmtContract" interface="com.nyd.order.api.BillYmtContract" protocol="dubbo" />
+
+	<dubbo:service ref="capitalOrderRelationContract" interface="com.nyd.order.api.CapitalOrderRelationContract" protocol="dubbo" />
+	<dubbo:service ref="testStatusContractNyd" interface="com.nyd.order.api.TestStatusContract" protocol="dubbo" />
+	
+	<dubbo:service ref="orderForGYTServise" interface="com.nyd.order.api.zzl.OrderForGYTServise" protocol="dubbo" />
+	<dubbo:service ref="orderForZQServise" interface="com.nyd.order.api.zzl.OrderForZQServise" protocol="dubbo" />
+	<dubbo:service ref="orderForSLHServise" interface="com.nyd.order.api.zzl.OrderForSLHServise" protocol="dubbo" />
+	<dubbo:service ref="orderForZLQServise" interface="com.nyd.order.api.zzl.OrderForZLQServise" protocol="dubbo" />
+	<dubbo:service ref="orderForWHServise" interface="com.nyd.order.api.zzl.OrderForWHServise" protocol="dubbo" />
+	<dubbo:service ref="orderForOrderPayBackServise" interface="com.nyd.order.api.zzl.OrderForOrderPayBackServise" protocol="dubbo" />
+
+	<!-- *****************************消费者***************************** -->
+	<dubbo:reference id="productContract" interface="com.nyd.product.api.ProductContract" timeout="1000000" check="false" />
+	<dubbo:reference id="userBankContract" interface="com.nyd.user.api.UserBankContract" timeout="1000000" check="false" />
+	<dubbo:reference id="userIdentityContract" interface="com.nyd.user.api.UserIdentityContract" timeout="1000000" check="false" />
+	<dubbo:reference id="userAccountContract" interface="com.nyd.user.api.UserAccountContract" timeout="1000000" check="false" />
+	<dubbo:reference id="memberContract" interface="com.nyd.member.api.MemberContract" timeout="1000000" check="false" />
+	<dubbo:reference id="memberConfigContract" interface="com.nyd.member.api.MemberConfigContract" timeout="1000000" check="false" />
+	<dubbo:reference id="remitService" interface="com.nyd.capital.api.service.RemitService" timeout="1000000" check="false" />
+	<dubbo:reference id="agreeMentContract" interface="com.nyd.application.api.AgreeMentContract" timeout="1000000" check="false" />
+	<dubbo:reference id="sendSmsService" interface="com.nyd.msg.service.ISendSmsService" timeout="1000000" check="false" />
+	<dubbo:reference id="billContract" interface="com.nyd.zeus.api.BillContract" timeout="1000000" check="false" />
+	<dubbo:reference id="orderContractYmt" interface="com.ibank.order.api.OrderContract" timeout="1000000" check="false" />
+	<dubbo:reference id="userForSLHServise" interface="com.nyd.user.api.zzl.UserForSLHServise" timeout="1000000" check="false" />
+	<!--ymt空中金融根据子订单号找到还款详情参数-->
+	<dubbo:reference id="KzjrRepayContractYmt" interface="com.ibank.order.api.KzjrRepayContract" timeout="1000000" check="false" />
+	<dubbo:reference id="kzlicaiContractYmt" interface="com.ibank.order.api.KzlicaiContract" timeout="1000000" check="false" />
+	<dubbo:reference id="userSourceContract" interface="com.nyd.user.api.UserSourceContract"  timeout="1000000" check="false"/>
+	<dubbo:reference id="qcgzApi" interface="com.nyd.capital.api.service.QcgzApi"  timeout="1000000" check="false"/>
+	<dubbo:reference id="jxApi" interface="com.nyd.capital.api.service.JxApi" timeout="1000000" check="false"/>
+	<dubbo:reference id="pocketApi" interface="com.nyd.capital.api.service.PocketApi" timeout="1000000" check="false"/>
+	<dubbo:reference id="capitalApi" interface="com.nyd.capital.api.service.CapitalApi" timeout="1000000" check="false"/>
+	<dubbo:reference id="userJxContract" interface="com.nyd.user.api.UserJxContract" timeout="1000000" check="false"/>
+
+	<dubbo:reference id="userStepContractNyd" interface="com.nyd.user.api.UserStepContract"  timeout="1000000" check="false"/>
+	<dubbo:reference id="assessService" interface="com.creativearts.limit.api.AssessService" timeout="1000000" check="false" />
+	<dubbo:reference id="qiniuContract" interface="com.creativearts.das.query.api.QiniuContract" timeout="1000000" check="false" />
+	<dubbo:reference id="qiniuContractNyd" interface="com.nyd.application.api.QiniuContract" timeout="1000000" check="false" />
+	<dubbo:reference id="cashRedBagService" interface="com.nyd.activity.api.CashRedBagService" timeout="1000000" check="false" />
+	<dubbo:reference id="reportDetailQueryService" interface="com.creativearts.das.query.api.ReportDetailQueryService" timeout="1000000" check="false" />
+
+	<dubbo:reference id="zeusForZQServise" interface="com.nyd.zeus.api.zzl.ZeusForZQServise" timeout="1000000" check="false" />
+	<dubbo:reference id="changJiePaymentService" interface="com.nyd.zeus.api.zzl.chanpay.ChangJiePaymentService" timeout="1000000" check="false" />
+	<dubbo:reference id="helibaoEntrustedLoanService" interface="com.nyd.zeus.api.zzl.HelibaoEntrustedLoanService" timeout="1000000" check="false" />
+	<dubbo:reference id="zeusForLXYService" interface="com.nyd.zeus.api.zzl.ZeusForLXYService" timeout="1000000" check="false" />
+
+	<dubbo:reference id="zeusForRiskPaymentServise" interface="com.nyd.zeus.api.payment.PaymentRiskRecordService" timeout="1000000" check="false" />
+	<dubbo:reference id="zeusForWHServise" interface="com.nyd.zeus.api.zzl.ZeusForWHServise" timeout="120000" check="false" />
+	<dubbo:reference id="zeusForOrderPayBackServise" interface="com.nyd.zeus.api.zzl.ZeusForOrderPayBackServise" timeout="120000" check="false" />
+	
+	<dubbo:reference id="userForZQServise" interface="com.nyd.user.api.zzl.UserForZQServise" timeout="120000" check="false" />
+
+	<dubbo:reference id="userBankCardService" interface="com.nyd.user.api.zzl.UserBankCardService" timeout="120000" check="false" />
+	<dubbo:reference id="xunlianPayService" interface="com.nyd.zeus.api.zzl.xunlian.XunlianPayService" timeout="120000" check="false" />
+	
+	
+</beans>

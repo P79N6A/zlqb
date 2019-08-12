@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/context
+                            http://www.springframework.org/schema/context/spring-context.xsd
+                            http://www.springframework.org/schema/tx
+                            http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--引入各自的模块-->
+    <import resource="classpath:com/tasfe/zh/configs/base/ws/xml/spring-base-application.xml"/>
+
+    <import resource="classpath:com/tasfe/zh/configs/order/web/xml/spring-order-application.xml"/>
+
+    <import resource="classpath:com/tasfe/zh/configs/product/ws/xml/spring-product-application.xml"/>
+
+    <import resource="classpath:com/tasfe/zh/configs/user/ws/xml/spring-user-application.xml"/>
+
+    <import resource="classpath:com/nyd/pay/ws/xml/spring-pay-application.xml"/>
+
+    <import resource="classpath:com/tasfe/zh/configs/auth/web/xml/spring-auth-application.xml"/>
+
+
+    <import resource="classpath:com/tasfe/zh/configs/server/ws/xml/spring-server-application.xml"/>
+
+    <import resource="classpath:com/tasfe/zh/configs/qrcode/service/xml/spring-qrcode-service.xml"/>
+
+</beans>

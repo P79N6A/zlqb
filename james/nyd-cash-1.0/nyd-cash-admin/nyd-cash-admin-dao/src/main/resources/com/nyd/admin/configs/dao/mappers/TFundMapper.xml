@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.admin.dao.mapper.FundMapper">
+  <resultMap id="BaseResultMap" type="com.nyd.admin.entity.Fund">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="fund_name" jdbcType="CHAR" property="fundName" />
+    <result column="fund_code" jdbcType="CHAR" property="fundCode" />
+    <result column="interest_rate" jdbcType="DECIMAL" property="interestRate" />
+    <result column="remit_start_time" jdbcType="TIME" property="remitStartTime" />
+    <result column="remit_end_time" jdbcType="TIME" property="remitEndTime" />
+    <result column="max_remit_amount" jdbcType="DECIMAL" property="maxRemitAmount" />
+    <result column="pay_channel" jdbcType="VARCHAR" property="payChannel" />
+    <result column="pay_channel_fee_per_item" jdbcType="DECIMAL" property="payChannelFeePerItem" />
+    <result column="fund_service_interest_rate" jdbcType="DECIMAL" property="fundServiceInterestRate" />
+    <result column="is_in_use" jdbcType="TINYINT" property="isInUse" />
+    <result column="pad_fund_service_interest_rate" jdbcType="DECIMAL" property="padFundServiceInterestRate" />
+    <result column="delete_flag" jdbcType="TINYINT" property="deleteFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, fund_name, fund_code, interest_rate, remit_start_time, remit_end_time, max_remit_amount, 
+    pay_channel, pay_channel_fee_per_item, fund_service_interest_rate, is_in_use, pad_fund_service_interest_rate, 
+    delete_flag, create_time, update_time, update_by
+  </sql>
+  <select id="findList" parameterType="com.nyd.admin.entity.Fund" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_fund
+    where 1=1
+    <if test="fundCode != null">
+      AND fund_code = #{fundCode,jdbcType=VARCHAR}
+    </if>
+    <if test="isInUse != null">
+      AND is_in_use = #{isInUse,jdbcType=TINYINT}
+    </if>
+  </select>
+  <!--<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_fund
+    where id = #{id,jdbcType=INTEGER}
+  </delete>-->
+  <insert id="insert" parameterType="com.nyd.admin.entity.Fund">
+  
+    insert into t_fund (fund_name, fund_code,
+      interest_rate, remit_start_time, remit_end_time, 
+      max_remit_amount, pay_channel, pay_channel_fee_per_item, 
+      fund_service_interest_rate, is_in_use, pad_fund_service_interest_rate, 
+      delete_flag,update_by)
+    values (#{fundName,jdbcType=CHAR}, #{fundCode,jdbcType=CHAR},
+      #{interestRate,jdbcType=DECIMAL}, #{remitStartTime,jdbcType=TIME}, #{remitEndTime,jdbcType=TIME}, 
+      #{maxRemitAmount,jdbcType=DECIMAL}, #{payChannel,jdbcType=VARCHAR}, #{payChannelFeePerItem,jdbcType=DECIMAL}, 
+      #{fundServiceInterestRate,jdbcType=DECIMAL}, #{isInUse,jdbcType=TINYINT}, #{padFundServiceInterestRate,jdbcType=DECIMAL}, 
+      #{deleteFlag,jdbcType=TINYINT},#{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="update" parameterType="com.nyd.admin.entity.Fund">
+    update t_fund
+    <set>
+      <if test="fundName != null">
+        fund_name = #{fundName,jdbcType=CHAR},
+      </if>
+      <if test="fundCode != null">
+        fund_code = #{fundCode,jdbcType=CHAR},
+      </if>
+      <if test="interestRate != null">
+        interest_rate = #{interestRate,jdbcType=DECIMAL},
+      </if>
+      <if test="remitStartTime != null">
+        remit_start_time = #{remitStartTime,jdbcType=TIME},
+      </if>
+      <if test="remitEndTime != null">
+        remit_end_time = #{remitEndTime,jdbcType=TIME},
+      </if>
+      <if test="maxRemitAmount != null">
+        max_remit_amount = #{maxRemitAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="payChannel != null">
+        pay_channel = #{payChannel,jdbcType=VARCHAR},
+      </if>
+      <if test="payChannelFeePerItem != null">
+        pay_channel_fee_per_item = #{payChannelFeePerItem,jdbcType=DECIMAL},
+      </if>
+      <if test="fundServiceInterestRate != null">
+        fund_service_interest_rate = #{fundServiceInterestRate,jdbcType=DECIMAL},
+      </if>
+      <if test="isInUse != null">
+        is_in_use = #{isInUse,jdbcType=TINYINT},
+      </if>
+      <if test="padFundServiceInterestRate != null">
+        pad_fund_service_interest_rate = #{padFundServiceInterestRate,jdbcType=DECIMAL},
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag = #{deleteFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

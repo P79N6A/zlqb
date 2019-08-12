@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+
+    <rabbit:connection-factory virtual-host="${rabbit.virtualhost}" id="mqConnectionFactory" host="${rabbit.host}" port="${rabbit.port}" username="${rabbit.username}" password="${rabbit.password}"/>
+    <rabbit:admin connection-factory="mqConnectionFactory"/>
+
+    <rabbit:queue name="orderToAudit" durable="true"/>
+    <rabbit:queue name="orderToPay" durable="true"/>
+    <rabbit:queue name="auditToOrder" durable="true"/>
+    <rabbit:queue name="payToOrder" durable="true"/>
+    <rabbit:queue name="zeusToOrder" durable="true"/>
+    <rabbit:queue name="repayToKzjrOrder" durable="true"/>
+    <rabbit:queue name="turnPersonAudit" durable="true"/>
+    <rabbit:queue name="mFeeLogToMember" durable="true"/>
+    <rabbit:queue name="withhold" durable="true"/>
+    <rabbit:queue name="repayLogToZeus" durable="true"/>
+
+    <bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter"/>
+
+    <!-- *****************************生产者***************************** -->
+    <!-- 实际发送的 -->
+    <bean id="rabbitmqProducerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqProducerProxy">
+        <property name="rabbitTemplate" ref="amqpTemplate"/>
+    </bean>
+
+    <rabbit:template id="amqpTemplate" connection-factory="mqConnectionFactory" exchange="order_topic_exchange" message-converter="jsonMessageConverter"/>
+
+    <rabbit:topic-exchange name="order_topic_exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="orderToAudit" pattern="audit.#"/>
+            <rabbit:binding queue="orderToPay" pattern="pay.#"/>
+            <rabbit:binding queue="mFeeLogToMember" pattern="mfee.#"/>
+            <rabbit:binding queue="withhold" pattern="withhold.#"/>
+            <rabbit:binding queue="repayLogToZeus" pattern="rePayLog.#"/>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+    <!-- *****************************消费者***************************** -->
+
+    <bean id="auditMqConsumerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="auditProcesser"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+
+    <bean id="payMqConsumerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="payProcesser"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+
+    <bean id="zeusMqConsumerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="zeusProcesser"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+
+    <bean id="ymtKzjrRepayMqConsumerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="ymtKzjrRepayMqProcessor"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+
+    <!--灰色用户转人审消费者-->
+    <bean id="turnPersonAuditMqConsumerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="turnPersonAuditMqProcessor"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+
+    <bean id="withholdConsumerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="withholdProcessor"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+
+
+    <!-- 真正执行-->
+    <bean id="auditProcesser" class="com.nyd.order.service.rabbit.AuditMqProcesser"/>
+    <bean id="payProcesser" class="com.nyd.order.service.rabbit.PayMqProcesser"/>
+    <bean id="zeusProcesser" class="com.nyd.order.service.rabbit.ZeusMqProcesser"/>
+    <bean id="ymtKzjrRepayMqProcessor" class="com.nyd.order.service.rabbit.YmtKzjrRepayMqProcessor"/>
+    <bean id="turnPersonAuditMqProcessor" class="com.nyd.order.service.rabbit.TurnPersonAuditMqProcessor"/>
+    <bean id="withholdProcessor" class="com.nyd.order.service.rabbit.WithholdProcessor"/>
+
+    <!-- 手动提交 acknowledge="manual"-->
+    <rabbit:listener-container connection-factory="mqConnectionFactory" acknowledge="manual" concurrency="10" >
+        <rabbit:listener queues="auditToOrder" ref="auditMqConsumerProxy"/>
+        <rabbit:listener queues="payToOrder" ref="payMqConsumerProxy"/>
+        <rabbit:listener queues="zeusToOrder" ref="zeusMqConsumerProxy"/>
+        <rabbit:listener queues="repayToKzjrOrder" ref="ymtKzjrRepayMqConsumerProxy"/>
+        <rabbit:listener queues="turnPersonAudit" ref="turnPersonAuditMqConsumerProxy"/>
+        <rabbit:listener queues="withhold" ref="withholdConsumerProxy"/>
+    </rabbit:listener-container>
+
+</beans>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.batch.dao.mapper.BillMapper">
+    <resultMap type="com.nyd.batch.entity.Bill" id="BillResult">
+        <result property="id" column="id"/>
+        <result property="user_id" column="userId"/>
+        <result property="bill_no" column="billNo"/>
+        <result property="order_no" column="orderNo"/>
+        <result property="cur_period" column="curPeriod"/>
+        <result property="periods" column="periods"/>
+        <result property="promise_repayment_date" column="promiseRepaymentDate"/>
+        <result property="actual_settle_date" column="actualSettleDate"/>
+        <result property="cur_repay_amount" column="curRepayAmount"/>
+        <result property="repay_principle" column="repayPrinciple"/>
+        <result property="repay_interest" column="repayInterest"/>
+        <result property="fast_audit_fee" column="fastAuditFee"/>
+        <result property="account_manage_fee" column="accountManageFee"/>
+        <result property="identity_verify_fee" column="identityVerifyFee"/>
+        <result property="mobile_verify_fee" column="mobileVerifyFee"/>
+        <result property="bank_verify_fee" column="bankVerifyFee"/>
+        <result property="credit_service_fee" column="creditServiceFee"/>
+        <result property="information_push_fee" column="informationPushFee"/>
+        <result property="sliding_fee" column="slidingFee"/>
+        <result property="synthetical_fee" column="syntheticalFee"/>
+        <result property="coupon_derate_amount" column="couponDerateAmount"/>
+        <result property="bill_status" column="billStatus"/>
+        <result property="wait_repay_amount" column="waitRepayAmount"/>
+        <result property="already_repay_amount" column="alreadyRepayAmount"/>
+        <result property="delete_flag" column="deleteFlag"/>
+    </resultMap>
+
+    <resultMap type="com.nyd.batch.entity.OverdueBill" id="OverdueBillResult">
+        <result property="id" column="id"/>
+        <result property="user_id" column="userId"/>
+        <result property="bill_no" column="billNo"/>
+        <result property="order_no" column="orderNo"/>
+        <result property="bill_status" column="billStatus"/>
+        <result property="overdue_fine" column="overdueFine"/>
+        <result property="overdue_amount" column="overdueAmount"/>
+        <result property="overdue_days" column="overdueDays"/>
+        <result property="collection_derate_amount" column="collectionDerateAmount"/>
+        <result property="delete_flag" column="deleteFlag"/>
+    </resultMap>
+
+    <resultMap type="com.nyd.batch.entity.MaturityBill" id="maturityBillResult">
+        <result property="id" column="id"/>
+        <result property="user_id" column="userId"/>
+        <result property="bill_no" column="billNo"/>
+        <result property="order_no" column="orderNo"/>
+        <result property="wait_repay_amount" column="waitRepayAmount"/>
+    </resultMap>
+
+    <select id="getBillLs" parameterType="java.util.Map" resultMap="BillResult">
+        select * from t_bill where delete_flag = 0 AND
+         bill_status = #{billStatus}
+        <if test="startDate != null and startDate != ''">
+            AND promise_repayment_date &gt;= CONCAT(#{startDate},' 00:00:00')
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND promise_repayment_date &lt;= CONCAT(#{endDate},' 23:59:59')
+        </if>
+    </select>
+
+    <select id="getOverdueBillLs" parameterType="java.util.Map" resultMap="OverdueBillResult">
+        select * from t_overdue_bill where delete_flag = 0 AND
+        bill_status = #{billStatus}
+    </select>
+    
+    <select id="getMaturityBills" parameterType="java.util.Map"  resultMap="maturityBillResult">
+       SELECT id,user_id,bill_no,order_no,wait_repay_amount FROM t_bill
+       WHERE  delete_flag = 0 AND ((bill_status = 'B001' AND promise_repayment_date &gt;= CONCAT(#{repayDate},' 00:00:00') AND promise_repayment_date &lt;= CONCAT(#{repayDate},' 23:59:59'))
+        OR (bill_status = 'B002'))
+    </select>
+
+    <select id="getMaturityBill"  parameterType="java.util.Map"  resultMap="maturityBillResult">
+        SELECT id,user_id,bill_no,order_no,wait_repay_amount FROM t_bill
+        WHERE  delete_flag = 0 AND bill_no=#{billNo} and bill_status = 'B002'
+    </select>
+
+
+    <select id="getBillByBillNo" parameterType="java.util.Map" resultMap="BillResult">
+        select * from t_bill where delete_flag = 0 AND
+        bill_no = #{billNo}
+    </select>
+
+    <select id="getBillByOrderNo" parameterType="java.util.Map" resultMap="BillResult">
+        select * from t_bill where delete_flag = 0 AND
+        order_no = #{orderNo}
+    </select>
+
+    <select id="getOverDueBillByBillNo" parameterType="java.util.Map" resultMap="OverdueBillResult">
+        select * from t_overdue_bill where delete_flag = 0 AND
+        bill_no = #{billNo}
+    </select>
+
+    <select id="getSmsBills"  resultMap="BillResult">
+        SELECT * FROM t_bill WHERE  delete_flag = 0 AND bill_status='B001'
+    </select>
+
+    <select id="getBillsRepayOnTheDay" parameterType="java.util.Map" resultMap="BillResult">
+        SELECT * FROM t_bill WHERE  delete_flag = 0 AND promise_repayment_date &gt;= CONCAT(#{repayDate},' 00:00:00') AND promise_repayment_date &lt;= CONCAT(#{repayDate},' 23:59:59') AND bill_status = 'B001'
+    </select>
+
+    <resultMap id="RepayAmountMap" type="com.nyd.batch.entity.AmountOfHistory">
+        <result column="repay_amount_sum" property="repayAmountSum" />
+        <result column="derate_amount_sum" property="derateAmountSum"/>
+    </resultMap>
+    <select id="queryRepayAmountHistory" resultMap="RepayAmountMap">
+         SELECT
+        sum(t.repay_amount) as repay_amount_sum,
+        sum(t.derate_amount) as derate_amount_sum
+        FROM t_repay t
+        WHERE t.bill_no = #{billNo,jdbcType=VARCHAR}
+        and t.repay_status = 0 AND t.delete_flag != 1 AND t.repay_time &lt;#{repayTime,jdbcType=TIMESTAMP}
+    </select>
+
+</mapper>

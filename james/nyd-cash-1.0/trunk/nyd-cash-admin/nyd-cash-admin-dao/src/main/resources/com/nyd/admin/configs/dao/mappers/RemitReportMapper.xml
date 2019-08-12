@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.admin.dao.mapper.RemitReportMapper">
+  <resultMap id="BaseResultMap" type="com.nyd.admin.entity.RemitReport">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="remit_no" jdbcType="VARCHAR" property="remitNo" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="product_type" jdbcType="INTEGER" property="productType" />
+    <result column="label" jdbcType="VARCHAR" property="label" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="deposit_bank" jdbcType="VARCHAR" property="depositBank" />
+    <result column="capital_name" jdbcType="VARCHAR" property="capitalName" />
+    <result column="test_status" jdbcType="INTEGER" property="testStatus" />
+    <result column="remit_channel" jdbcType="VARCHAR" property="remitChannel" />
+    <result column="contract_start_date" jdbcType="DATE" property="contractStartDate" />
+    <result column="contract_end_date" jdbcType="DATE" property="contractEndDate" />
+    <result column="borrow_time" jdbcType="INTEGER" property="borrowTime" />
+    <result column="borrow_amount" jdbcType="DECIMAL" property="borrowAmount" />
+    <result column="remit_amount" jdbcType="DECIMAL" property="remitAmount" />
+    <result column="fee_item" jdbcType="DECIMAL" property="feeItem" />
+    <result column="activity_derate" jdbcType="DECIMAL" property="activityDerate" />
+    <result column="fee_total" jdbcType="DECIMAL" property="feeTotal" />
+    <result column="fee_transfer" jdbcType="DECIMAL" property="feeTransfer" />
+    <result column="fee_channel" jdbcType="DECIMAL" property="feeChannel" />
+    <result column="interest_rate" jdbcType="DECIMAL" property="interestRate" />
+    <result column="interest" jdbcType="DECIMAL" property="interest" />
+    <result column="fee_service" jdbcType="DECIMAL" property="feeService" />
+    <result column="member_fee_id" jdbcType="VARCHAR" property="memberFeeId" />
+    <result column="member_fee" jdbcType="DECIMAL" property="memberFee" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="debit_count" jdbcType="INTEGER" property="debitCount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="member_fee_pay" jdbcType="DECIMAL" property="memberFeePay" />
+    <result column="member_fee_pay_date" jdbcType="TIMESTAMP" property="memberFeePayDate" />
+    <result column="member_fee_drawback" jdbcType="DECIMAL" property="memberFeeDrawBack"/>
+  </resultMap>
+
+  <select id="selectByTimeRange" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT * FROM  t_remit_report
+    WHERE  contract_start_date &gt;= CONCAT(#{startDate},' 00:00:00') and
+   contract_start_date &lt;= CONCAT(#{endDate},' 23:59:59')
+
+  </select>
+
+
+</mapper>

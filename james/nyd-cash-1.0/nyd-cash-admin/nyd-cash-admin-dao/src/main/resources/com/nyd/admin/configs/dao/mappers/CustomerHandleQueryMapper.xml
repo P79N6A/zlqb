@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.admin.dao.mapper.CustomerHandleQueryMapper">
+
+
+    <!--客户处理查询-->
+    <select id="getAllCustomer" parameterType="com.nyd.admin.model.dto.CustomerQueryDto" resultType="com.nyd.admin.model.Info.CustomerQueryInfo">
+    SELECT
+        a.real_name,
+        b.user_id,
+        b.account_number,
+        a.id_number,
+        t.pre_audit_level,
+        d.app_name,
+        b.source,
+        b.create_time
+    FROM
+        xxd_user.t_user a
+    LEFT JOIN xxd_user.t_account b ON a.user_id = b.user_id
+    LEFT JOIN xxd_user.t_user_step t ON a.user_id = t.user_id
+    LEFT JOIN xxd_user.t_user_source d ON b.account_number = d.account_number
+    WHERE
+        b.account_number = LTRIM(#{accountNumber})
+    </select>
+
+    <!--充值付费记录-->
+    <select id="findRechargePaymentRecords" parameterType="com.nyd.admin.model.dto.RechargePaymentRecordDto" resultType="com.nyd.admin.model.Info.RechargePaymentRecordInfo">
+        SELECT
+            t.create_time,
+            t.pay_cash,
+            t.balance_use,
+            t.return_balance_use as returnBalanceFee,
+            t.user_id,
+            t.member_id
+        FROM
+            xxd_member.t_member_by_cash_coupon t
+        WHERE t.delete_flag = '0'
+        AND t.status = '0'
+        AND t.user_id = LTRIM(#{userId})
+        /*ORDER BY t.create_time DESC*/
+    </select>
+
+    <!--支付评估费个数-->
+    <select id="findPayAssessCount" parameterType="com.nyd.admin.model.dto.RechargePaymentRecordDto" resultType="Integer">
+        SELECT
+            COUNT(0)
+        FROM
+            xxd_member.t_member_by_cash_coupon t
+        WHERE t.delete_flag = '0'
+        AND t.status = '0'
+        AND t.user_id = LTRIM(#{userId})
+    </select>
+
+    <!--查询支付渠道和流水号-->
+    <select id="findRepayChannelByUserIdAndCreateTime" parameterType="java.util.HashMap" resultType="com.nyd.admin.model.Info.RepayInfo">
+        SELECT t.repay_channel,t.repay_no
+        FROM xxd_zeus.t_repay t
+        WHERE  t.delete_flag = '0'
+        AND t.user_id = LTRIM(#{userId})
+        AND DATE_FORMAT(t.create_time, "%Y-%m-%d") = DATE_FORMAT(LTRIM(#{createTime}), "%Y-%m-%d")
+        ORDER BY t.create_time DESC
+        LIMIT 1
+    </select>
+
+    <!--订单记录-->
+    <select id="findOrderDetails" parameterType="com.nyd.admin.model.dto.RechargePaymentRecordDto" resultType="com.nyd.admin.model.Info.OrderDetailsInfo">
+        SELECT
+            b.real_name,
+            a.create_time,
+            b.mobile,
+            a.channel,
+            b.product_code,
+            a.audit_status,
+            c.product_name,
+            a.order_status,
+            a.fund_code,
+            a.pay_time
+        FROM xxd_order.t_order a
+        LEFT JOIN xxd_order.t_order_detail b ON a.order_no = b.order_no
+        LEFT JOIN xxd_finance.t_product c ON b.product_code = c.product_code
+        WHERE a.delete_flag = '0'
+        AND b.delete_flag = '0'
+        AND c.delete_flag = '0'
+        AND a.channel = '0'
+        AND a.user_id = LTRIM(#{userId})
+        ORDER BY a.create_time DESC
+    </select>
+
+    <!--查询优惠券ID-->
+    <select id="findCouponIdByMemberId" parameterType="java.util.HashMap" resultType="String">
+        SELECT t.coupon_id
+        FROM xxd_member.t_member_log t
+        WHERE
+            t.delete_flag = '0'
+        AND t.member_id = LTRIM(#{memberId})
+    </select>
+
+    <!--获取优惠券金额-->
+    <select id="findCouponFeeByCouponId" parameterType="java.util.HashMap" resultType="java.math.BigDecimal">
+        SELECT t.coupon_fee
+        FROM xxd_activity.t_coupon_log t
+        WHERE t.coupon_id = LTRIM(#{couponId})
+        AND t.is_use = '1'
+    </select>
+
+    <!--获取代扣记录-->
+    <select id="findWithHoldOrder" parameterType="com.nyd.admin.model.dto.RechargePaymentRecordDto" resultType="com.nyd.admin.model.Info.RechargePaymentRecordInfo">
+        SELECT
+            t.create_time,
+            t.pay_amount as transactionMoney,
+            t.pay_order_no as repayNo
+        FROM
+            xxd_order.t_withhold_order t
+        WHERE 1 = 1
+        AND (t.order_status = '1' OR t.order_status = '2')
+        AND t.delete_flag = '0'
+        AND t.user_id = #{userId}
+        /*ORDER BY t.create_time DESC*/
+    </select>
+    <!--根据userId查身份证号-->
+    <select id="findIdNumberByUserId" parameterType="com.nyd.admin.model.dto.RechargePaymentRecordDto" resultType="String">
+        SELECT
+            t.id_number
+        FROM
+            xxd_user.t_user t
+        WHERE
+            t.delete_flag = '0'
+        AND	t.user_id = #{userId}
+    </select>
+    <!--获取代扣记录个数-->
+    <select id="findWithHoldOrderCount" parameterType="com.nyd.admin.model.dto.RechargePaymentRecordDto" resultType="Integer">
+        SELECT
+            COUNT(0)
+        FROM
+            xxd_order.t_withhold_order t
+        WHERE 1 = 1
+        AND (t.order_status = '1' OR t.order_status = '2')
+        AND t.delete_flag = '0'
+        AND t.user_id = #{userId}
+    </select>
+
+    <!--查询充值和现金付款记录-->
+    <select id="findRechargeAndCashPayDetails" parameterType="com.nyd.admin.model.dto.RechargePaymentRecordDto" resultType="com.nyd.admin.model.Info.RechargePaymentRecordInfo">
+        SELECT
+            t.create_time,
+            t.repay_no,
+            t.repay_type,
+            t.repay_amount as transactionMoney,
+            t.repay_channel,
+            t.user_id
+        FROM
+            xxd_zeus.t_repay t
+        WHERE 1 = 1
+        AND (t.repay_type = '3' OR t.repay_type = '16')
+        AND (t.repay_channel = 'hlb' OR t.repay_channel = 'ysb')
+        AND t.user_id = #{userId}
+        AND t.delete_flag = '0'
+        /*ORDER BY t.create_time DESC*/
+    </select>
+
+    <!--查询充值和现金付款记录个数-->
+    <select id="findRechargeAndCashPayCount" parameterType="com.nyd.admin.model.dto.RechargePaymentRecordDto" resultType="Integer">
+        SELECT
+            COUNT(0)
+        FROM
+            xxd_zeus.t_repay t
+        WHERE 1 = 1
+        AND (t.repay_type = '3' OR t.repay_type = '16')
+        AND (t.repay_channel = 'hlb' OR t.repay_channel = 'ysb')
+        AND t.user_id = #{userId}
+        AND t.delete_flag = '0'
+    </select>
+
+    <!--赠送记录-->
+    <select id="findReturnTicketLog" parameterType="com.nyd.admin.model.dto.RechargePaymentRecordDto" resultType="com.nyd.admin.model.Info.RechargePaymentRecordInfo">
+        SELECT
+            t.create_time,
+            t.ticket_amount as transactionMoney
+        FROM xxd_admin.t_return_ticket_log t
+        WHERE t.state = '0'
+        AND t.delete_flag = '0'
+        AND t.user_id = #{userId}
+        /*ORDER BY t.create_time DESC*/
+    </select>
+
+    <!--赠送记录个数-->
+    <select id="findReturnTicketLogCount" parameterType="com.nyd.admin.model.dto.RechargePaymentRecordDto" resultType="Integer">
+        SELECT
+            COUNT(0)
+        FROM xxd_admin.t_return_ticket_log t
+        WHERE t.state = '0'
+        AND t.delete_flag = '0'
+        AND t.user_id = #{userId}
+    </select>
+</mapper>

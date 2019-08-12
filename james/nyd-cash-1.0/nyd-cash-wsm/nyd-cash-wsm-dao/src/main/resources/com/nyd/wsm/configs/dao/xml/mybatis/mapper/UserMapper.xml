@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.wsm.dao.mapper.UserMapper">
+    <resultMap type="com.nyd.wsm.entity.User" id="UserResult">
+        <result property="user_id" column="userId"/>
+        <result property="nation" column="nation"/>
+        <result property="account_number" column="accountNumber"/>
+        <result property="reserved_phone" column="reservedPhone"/>
+        <result property="bank_name" column="bankName"/>
+        <result property="bank_account" column="bankAccount"/>
+        <result property="real_name" column="realName"/>
+        <result property="id_number" column="idNumber"/>
+        <result property="id_address" column="idAddress"/>
+        <result property="sign_org" column="signOrg"/>
+        <result property="effect_time" column="effectTime"/>
+        <result property="living_address" column="livingAddress"/>
+        <result property="living_province" column="livingProvince"/>
+        <result property="living_city" column="livingCity"/>
+        <result property="living_district" column="livingDistrict"/>
+        <result property="marital_status" column="maritalStatus"/>
+        <result property="highest_degree" column="highestDegree"/>
+        <result property="industry" column="industry"/>
+        <result property="profession" column="profession"/>
+        <result property="company" column="company"/>
+        <result property="telephone" column="telephone"/>
+        <result property="company_address" column="companyAddress"/>
+        <result property="company_province" column="companyProvince"/>
+        <result property="company_city" column="companyCity"/>
+        <result property="company_district" column="companyDistrict"/>
+    </resultMap>
+
+    <resultMap type="com.nyd.wsm.entity.Contact" id="ContactResult">
+        <result property="user_id" column="userId"/>
+        <result property="type" column="type"/>
+        <result property="name" column="name"/>
+        <result property="mobile" column="mobile"/>
+        <result property="relationship" column="relationship"/>
+    </resultMap>
+
+ <!--   <select id="getBillLs" parameterType="java.util.Map" resultMap="BillResult">
+        select * from t_bill where
+         bill_status = #{billStatus}
+        <if test="startDate != null and startDate != ''">
+            AND promise_repayment_date &gt;= CONCAT(#{startDate},' 00:00:00')
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND promise_repayment_date &lt;= CONCAT(#{endDate},' 23:59:59')
+        </if>
+    </select>
+
+    <select id="getOverdueBillLs" parameterType="java.util.Map" resultMap="OverdueBillResult">
+        select * from t_overdue_bill where
+        bill_status = #{billStatus}
+    </select>-->
+
+</mapper>

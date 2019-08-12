@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!--<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+		<property name="locations">
+			<list>
+				<value>classpath:configs/repos.properties</value>
+			</list>
+		</property>
+	</bean>-->
+	<dubbo:application  name="${dubbo.application.name}" owner="cyx" />
+	<!--<dubbo:registry protocol="zookeeper" address="192.168.1.114:2181" timeout="3000" />-->
+
+	<dubbo:registry protocol="zookeeper" address="${dubbo.registry.address}" timeout="${dubbo.zookeeper.timeout}" />
+	<dubbo:monitor protocol="registry" />
+	<dubbo:protocol port="${dubbo.protocol.port}"/>
+	<!--<dubbo:protocol name="hessian" port="20887"/>
+	<dubbo:protocol name="thrift" id="thrift" port="20888" />-->
+
+	<!--############ dubbo service #######################-->
+<!--	<bean id="sendSmsService" class="com.nyd.msg.service.impl.SendSmsService"/>-->
+	<dubbo:service  ref="sendSmsService" interface="com.nyd.msg.service.ISendSmsService" protocol="dubbo" />
+
+</beans>

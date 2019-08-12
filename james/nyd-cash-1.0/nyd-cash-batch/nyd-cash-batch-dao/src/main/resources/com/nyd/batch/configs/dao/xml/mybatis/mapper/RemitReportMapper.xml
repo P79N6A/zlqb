@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.batch.dao.mapper.RemitReportMapper">
+  <resultMap id="BaseResultMap" type="com.nyd.batch.entity.RemitReport">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="remit_no" jdbcType="VARCHAR" property="remitNo" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="product_type" jdbcType="INTEGER" property="productType" />
+    <result column="label" jdbcType="VARCHAR" property="label" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="deposit_bank" jdbcType="VARCHAR" property="depositBank" />
+    <result column="capital_name" jdbcType="VARCHAR" property="capitalName" />
+    <result column="test_status" jdbcType="INTEGER" property="testStatus" />
+    <result column="remit_channel" jdbcType="VARCHAR" property="remitChannel" />
+    <result column="contract_start_date" jdbcType="DATE" property="contractStartDate" />
+    <result column="contract_end_date" jdbcType="DATE" property="contractEndDate" />
+    <result column="borrow_time" jdbcType="INTEGER" property="borrowTime" />
+    <result column="borrow_amount" jdbcType="DECIMAL" property="borrowAmount" />
+    <result column="remit_amount" jdbcType="DECIMAL" property="remitAmount" />
+    <result column="fee_item" jdbcType="DECIMAL" property="feeItem" />
+    <result column="activity_derate" jdbcType="DECIMAL" property="activityDerate" />
+    <result column="fee_total" jdbcType="DECIMAL" property="feeTotal" />
+    <result column="fee_transfer" jdbcType="DECIMAL" property="feeTransfer" />
+    <result column="fee_channel" jdbcType="DECIMAL" property="feeChannel" />
+    <result column="interest_rate" jdbcType="DECIMAL" property="interestRate" />
+    <result column="interest" jdbcType="DECIMAL" property="interest" />
+    <result column="fee_service" jdbcType="DECIMAL" property="feeService" />
+    <result column="member_fee_id" jdbcType="VARCHAR" property="memberFeeId" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+    <result column="member_fee" jdbcType="DECIMAL" property="memberFee" />
+    <result column="member_fee_pay" jdbcType="DECIMAL" property="memberFeePay" />
+    <result column="member_fee_drawback" jdbcType="DECIMAL" property="memberFeeDrawBack" />
+    <result column="member_fee_pay_date" jdbcType="TIMESTAMP" property="memberFeePayDate" />
+    <result column="debit_count" jdbcType="INTEGER" property="debitCount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <insert id="insert" parameterType="com.nyd.batch.entity.RemitReport">
+
+    insert into t_remit_report (order_no, remit_no,
+      customer_name, product_type, label, 
+      mobile, deposit_bank, capital_name, 
+      test_status, remit_channel, contract_start_date, 
+      contract_end_date, borrow_time, borrow_amount, 
+      remit_amount, fee_item, activity_derate, 
+      fee_total, fee_transfer, fee_channel, 
+      interest_rate, interest, fee_service, 
+      member_fee_id, member_fee,product_code,debit_count,member_fee_pay,member_fee_drawback,member_fee_pay_date)
+    values (#{orderNo,jdbcType=VARCHAR}, #{remitNo,jdbcType=VARCHAR},
+      #{customerName,jdbcType=VARCHAR}, #{productType,jdbcType=INTEGER}, #{label,jdbcType=VARCHAR}, 
+      #{mobile,jdbcType=VARCHAR}, #{depositBank,jdbcType=VARCHAR}, #{capitalName,jdbcType=VARCHAR}, 
+      #{testStatus,jdbcType=INTEGER}, #{remitChannel,jdbcType=VARCHAR}, #{contractStartDate,jdbcType=DATE}, 
+      #{contractEndDate,jdbcType=DATE}, #{borrowTime,jdbcType=INTEGER}, #{borrowAmount,jdbcType=DECIMAL}, 
+      #{remitAmount,jdbcType=DECIMAL}, #{feeItem,jdbcType=DECIMAL}, #{activityDerate,jdbcType=DECIMAL}, 
+      #{feeTotal,jdbcType=DECIMAL}, #{feeTransfer,jdbcType=DECIMAL}, #{feeChannel,jdbcType=DECIMAL}, 
+      #{interestRate,jdbcType=DECIMAL}, #{interest,jdbcType=DECIMAL}, #{feeService,jdbcType=DECIMAL}, 
+      #{memberFeeId,jdbcType=VARCHAR}, #{memberFee,jdbcType=DECIMAL}, #{productCode,jdbcType=VARCHAR},#{debitCount,jdbcType=INTEGER}, #{memberFeePay,jdbcType=DECIMAL},#{memberFeeDrawBack,jdbcType=DECIMAL}, #{memberFeePayDate,jdbcType=TIMESTAMP})
+  </insert>
+  <delete id="deleteRemitReport" parameterType="java.util.Map">
+    DELETE FROM t_remit_report WHERE contract_start_date = #{cdate}
+  </delete>
+  <insert id="insertSelective" parameterType="com.nyd.batch.entity.RemitReport">
+    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_remit_report
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      id,
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="remitNo != null">
+        remit_no,
+      </if>
+      <if test="customerName != null">
+        customer_name,
+      </if>
+      <if test="productType != null">
+        product_type,
+      </if>
+      <if test="label != null">
+        label,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="depositBank != null">
+        deposit_bank,
+      </if>
+      <if test="capitalName != null">
+        capital_name,
+      </if>
+      <if test="testStatus != null">
+        test_status,
+      </if>
+      <if test="remitChannel != null">
+        remit_channel,
+      </if>
+      <if test="contractStartDate != null">
+        contract_start_date,
+      </if>
+      <if test="contractEndDate != null">
+        contract_end_date,
+      </if>
+      <if test="borrowTime != null">
+        borrow_time,
+      </if>
+      <if test="borrowAmount != null">
+        borrow_amount,
+      </if>
+      <if test="remitAmount != null">
+        remit_amount,
+      </if>
+      <if test="feeItem != null">
+        fee_item,
+      </if>
+      <if test="activityDerate != null">
+        activity_derate,
+      </if>
+      <if test="feeTotal != null">
+        fee_total,
+      </if>
+      <if test="feeTransfer != null">
+        fee_transfer,
+      </if>
+      <if test="feeChannel != null">
+        fee_channel,
+      </if>
+      <if test="interestRate != null">
+        interest_rate,
+      </if>
+      <if test="interest != null">
+        interest,
+      </if>
+      <if test="feeService != null">
+        fee_service,
+      </if>
+      <if test="memberFeeId != null">
+        member_fee_id,
+      </if>
+      <if test="memberFee != null">
+        member_fee,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{id,jdbcType=INTEGER},
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="remitNo != null">
+        #{remitNo,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null">
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=INTEGER},
+      </if>
+      <if test="label != null">
+        #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="depositBank != null">
+        #{depositBank,jdbcType=VARCHAR},
+      </if>
+      <if test="capitalName != null">
+        #{capitalName,jdbcType=VARCHAR},
+      </if>
+      <if test="testStatus != null">
+        #{testStatus,jdbcType=INTEGER},
+      </if>
+      <if test="remitChannel != null">
+        #{remitChannel,jdbcType=VARCHAR},
+      </if>
+      <if test="contractStartDate != null">
+        #{contractStartDate,jdbcType=DATE},
+      </if>
+      <if test="contractEndDate != null">
+        #{contractEndDate,jdbcType=DATE},
+      </if>
+      <if test="borrowTime != null">
+        #{borrowTime,jdbcType=INTEGER},
+      </if>
+      <if test="borrowAmount != null">
+        #{borrowAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="remitAmount != null">
+        #{remitAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="feeItem != null">
+        #{feeItem,jdbcType=DECIMAL},
+      </if>
+      <if test="activityDerate != null">
+        #{activityDerate,jdbcType=DECIMAL},
+      </if>
+      <if test="feeTotal != null">
+        #{feeTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="feeTransfer != null">
+        #{feeTransfer,jdbcType=DECIMAL},
+      </if>
+      <if test="feeChannel != null">
+        #{feeChannel,jdbcType=DECIMAL},
+      </if>
+      <if test="interestRate != null">
+        #{interestRate,jdbcType=DECIMAL},
+      </if>
+      <if test="interest != null">
+        #{interest,jdbcType=DECIMAL},
+      </if>
+      <if test="feeService != null">
+        #{feeService,jdbcType=DECIMAL},
+      </if>
+      <if test="memberFeeId != null">
+        #{memberFeeId,jdbcType=VARCHAR},
+      </if>
+      <if test="memberFee != null">
+        #{memberFee,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>

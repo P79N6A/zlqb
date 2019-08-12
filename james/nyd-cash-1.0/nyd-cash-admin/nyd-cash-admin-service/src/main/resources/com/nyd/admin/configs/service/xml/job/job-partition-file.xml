@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:batch="http://www.springframework.org/schema/batch"
+	   xsi:schemaLocation="
+	http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+
+<!--
+<import resource="classpath:/com/nyd/zeus/configs/service/job/job-context.xml"/>
+
+	
+	<batch:step id="partitionReadWriteStep">
+		<tasklet>
+			<chunk reader="flatFileItemReader" writer="jdbcItemWriter" chunk-completion-policy="myCompletionPloicy"/>
+
+		</tasklet>
+	</batch:step>
+
+
+
+	<batch:step id="aggreReadWriteStep">
+		<tasklet>
+			<chunk reader="flatFileItemReader" writer="aggreFileWriter" chunk-completion-policy="myCompletionPloicy"/>
+
+		</tasklet>
+	</batch:step>
+	<bean id="aggreFileWriter" class="com.nyd.zeus.service.batch.CalcuteFileWriter">
+		<property name="itemWriter" ref="aggreSubFileWriter"/>
+	</bean>
+	<bean id="aggreSubFileWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">
+		&lt;!&ndash; 输出文件 &ndash;&gt;
+		 <property name="resource" value="#{jobParameters[resultDe]}/#{stepExecutionContext[simpleName]}"></property>
+		&lt;!&ndash; 如果目标文件已存在，是否删除 &ndash;&gt;
+		<property name="shouldDeleteIfExists" value="false"></property>
+		<property name="appendAllowed" value="true"></property>
+		&lt;!&ndash; 行策略 &ndash;&gt;
+		<property name="lineAggregator">
+			<bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+				&lt;!&ndash;  逗号分隔 &ndash;&gt;
+				<property name="delimiter" value=","></property>
+				<property name="fieldExtractor">
+					<bean class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+						&lt;!&ndash; 行数据（字段、顺序） &ndash;&gt;
+						<property name="names" value="orderNo,amount,contractStartTime,contractEndTime,reconciliationDay,fundCode,remitStatus,flag"></property>
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+
+
+	<bean id="filePartitioner"
+	    class="com.nyd.zeus.service.batch.MyMultiResourcePartitioner">
+		<property name="keyName" value="fileName"/>
+		<property name="resources" value="#{jobParameters[timede]}/*.csv"/>
+	</bean>
+
+	<bean id="myCompletionPloicy" class="com.nyd.zeus.service.batch.MyCompletionPloicy"/>
+
+	<bean id="flatFileItemReader" scope="step"
+        class="org.springframework.batch.item.file.FlatFileItemReader">
+        <property name="resource"
+            value="#{stepExecutionContext[fileName]}"/>
+        <property name="lineMapper" ref="lineMapper" />
+    </bean>
+    
+	<bean id="lineMapper"
+	    class="org.springframework.batch.item.file.mapping.DefaultLineMapper" >
+	    <property name="lineTokenizer" ref="delimitedLineTokenizer" />
+	    <property name="fieldSetMapper" ref="billWsmFieldSetMapper"/>
+	</bean>
+	
+	<bean id="delimitedLineTokenizer"
+        class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+        <property name="delimiter" value=","/>
+        <property name="names" value="orderNo,amount,contractStartTime,contractEndTime,reconciliationDay,fundCode,remitStatus,flag" />
+    </bean>
+
+    <bean id="billWsmFieldSetMapper"
+        class="com.nyd.zeus.service.batch.BillWsmFieldSetMapper">
+    </bean>
+    
+    <bean id="jdbcItemWriter"
+        class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+        <property name="dataSource" ref="dataSourceJob"/>
+        <property name="sql" value="insert into t_destcredit (ID,ACCOUNTID,NAME,AMOUNT,DATE,ADDRESS) values (:id,:accountID,:name,:amount,:date,:address)"/>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+    
+
+
+    <bean id="taskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="5"/>
+		<property name="maxPoolSize" value="15"/>
+	</bean>
+	
+
+
+-->
+
+	
+</beans>

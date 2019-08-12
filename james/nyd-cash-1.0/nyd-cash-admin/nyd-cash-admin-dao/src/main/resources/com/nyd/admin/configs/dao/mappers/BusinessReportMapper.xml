@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.admin.dao.mapper.BusinessReportMapper">
+    <resultMap id="BaseResultMap" type="com.nyd.admin.entity.BusinessReport">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="report_date" jdbcType="DATE" property="reportDate" />
+        <result column="sum_account" jdbcType="BIGINT" property="sumAccount" />
+        <result column="sum_user" jdbcType="BIGINT" property="sumUser" />
+        <result column="total_acct_amt" jdbcType="DECIMAL" property="totalAcctAmt" />
+        <result column="sum_amt" jdbcType="DECIMAL" property="sumAmt" />
+        <result column="daily_credit" jdbcType="BIGINT" property="dailyCredit" />
+        <result column="daily_amt" jdbcType="DECIMAL" property="dailyAmt" />
+        <result column="avg_credit" jdbcType="DECIMAL" property="avgCredit" />
+        <result column="avg_amt" jdbcType="DECIMAL" property="avgAmt" />
+        <result column="daily_register" jdbcType="BIGINT" property="dailyRegister" />
+        <result column="daily_via_user" jdbcType="BIGINT" property="dailyViaUser" />
+        <result column="daily_apply" jdbcType="BIGINT" property="dailyApply" />
+        <result column="daily_success_count" jdbcType="BIGINT" property="dailySuccessCount" />
+        <result column="daily_success_amt" jdbcType="DECIMAL" property="dailySuccessAmt" />
+        <result column="success_count" jdbcType="BIGINT" property="successCount" />
+        <result column="success_amt" jdbcType="DECIMAL" property="successAmt" />
+        <result column="sum_debt_user" jdbcType="BIGINT" property="sumDebtUser" />
+        <result column="loan_rate" jdbcType="DECIMAL" property="loanRate" />
+        <result column="sum_credit_user" jdbcType="BIGINT" property="sumCreditUser" />
+        <result column="pass_rate" jdbcType="DECIMAL" property="passRate" />
+    </resultMap>
+
+    <resultMap id="ResultMapChart" type="com.nyd.admin.model.BusinessChartVo">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="report_date" jdbcType="DATE" property="reportDate" />
+        <result column="daily_credit" jdbcType="BIGINT" property="dailyCredit" />
+        <result column="daily_apply" jdbcType="BIGINT" property="dailyApply" />
+        <result column="pass_rate" jdbcType="DECIMAL" property="passRate" />
+    </resultMap>
+
+    <select id="findList" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+            `report_date`,
+            `sum_account`,
+            `sum_user`,
+            `total_acct_amt`,
+            `sum_amt`,
+            `daily_credit`,
+            `daily_amt`,
+            `avg_credit`,
+            `avg_amt`,
+            `daily_register`,
+            `daily_via_user`,
+            `daily_apply`,
+            `daily_success_count`,
+            `daily_success_amt`,
+            `success_count`,
+            `success_amt`,
+            `loan_rate`,
+            `sum_credit_user`,
+            `pass_rate`
+        FROM
+            t_business_report
+        WHERE 1=1
+        <if test="startDate != null">
+            AND `report_date` &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate != null">
+            AND `report_date` &lt;= #{endDate,jdbcType=DATE}
+        </if>
+    </select>
+
+    <select id="businessChart" parameterType="com.nyd.admin.model.BusinessChartVo" resultMap="ResultMapChart">
+        SELECT
+        `report_date`,
+        `daily_credit`,
+        `daily_apply`,
+        `pass_rate`
+        FROM
+        t_business_report
+        WHERE 1=1
+        <if test="startDate != null">
+            AND `report_date` &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate != null">
+            AND `report_date` &lt;= #{endDate,jdbcType=DATE}
+        </if>
+    </select>
+</mapper>

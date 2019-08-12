@@ -1,0 +1,306 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.creativearts.projects</groupId>
+        <artifactId>nyd-cash-capital</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>nyd-cash-capital-service</artifactId>
+    <packaging>jar</packaging>
+
+<properties>
+    <fluent-validator.version>1.0.7</fluent-validator.version>
+</properties>
+    <dependencies>
+
+
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-capital-api</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>commons-codec</artifactId>
+                    <groupId>commons-codec</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>selenium-api</artifactId>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>selenium-remote-driver</artifactId>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-pay-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-capital-rabbit</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jackson-databind</artifactId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                </exclusion>
+            </exclusions>
+            <!--  <exclusions>
+                  <exclusion>
+                      <artifactId>jackson-databind</artifactId>
+                      <groupId>com.fasterxml.jackson.core</groupId>
+                  </exclusion>
+              </exclusions>-->
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-firefox-driver</artifactId>
+            <version>3.14.0</version>
+        </dependency>
+
+        <dependency>
+        <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-zeus-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-admin-model</artifactId>
+            <version>1.0.0</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-order-api</artifactId>
+            <!--<version>1.0.0</version>-->
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-application-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-user-api</artifactId>
+            <!--<version>1.0.0</version>-->
+        </dependency>
+
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-capital-dao</artifactId>
+
+        </dependency>
+
+        <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.4</version>
+            <classifier>jdk15</classifier>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-collections</artifactId>
+                    <groupId>commons-collections</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.caucho</groupId>
+            <artifactId>hessian</artifactId>
+            <version>4.0.38</version>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.2.3</version>
+
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+            <exclusions>
+            <exclusion>
+                <artifactId>slf4j-log4j12</artifactId>
+                <groupId>org.slf4j</groupId>
+            </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-zeus-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baidu.unbiz</groupId>
+            <artifactId>fluent-validator</artifactId>
+            <version>1.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-support-service</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.seleniumhq.selenium</groupId>-->
+            <!--<artifactId>selenium-java</artifactId>-->
+            <!--<version>3.11.0</version>-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<groupId>org.seleniumhq.selenium</groupId>-->
+                    <!--<artifactId>htmlunit-driver</artifactId>-->
+                <!--</exclusion>-->
+                <!--<exclusion>-->
+                    <!--<groupId>com.google.guava</groupId>-->
+                    <!--<artifactId>guava</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+        <!--</dependency>-->
+        <!--<dependency>
+          <groupId>com.github.detro</groupId>
+          <artifactId>ghostdriver</artifactId>
+          <version>2.1.0</version>
+        </dependency>-->
+        <dependency>
+            <groupId>com.codeborne</groupId>
+            <artifactId>phantomjsdriver</artifactId>
+            <version>1.4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>i-bank-order-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>i-bank-application-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>21.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-order-entity</artifactId>
+        </dependency>
+
+
+        <!--AES加密-->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.59</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.9</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>8.1.14.v20131031</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-product-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-product-entity</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-product-model</artifactId>
+        </dependency>
+        <dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpmime</artifactId>
+		    <version>4.5.6</version>
+		</dependency>
+        <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-uid-service</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+		 <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-rabbitmq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>4.1.2</version>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+    <build>
+       
+    </build>
+</project>

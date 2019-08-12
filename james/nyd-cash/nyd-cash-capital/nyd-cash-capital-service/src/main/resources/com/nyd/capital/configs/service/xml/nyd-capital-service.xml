@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd ">
+
+
+    <!--引入各个子模块-->
+    <context:component-scan base-package="com.nyd.capital.service,com.nyd.capital.service.quartz"/>
+    <!-- 配置AOP -->
+    <aop:aspectj-autoproxy />
+
+    <bean id="dataSourceAspect" class="com.nyd.capital.service.aspect.DataSourceAspect" />
+
+    <aop:config>
+        <aop:aspect ref="dataSourceAspect">
+            <aop:pointcut id="rw" expression="execution(* com.nyd.capital.service.impl.*.*(..))" />
+            <aop:before pointcut-ref="rw" method="before" />
+        </aop:aspect>
+    </aop:config>
+
+    <bean id ="threadPoolTaskExecutor"
+          class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" >
+        <property name ="corePoolSize" value ="15" />
+        <property name ="keepAliveSeconds" value ="100" />
+        <property name ="maxPoolSize" value ="25" />
+        <property name ="queueCapacity" value ="100" />
+    </bean>
+    <task:annotation-driven />
+
+
+</beans>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.admin.dao.mapper.KzjrProductConfigMapper">
+  <resultMap id="BaseResultMap" type="com.nyd.admin.entity.KzjrProductConfig">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="use_date" jdbcType="DATE" property="useDate" />
+    <result column="duration" jdbcType="INTEGER" property="duration" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="remain_amount" jdbcType="DECIMAL" property="remainAmount" />
+    <result column="priority" jdbcType="TINYINT" property="priority" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, product_code, use_date, duration, status, total_amount, remain_amount, priority, create_time, update_time
+  </sql>
+
+  <select id="findList" parameterType="com.nyd.admin.entity.KzjrProductConfig" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    t_kzjr_product_config
+    WHERE 1=1
+    <if test="productCode != null">
+      AND product_code = #{productCode,jdbcType=VARCHAR}
+    </if>
+    <if test="startDate != null">
+      AND use_date &gt;= #{startDate,jdbcType=DATE}
+    </if>
+    <if test="endDate != null">
+      AND use_date &lt;= #{endDate,jdbcType=DATE}
+    </if>
+  </select>
+
+  <insert id="insert" parameterType="com.nyd.admin.entity.KzjrProductConfig">
+    insert into t_kzjr_product_config (product_code, use_date,
+      duration, status, total_amount, remain_amount, priority)
+    values (#{productCode,jdbcType=VARCHAR}, #{useDate,jdbcType=DATE},
+      #{duration,jdbcType=INTEGER}, #{status,jdbcType=INTEGER},
+      #{totalAmount,jdbcType=DECIMAL},#{remainAmount,jdbcType=DECIMAL},
+      #{priority,jdbcType=INTEGER})
+  </insert>
+
+  <update id="update" parameterType="com.nyd.admin.entity.KzjrProductConfig">
+    update t_kzjr_product_config
+    <set>
+      <if test="productCode != null">
+        product_code = #{productCode,jdbcType=VARCHAR},
+      </if>
+      <if test="useDate != null">
+        use_date = #{useDate,jdbcType=DATE},
+      </if>
+      <if test="duration != null">
+        duration = #{duration,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="totalAmount != null">
+        total_amount = #{totalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="remainAmount != null">
+        remain_amount = #{remainAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="priority != null">
+        priority = #{priority,jdbcType=INTEGER},
+      </if>
+    </set>
+    where product_code = #{oldProductCode,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

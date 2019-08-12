@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${modulePackage}.dao${moduleName}.${className}Mapper" > 
+
+	<!-- Result Map-->
+	<resultMap id="BaseResultMap" type="${modulePackage}.entity${moduleName}.$!{className}" >
+	#foreach($item in $!{columnDatas})
+		<result column="$!item.columnName" property="$item.beanName"/>
+	#end
+	</resultMap>
+	       
+	<!-- $!{tableName} table all fields -->
+	<sql id="Base_Column_List" >
+		 $!{SQL.columnFields}
+	</sql>
+	   
+	<!-- 查询条件 -->
+	<sql id="where_Clause">
+	where 1=1
+	<trim  suffixOverrides="," >
+	#foreach($item in $!{columnDatas})
+		#set($testStr = $!item.beanName + " != null")
+		#if($!item.dataType == 'String')
+			#set($testStr = $!testStr + " and " + $!item.beanName + " != ''")
+	 	#end
+	<if test="$!testStr" >
+		    and $!item.columnName =  #{$!item.beanName}
+		</if>
+	#end
+	</trim>
+	</sql>
+	
+	<!-- 插入${codeName} -->
+	<insert id="insert" parameterType="${modulePackage}.entity${moduleName}.${className}" >
+	  $!{SQL.insert}
+	</insert>
+	
+	<!-- 修改${codeName}-->  
+	 <update id="update" parameterType="${modulePackage}.entity${moduleName}.${className}" >
+	  $!{SQL.update}
+	 </update>
+	 
+	 <!-- 选择修改${codeName}-->
+	<update id="updateBySelective" parameterType="${modulePackage}.entity${moduleName}.${className}" >
+		$!{SQL.updateSelective}
+	</update>
+	
+	<!-- 删除${codeName} -->
+	<update id="delete" parameterType="Object">
+		$!{SQL.delete}
+	</update>
+	
+	<!-- 批量删除${codeName} -->
+	<delete id="batchDelete" parameterType="Object">
+		$!{SQL.batchDelete}
+		<foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+	       	#{item}  
+	   	</foreach> 
+	</delete>
+	 
+	<!-- 依据主键查找${codeName} -->
+	<select id="selectById" resultMap="BaseResultMap" >
+		$!{SQL.selectById}
+	</select>
+	  	
+	<!-- ${codeName} 列表总数  为分页组件使用-->
+	<select id="pageTotalRecord" resultType="java.lang.Long" parameterType="${modulePackage}.entity${moduleName}.query.${className}SearchForm">
+		select count(1) from ${tableName} 
+		<include refid="where_Clause"/>
+	</select>
+	  	
+	<!-- 分页中的${codeName}集合，为分页组件使用 -->
+	<select id="pageData" resultMap="BaseResultMap" parameterType="${modulePackage}.entity${moduleName}.query.${className}SearchForm">
+		select 
+		<include refid="Base_Column_List"/>
+		from ${tableName} 
+		<include refid="where_Clause"/>
+		<if test="orderCondition != null and orderCondition != ''" >
+	      ${orderCondition}
+	    </if>
+	    ${queryCondition}
+	</select>
+	
+	<!--依据条件统计 ${codeName}总数-->
+	<select id="count" resultType="java.lang.Long" parameterType="${modulePackage}.entity${moduleName}.query.${className}SearchForm">
+		select count(1) from ${tableName} 
+		<include refid="where_Clause"/>
+	</select>
+  	
+</mapper>   

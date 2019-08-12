@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--本地配置-->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="locations">
+            <list>
+                <!-- 本地 jdbc 配置 -->
+                <value>classpath:/com/tasfe/zh/configs/base/dao/properties/jdbc.properties</value>
+                <!-- 本地 redis 配置-->
+                <value>classpath:/com/tasfe/sis/configs/base/properties/redis.properties</value>
+            </list>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,157 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.creativearts.projects</groupId>
+        <artifactId>nyd-cash-user</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>nyd-cash-user-service</artifactId>
+    <packaging>jar</packaging>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-uid-service</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-support-model</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-support-service</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-user-entity</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-user-dao</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-user-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-user-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-msg-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-order-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-application-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-library-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>   
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+            <version>2.0.0.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.limit</groupId>
+            <artifactId>limit_api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <!-- 调用Dubbo服务基本 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-dsp-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-zeus-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-rabbitmq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-member-api</artifactId>
+        </dependency>
+
+        <!--引入activity模块依赖-->
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-activity-dao</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-activity-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>feature-rinse-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <version>2.8.0</version>
+		</dependency>
+        <dependency>
+            <groupId>com.creativearts.das</groupId>
+            <artifactId>decision_audit_query_api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20160810</version>
+        </dependency>
+    </dependencies>
+    <build>
+       
+    </build>
+</project>

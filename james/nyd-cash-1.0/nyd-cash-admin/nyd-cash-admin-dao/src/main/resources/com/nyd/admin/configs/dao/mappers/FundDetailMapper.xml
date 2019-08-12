@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.admin.dao.mapper.FundDetailMapper">
+    <resultMap id="BaseResultMap" type="com.nyd.admin.model.fundManageModel.FundDetailModel">
+        <result column="fund_id" jdbcType="CHAR" property="fundId" />
+        <result column="investment_amount" jdbcType="DECIMAL" property="investmentAmount" />
+        <result column="investment_term" jdbcType="BIGINT" property="investmentTerm" />
+        <result column="return_rate" jdbcType="DECIMAL" property="returnRate" />
+        <result column="expiry_profit" jdbcType="DECIMAL" property="expiryProfit" />
+        <result column="continue_flag" jdbcType="BIGINT" property="continueFlag" />
+        <result column="continue_type" jdbcType="BIGINT" property="continueType" />
+        <result column="expiry_date" jdbcType="CHAR" property="expiryDate" />
+    </resultMap>
+
+    <select id="queryFundDetail" resultMap="BaseResultMap">
+        SELECT
+            fund_id,
+            investment_amount,
+            investment_term,
+            return_rate,
+            expiry_profit,
+            continue_flag,
+            continue_type,
+            expiry_date
+        FROM
+            t_fund_detail
+        WHERE 1=1
+        <if test="fundId != null">
+            AND `fund_id` = #{fundId,jdbcType=VARCHAR}
+        </if>
+    </select>
+</mapper>

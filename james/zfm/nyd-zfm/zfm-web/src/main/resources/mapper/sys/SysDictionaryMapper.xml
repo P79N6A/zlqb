@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiwang.zfm.dao.sys.SysDictionaryMapper" > 
+
+	<!-- Result Map-->
+	<resultMap id="BaseResultMap" type="com.zhiwang.zfm.entity.sys.SysDictionary" >
+			<result column="id" property="id"/>
+			<result column="name" property="name"/>
+			<result column="code" property="code"/>
+			<result column="status" property="status"/>
+			<result column="price" property="price"/>
+			<result column="create_time" property="createTime"/>
+			<result column="update_time" property="updateTime"/>
+		</resultMap>
+	       
+	<!-- sys_dictionary table all fields -->
+	<sql id="Base_Column_List" >
+		 id,name,code,status,price,create_time,update_time
+	</sql>
+	   
+	<!-- 查询条件 -->
+	<sql id="where_Clause">
+	where 1=1
+	<trim  suffixOverrides="," >
+				 		<if test="id != null and id != ''" >
+		    and id =  #{id}
+		</if>
+				 		<if test="name != null and name != ''" >
+		    and name =  #{name}
+		</if>
+				 		<if test="code != null and code != ''" >
+		    and code =  #{code}
+		</if>
+				<if test="status != null" >
+		    and status =  #{status}
+		</if>
+				 		<if test="price != null and price != ''" >
+		    and price =  #{price}
+		</if>
+				<if test="createTime != null" >
+		    and create_time =  #{createTime}
+		</if>
+				<if test="updateTime != null" >
+		    and update_time =  #{updateTime}
+		</if>
+		</trim>
+	</sql>
+	
+	<!-- 插入数据字典 -->
+	<insert id="insert" parameterType="com.zhiwang.zfm.entity.sys.SysDictionary" >
+	  insert into sys_dictionary(id,name,code,status,price,create_time,update_time)
+ values(#{id},#{name},#{code},#{status},#{price},#{createTime},#{updateTime})
+	</insert>
+	
+	<!-- 修改数据字典-->  
+	 <update id="update" parameterType="com.zhiwang.zfm.entity.sys.SysDictionary" >
+	  update sys_dictionary set name=#{name},code=#{code},status=#{status},price=#{price},create_time=#{createTime},update_time=#{updateTime} where id=#{id}
+	 </update>
+	 
+	 <!-- 选择修改数据字典-->
+	<update id="updateBySelective" parameterType="com.zhiwang.zfm.entity.sys.SysDictionary" >
+		update sys_dictionary set 
+	<trim  suffixOverrides="," >
+	<if test="name != null  and name != '' ">
+		name=#{name},
+	</if>
+	<if test="code != null  and code != '' ">
+		code=#{code},
+	</if>
+	<if test="status != null  ">
+		status=#{status},
+	</if>
+	<if test="price != null  and price != '' ">
+		price=#{price},
+	</if>
+	<if test="createTime != null  ">
+		create_time=#{createTime},
+	</if>
+	<if test="updateTime != null  ">
+		update_time=#{updateTime},
+	</if>
+	</trim> where id=#{id}
+	</update>
+	
+	<!-- 删除数据字典 -->
+	<update id="delete" parameterType="Object">
+		delete 	 from sys_dictionary where id = #{id}
+	</update>
+	
+	<!-- 批量删除数据字典 -->
+	<delete id="batchDelete" parameterType="Object">
+		delete 	 from sys_dictionary where id in 
+		<foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+	       	#{item}  
+	   	</foreach> 
+	</delete>
+	 
+	<!-- 依据主键查找数据字典 -->
+	<select id="selectById" resultMap="BaseResultMap" >
+		select <include refid="Base_Column_List" /> 
+	 from sys_dictionary where id = #{id}
+	</select>
+	  	
+	<!-- 数据字典 列表总数  为分页组件使用-->
+	<select id="pageTotalRecord" resultType="java.lang.Long" parameterType="com.zhiwang.zfm.entity.sys.query.SysDictionarySearchForm">
+		select count(1) from sys_dictionary 
+		<include refid="where_Clause"/>
+	</select>
+	  	
+	<!-- 分页中的数据字典集合，为分页组件使用 -->
+	<select id="pageData" resultMap="BaseResultMap" parameterType="com.zhiwang.zfm.entity.sys.query.SysDictionarySearchForm">
+		select 
+		<include refid="Base_Column_List"/>
+		from sys_dictionary 
+		<include refid="where_Clause"/>
+		<if test="orderCondition != null and orderCondition != ''" >
+	      ${orderCondition}
+	    </if>
+	    ${queryCondition}
+	</select>
+	
+	<!--依据条件统计 数据字典总数-->
+	<select id="count" resultType="java.lang.Long" parameterType="com.zhiwang.zfm.entity.sys.query.SysDictionarySearchForm">
+		select count(1) from sys_dictionary 
+		<include refid="where_Clause"/>
+	</select>
+  	
+</mapper>   

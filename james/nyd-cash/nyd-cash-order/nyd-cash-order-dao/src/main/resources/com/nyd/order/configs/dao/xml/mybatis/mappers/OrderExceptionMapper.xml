@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.order.dao.mapper.OrderExceptionMapper">
+	<insert id="save"
+		parameterType="com.nyd.order.model.OrderExceptionInfo">
+		insert into xxd_order.t_order_exception
+		(order_no,
+		user_id,
+		account_number,
+		real_name,
+		loan_amount,
+		bank_account,
+		bank_name,
+		fund_code,
+		update_by,
+		pay_fail_reason,
+		app_name
+		) values(
+		#{orderNo,jdbcType=VARCHAR},
+		#{userId,jdbcType=VARCHAR},
+		#{accountNumber,jdbcType=VARCHAR},
+		#{realName,jdbcType=VARCHAR},
+		#{loanAmount,jdbcType=DECIMAL},
+		#{bankAccount,jdbcType=VARCHAR},
+		#{bankName,jdbcType=VARCHAR},
+		#{fundCode,jdbcType=VARCHAR},
+		#{updateBy,jdbcType=VARCHAR},
+		#{payFailReason,jdbcType=VARCHAR},
+		#{appName,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="update"
+		parameterType="com.nyd.order.model.OrderExceptionInfo">
+		update xxd_order.t_order_exception
+		set
+		<if test="orderStatus != null">
+			order_status = #{orderStatus,jdbcType=INTEGER},
+		</if>
+		<if test="auditStatus != null">
+			audit_status = #{auditStatus,jdbcType=INTEGER},
+		</if>
+		<if test="updateBy != null">
+			update_by = #{updateBy,jdbcType=INTEGER},
+		</if>
+		retry_times = retry_times+1
+		where order_no = #{orderNo}
+	</update>
+
+	<select id="queryOrderException" parameterType="java.util.Map"
+		resultType="com.nyd.order.model.OrderExceptionInfo">
+		select * from t_order_exception
+		<where>
+			<if test="startDate != null">
+				AND DATE_FORMAT(fail_time, "%Y-%m-%d %H:%i:%s" )  >=  
+				DATE_FORMAT(#{startDate,jdbcType=DATE}, "%Y-%m-%d %H:%i:%s")
+			</if>
+			<if test="endDate != null">
+				AND DATE_FORMAT(fail_time, "%Y-%m-%d %H:%i:%s" ) &lt;= 
+				DATE_FORMAT(#{endDate,jdbcType=DATE}, "%Y-%m-%d %H:%i:%s")
+			</if>
+			<if test="auditStatus != null">
+				and audit_status = #{auditStatus,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+	<select id="getOrderExceptionByOrderNo" parameterType="com.nyd.order.model.OrderInfo"
+		resultType="com.nyd.order.model.OrderExceptionInfo">
+		select * from t_order_exception
+		<where>
+			<if test="orderNo != null and orderNo != ''">
+				and order_no = #{orderNo,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	<select id="queryOrderExceptionCount"
+		parameterType="java.util.Map" resultType="Integer">
+		select count(*) from t_order_exception
+		<where>
+			<if test="startDate != null">
+				AND DATE_FORMAT(fail_time, "%Y-%m-%d %H:%i:%s" ) >=
+				DATE_FORMAT(#{startDate,jdbcType=DATE}, "%Y-%m-%d %H:%i:%s")
+			</if>
+			<if test="endDate != null">
+				AND DATE_FORMAT(fail_time, "%Y-%m-%d %H:%i:%s" ) &lt;= 
+				DATE_FORMAT(#{endDate,jdbcType=DATE}, "%Y-%m-%d %H:%i:%s")
+			</if>
+			<if test="auditStatus != null">
+				and audit_status = #{auditStatus,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+</mapper>

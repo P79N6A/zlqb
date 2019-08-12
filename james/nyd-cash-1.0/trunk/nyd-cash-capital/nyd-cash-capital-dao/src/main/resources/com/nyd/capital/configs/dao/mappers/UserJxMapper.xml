@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.capital.dao.mappers.UserJxMapper">
+
+    <insert id="savePassword" parameterType="com.nyd.capital.entity.UserJx">
+        insert into xxd_user.t_user_jx
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="memberId != null">
+                member_id,
+            </if>
+            <if test="stage != null">
+                stage,
+            </if>
+            <if test="amount != null">
+                amount,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="mobile != null">
+                mobile,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="memberId != null">
+                #{memberId,jdbcType=VARCHAR},
+            </if>
+            <if test="stage != null">
+                #{stage,jdbcType=INTEGER},
+            </if>
+            <if test="amount != null">
+                #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectPasswordByUserId" parameterType="string" resultType="com.nyd.capital.entity.UserJx">
+        select password from xxd_user.t_user_jx
+        where user_id = #{userId}
+    </select>
+
+    <update id="updateMember">
+        update xxd_user.t_user_jx
+        set member_id = #{memberId},stage = 1
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateLoanId">
+        update xxd_user.t_user_jx
+        set loan_id = #{loanId}
+        where user_id = #{userId}
+    </update>
+
+    <select id="selectUserStageTwo" resultType="com.nyd.capital.entity.UserJx">
+        select * from xxd_user.t_user_jx
+        where stage = 2
+    </select>
+    <select id="getUserJxByUserId" resultType="com.nyd.capital.entity.UserJx">
+        select * from xxd_user.t_user_jx
+        where user_id = #{userId}
+    </select>
+    <update id="updateUserJx" parameterType="com.nyd.capital.entity.UserJx">
+        update xxd_user.t_user_jx
+        <set>
+            <if test="memberId != null">
+                member_id =  #{memberId,jdbcType=VARCHAR},
+            </if>
+            <if test="withDrawUrl != null">
+                with_draw_url = #{withDrawUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="stage != null">
+                stage = #{stage,jdbcType=INTEGER},
+            </if>
+            <if test="amount != null">
+                amount = #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="loanId != null">
+                loan_id = #{loanId,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                mobile = #{mobile,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <select id="selectUserJxByMemberId" parameterType="string" resultType="com.nyd.capital.entity.UserJx">
+        select * from xxd_user.t_user_jx
+        where member_id = #{memberId}
+    </select>
+
+</mapper>

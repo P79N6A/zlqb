@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.user.dao.mapper.DownloadMapper">
+    <resultMap type="com.nyd.user.entity.Download" id="DownloadResult">
+        <result property="download_url" column="downloadUrl"/>
+        <result property="version" column="version"/>
+        <result property="os" column="os"/>
+        <result property="app_name" column="appName"/>
+    </resultMap>
+
+    <select id="getDownload" parameterType="java.lang.String" resultMap="DownloadResult">
+        select * from t_download
+        where os = #{os}
+        and app_name = #{appName}
+        order by create_time desc
+        limit 1
+    </select>
+
+</mapper>

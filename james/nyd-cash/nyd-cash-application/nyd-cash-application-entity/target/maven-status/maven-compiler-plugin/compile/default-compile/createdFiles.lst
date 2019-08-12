@@ -1,0 +1,11 @@
+com/nyd/application/entity/AddressBook.class
+com/nyd/application/entity/Activity.class
+com/nyd/application/entity/Banner.class
+com/nyd/application/entity/SmsInfo.class
+com/nyd/application/entity/Version.class
+com/nyd/application/entity/FlowConfig.class
+com/nyd/application/entity/CallInfo.class
+com/nyd/application/entity/Message.class
+com/nyd/application/entity/AppInfo.class
+com/nyd/application/entity/WebInfo.class
+com/nyd/application/entity/Advertising.class

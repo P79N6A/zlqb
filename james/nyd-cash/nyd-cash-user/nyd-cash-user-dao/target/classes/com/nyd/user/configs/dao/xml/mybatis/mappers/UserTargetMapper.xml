@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.user.dao.mapper.UserTargetMapper">
+
+    <!--<resultMap type="com.ibank.user.entity.UserTarget" id="BaseResultMap">
+        &lt;!&ndash;<id column="id" property="id" jdbcType="INTEGER" />&ndash;&gt;
+        <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+        <result column="md5_mobile" property="md5Mobile" jdbcType="VARCHAR" />
+        <result column="sha_mobile" property="shaMobile" jdbcType="VARCHAR" />
+        <result column="target_one" property="targetOne" jdbcType="INTEGER" />
+        <result column="target_two" property="targetTwo" jdbcType="INTEGER" />
+        <result column="target_three" property="targetThree" jdbcType="INTEGER" />
+        <result column="target_four" property="targetFour" jdbcType="INTEGER" />
+        <result column="target_five" property="targetFive" jdbcType="INTEGER" />
+        <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, mobile, md5_mobile, sha_mobile, target_one, target_two, target_three, target_four, target_five,delete_flag,
+        create_time, update_time, update_by
+    </sql>
+    -->
+
+    <!--根据手机号找到具体的打标对象-->
+    <select id="selectByMobile" resultType="com.nyd.user.entity.UserTarget" parameterType="string" >
+        select * from  xxd_user.t_user_target
+        WHERE mobile = #{mobile}
+    </select>
+
+    <!--根据规则1和普通手机号去找-->
+    <select id="findByRuleOneAndTypeOne" resultType="com.nyd.user.entity.UserTarget" parameterType="java.util.Map" >
+        select * from  xxd_user.t_user_target
+        WHERE mobile = #{mobile} AND target_one = 1 AND target_four = 1 AND delete_flag = 0
+    </select>
+    <!--根据规则1和MD5手机号去找-->
+    <select id="findByRuleOneAndTypeTwo" resultType="com.nyd.user.entity.UserTarget" parameterType="java.util.Map" >
+        select * from  xxd_user.t_user_target
+        WHERE md5_mobile = #{mobile} AND target_one = 1 AND target_four = 1 AND delete_flag = 0
+    </select>
+    <!--根据规则1和sha手机号去找-->
+    <select id="findByRuleOneAndTypeThree" resultType="com.nyd.user.entity.UserTarget" parameterType="java.util.Map" >
+        select * from  xxd_user.t_user_target
+        WHERE sha_mobile = #{mobile} AND target_one = 1 AND target_four = 1 AND delete_flag = 0
+    </select>
+
+
+    <!--根据规则2和普通手机号去找-->
+    <select id="findByRuleTwoAndTypeOne" resultType="com.nyd.user.entity.UserTarget" parameterType="java.util.Map" >
+        select * from  xxd_user.t_user_target
+        WHERE mobile = #{mobile} AND target_two = 1 AND target_four = 1 AND delete_flag = 0
+    </select>
+    <!--根据规则2和MD5手机号去找-->
+    <select id="findByRuleTwoAndTypeTwo" resultType="com.nyd.user.entity.UserTarget" parameterType="java.util.Map" >
+        select * from  xxd_user.t_user_target
+        WHERE md5_mobile = #{mobile} AND target_two = 1 AND target_four = 1 AND delete_flag = 0
+    </select>
+    <!--根据规则2和sha手机号去找-->
+    <select id="findByRuleTwoAndTypeThree" resultType="com.nyd.user.entity.UserTarget" parameterType="java.util.Map" >
+        select * from  xxd_user.t_user_target
+        WHERE sha_mobile = #{mobile} AND target_two = 1 AND target_four = 1 AND delete_flag = 0
+    </select>
+
+    <!--根据规则3和普通手机号去找-->
+    <select id="findByRuleThreeAndTypeOne" resultType="com.nyd.user.entity.UserTarget" parameterType="java.util.Map" >
+        select * from  xxd_user.t_user_target
+        WHERE mobile = #{mobile} AND target_three = 1 AND target_four = 1 AND delete_flag = 0
+    </select>
+    <!--根据规则3和MD5手机号去找-->
+    <select id="findByRuleThreeAndTypeTwo" resultType="com.nyd.user.entity.UserTarget" parameterType="java.util.Map" >
+        select * from  xxd_user.t_user_target
+        WHERE md5_mobile = #{mobile} AND target_three = 1 AND target_four = 1 AND delete_flag = 0
+    </select>
+    <!--根据规则3和sha手机号去找-->
+    <select id="findByRuleThreeAndTypeThree" resultType="com.nyd.user.entity.UserTarget" parameterType="java.util.Map" >
+        select * from  xxd_user.t_user_target
+        WHERE sha_mobile = #{mobile} AND target_three = 1 AND target_four = 1 AND delete_flag = 0
+    </select>
+
+    <!--根据规则4和普通手机号去找-->
+    <select id="findByRuleFourAndTypeOne" resultType="com.nyd.user.entity.UserTarget" parameterType="java.util.Map" >
+        select * from  xxd_user.t_user_target
+        WHERE mobile = #{mobile} AND delete_flag = 0
+    </select>
+    <!--根据规则4和MD5手机号去找-->
+    <select id="findByRuleFourAndTypeTwo" resultType="com.nyd.user.entity.UserTarget" parameterType="java.util.Map" >
+        select * from  xxd_user.t_user_target
+        WHERE md5_mobile = #{mobile} AND delete_flag = 0
+    </select>
+    <!--根据规则4和sha手机号去找-->
+    <select id="findByRuleFourAndTypeThree" resultType="com.nyd.user.entity.UserTarget" parameterType="java.util.Map" >
+        select * from  xxd_user.t_user_target
+        WHERE sha_mobile = #{mobile} AND delete_flag = 0
+    </select>
+
+
+    <insert id="insert" parameterType="com.nyd.user.entity.UserTarget" >
+        insert into xxd_user.t_user_target (mobile,md5_mobile,sha_mobile,if_register,target_one,target_two,target_three,target_four,target_five)
+        values (
+        #{mobile,jdbcType=VARCHAR},
+        #{md5Mobile,jdbcType=VARCHAR},
+        #{shaMobile,jdbcType=VARCHAR},
+        #{ifRegister,jdbcType=INTEGER},
+        #{targetOne,jdbcType=INTEGER},
+        #{targetTwo,jdbcType=INTEGER},
+        #{targetThree,jdbcType=INTEGER},
+        #{targetFour,jdbcType=INTEGER},
+        #{targetFive,jdbcType=INTEGER}
+        )
+    </insert>
+
+    <update id="updateUserTargetByMobile" parameterType="com.nyd.user.entity.UserTarget" >
+        update xxd_user.t_user_target
+        set
+        md5_mobile = #{md5Mobile,jdbcType=VARCHAR},
+        sha_mobile = #{shaMobile,jdbcType=VARCHAR},
+        if_register = #{ifRegister,jdbcType=INTEGER},
+        target_one = #{targetOne,jdbcType=INTEGER},
+        target_two = #{targetTwo,jdbcType=INTEGER},
+        target_three = #{targetThree,jdbcType=INTEGER},
+        target_four = #{targetFour,jdbcType=INTEGER},
+        target_five = #{targetFive,jdbcType=INTEGER}
+        where mobile = #{mobile,jdbcType=VARCHAR}
+    </update>
+
+	 <select id="userTargetFindByMd5mobile" resultType="com.nyd.user.entity.UserTarget" parameterType="java.util.Map" >
+        select * from  xxd_user.t_user_target
+        WHERE md5_mobile = #{mobile}  AND delete_flag = 0 
+    </select>
+
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.wsm.dao.mapper.OrderMapper">
+    <resultMap type="com.nyd.wsm.entity.Order" id="OrderResult">
+        <result property="order_no" column="orderNo"/>
+        <result property="user_id" column="userId"/>
+        <result property="member_fee" column="member_fee"/>
+        <result property="loan_amount" column="loanAmount"/>
+        <result property="real_loan_amount" column="realLoanAmount"/>
+        <result property="repay_total_amount" column="repayTotalAmount"/>
+        <result property="borrow_time" column="borrowTime"/>
+        <result property="borrow_periods" column="borrowPeriods"/>
+        <result property="interest" column="interest"/>
+        <result property="annualized_rate" column="annualizedRate"/>
+        <result property="bank_account" column="bankAccount"/>
+        <result property="bank_name" column="bankName"/>
+        <result property="order_status" column="orderStatus"/>
+        <result property="audit_status" column="auditStatus"/>
+        <result property="loan_time" column="loanTime"/>
+        <result property="pay_time" column="payTime"/>
+    </resultMap>
+
+ <!--   <select id="getBillLs" parameterType="java.util.Map" resultMap="BillResult">
+        select * from t_bill where
+         bill_status = #{billStatus}
+        <if test="startDate != null and startDate != ''">
+            AND promise_repayment_date &gt;= CONCAT(#{startDate},' 00:00:00')
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND promise_repayment_date &lt;= CONCAT(#{endDate},' 23:59:59')
+        </if>
+    </select>
+
+    <select id="getOverdueBillLs" parameterType="java.util.Map" resultMap="OverdueBillResult">
+        select * from t_overdue_bill where
+        bill_status = #{billStatus}
+    </select>-->
+
+</mapper>

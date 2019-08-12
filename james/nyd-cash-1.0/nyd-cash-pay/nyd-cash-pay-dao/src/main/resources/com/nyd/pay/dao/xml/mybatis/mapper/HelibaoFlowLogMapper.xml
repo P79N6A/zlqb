@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.pay.dao.mapper.HelibaoFlowLogMapper" > 
+
+	<!-- Result Map-->
+	<resultMap id="BaseResultMap" type="com.nyd.order.entity.zzl.HelibaoFlowLog" >
+			<result column="id" property="id"/>
+			<result column="biz_type" property="bizType"/>
+			<result column="order_number" property="orderNumber"/>
+			<result column="cust_info_id" property="custInfoId"/>
+			<result column="create_time" property="createTime"/>
+			<result column="req_content" property="reqContent"/>
+			<result column="resp_content" property="respContent"/>
+			<result column="remark" property="remark"/>
+		</resultMap>
+	       
+	<!-- helibao_flow_log table all fields -->
+	<sql id="Base_Column_List" >
+		 id,biz_type,order_number,cust_info_id,create_time,req_content,resp_content,remark
+	</sql>
+	   
+	<!-- 查询条件 -->
+	<sql id="where_Clause">
+	where 1=1
+	<trim  suffixOverrides="," >
+				 		<if test="id != null and id != ''" >
+		    and id =  #{id}
+		</if>
+				 		<if test="bizType != null and bizType != ''" >
+		    and biz_type =  #{bizType}
+		</if>
+				 		<if test="orderNumber != null and orderNumber != ''" >
+		    and order_number =  #{orderNumber}
+		</if>
+				 		<if test="custInfoId != null and custInfoId != ''" >
+		    and cust_info_id =  #{custInfoId}
+		</if>
+				<if test="createTime != null" >
+		    and create_time =  #{createTime}
+		</if>
+				 		<if test="reqContent != null and reqContent != ''" >
+		    and req_content =  #{reqContent}
+		</if>
+				 		<if test="respContent != null and respContent != ''" >
+		    and resp_content =  #{respContent}
+		</if>
+				 		<if test="remark != null and remark != ''" >
+		    and remark =  #{remark}
+		</if>
+		</trim>
+	</sql>
+	
+	<!-- 插入合利宝日志 -->
+	<insert id="insert" parameterType="com.nyd.order.entity.zzl.HelibaoFlowLog" >
+	  insert into helibao_flow_log(id,biz_type,order_number,cust_info_id,create_time,req_content,resp_content,remark)
+ values(#{id},#{bizType},#{orderNumber},#{custInfoId},#{createTime},#{reqContent},#{respContent},#{remark})
+	</insert>
+
+	
+
+
+</mapper>   

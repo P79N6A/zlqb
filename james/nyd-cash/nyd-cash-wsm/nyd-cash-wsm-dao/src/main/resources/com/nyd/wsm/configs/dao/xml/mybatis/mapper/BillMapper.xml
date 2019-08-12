@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.wsm.dao.mapper.BillMapper">
+    <resultMap type="com.nyd.wsm.entity.Bill" id="BillResult">
+        <result property="order_no" column="orderNo"/>
+        <result property="user_id" column="userId"/>
+        <result property="bill_no" column="billNo"/>
+        <result property="bill_status" column="billStatus"/>
+        <result property="cur_period" column="curPeriod"/>
+        <result property="periods" column="periods"/>
+        <result property="promise_repayment_date" column="promiseRepaymentDate"/>
+        <result property="actual_settle_date" column="actualSettleDate"/>
+        <result property="cur_repay_amount" column="curRepayAmount"/>
+        <result property="repay_principle" column="repayPrinciple"/>
+        <result property="repay_interest" column="repayInterest"/>
+        <result property="wait_repay_amount" column="waitRepayAmount"/>
+        <result property="already_repay_amount" column="alreadyRepayAmount"/>
+        <result property="overdue_fine" column="overdueFine"/>
+        <result property="overdue_amount" column="overdueAmount"/>
+        <result property="overdue_days" column="overdueDays"/>
+        <result property="collection_derate_amount" column="collectionDerateAmount"/>
+    </resultMap>
+
+ <!--   <select id="getBillLs" parameterType="java.util.Map" resultMap="BillResult">
+        select * from t_bill where
+         bill_status = #{billStatus}
+        <if test="startDate != null and startDate != ''">
+            AND promise_repayment_date &gt;= CONCAT(#{startDate},' 00:00:00')
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND promise_repayment_date &lt;= CONCAT(#{endDate},' 23:59:59')
+        </if>
+    </select>
+
+    <select id="getOverdueBillLs" parameterType="java.util.Map" resultMap="OverdueBillResult">
+        select * from t_overdue_bill where
+        bill_status = #{billStatus}
+    </select>-->
+
+</mapper>

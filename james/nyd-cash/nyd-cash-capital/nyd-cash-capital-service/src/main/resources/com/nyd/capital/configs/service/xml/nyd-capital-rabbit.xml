@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+
+    <context:component-scan base-package="com.nyd.capital.service"/>
+    <rabbit:connection-factory id="mqconnectionFactory" virtual-host="${rabbit.virtualhost}" host="${rabbit.host}"
+                               port="${rabbit.port}" username="${rabbit.username}" password="${rabbit.password}"/>
+    <rabbit:admin connection-factory="mqconnectionFactory"/>
+
+    <rabbit:queue name="orderToPay" durable="true"/>
+    <rabbit:queue name="remitToZeus" durable="true"/>
+    <rabbit:queue name="payToOrder" durable="true"/>
+    <rabbit:queue name="remitLogToZeus" durable="true"/>
+    <rabbit:queue name="remitToIbankOrder" durable="true"/>
+    <rabbit:queue name="start_finance_risk" durable="true"/>
+    <rabbit:queue name="fsk_result_nyd" durable="true"/>
+    <rabbit:queue name="pocket_html" durable="true"/>
+    <rabbit:queue name="pocket_callback" durable="true"/>
+    <rabbit:queue name="crawler" durable="true"/>
+    <!--<rabbit:queue name="orderToPayTest" durable="true"/>-->
+    <!-- 这里设置的acknowledge="auto"是自动提交的，实际的情况是不满足的，需要处理完消息后进行手动提交 -->
+    <bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter"/>
+
+
+    <!-- *****************************生产者***************************** -->
+    <!-- 实际发送的 -->
+    <bean id="rabbitmqProducerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqProducerProxy">
+        <property name="rabbitTemplate" ref="amqpTemplate"/>
+    </bean>
+
+    <rabbit:template id="amqpTemplate" connection-factory="mqconnectionFactory" exchange="capital_topic_exchange"
+                     message-converter="jsonMessageConverter"/>
+
+    <rabbit:topic-exchange name="capital_topic_exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="remitToZeus" pattern="remit.#"/>
+            <rabbit:binding queue="payToOrder" pattern="pay.#"/>
+            <rabbit:binding queue="remitLogToZeus" pattern="remitLog.#"/>
+            <rabbit:binding queue="remitLogToZeus" pattern="remitLog.#"/>
+            <rabbit:binding queue="remitToIbankOrder" pattern="remitIbankOrder.#"/>
+            <rabbit:binding queue="start_finance_risk" pattern="start_finance_risk.#"/>
+            <rabbit:binding queue="pocket_html" pattern="pocket_html.#"/>
+            <rabbit:binding queue="pocket_callback" pattern="pocket_callback.#"/>
+            <rabbit:binding queue="crawler" pattern="crawler.#"/>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+    <bean id="rabbitmqConsumerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="orderRabbitMqConsumer"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+    <bean id="risk2CapitalConsumerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="risk2CapitalConsumer"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+    <bean id="pocketHtmlConsumerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="pocketHtmlProcessor"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+    <bean id="pocketCallbackConsumerProxy" class="com.tasfe.framework.rabbitmq.RabbitmqConsumerProxy">
+        <property name="rabbitmqMessageProcesser" ref="pocketCallbackProcessor"/>
+        <property name="messageConverter" ref="jsonMessageConverter"/>
+    </bean>
+
+    <!-- 手动提交 acknowledge="manual"-->
+    <!--<rabbit:listener-container connection-factory="mqconnectionFactory" acknowledge="manual" concurrency="10" auto-startup="false">
+        <rabbit:listener queues="orderToPay" ref="rabbitmqConsumerProxy"/>
+    </rabbit:listener-container>-->
+    <!-- 消息监听  -->
+    <!-- <bean id="listenerContainer"
+          class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+        消息监听器数量
+        <property name="concurrentConsumers" value="10" />
+        <property name="autoStartup" value="true"/>
+        <property name="connectionFactory" ref="mqconnectionFactory" />
+        <property name="messageListener" ref="rabbitmqConsumerProxy" />
+        <property name="queues" value="orderToPay"/>
+        <property name="queueNames" value="orderToPayTest"/>
+    </bean> -->
+    <!-- 消息监听  -->
+    <!--  <bean id="listenerContainer1"
+           class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+         消息监听器数量
+         <property name="concurrentConsumers" value="10" />
+         <property name="autoStartup" value="true"/>
+         <property name="connectionFactory" ref="mqconnectionFactory" />
+         <property name="messageListener" ref="risk2CapitalConsumerProxy" />
+         <property name="queues" value="fsk_result_nyd"/>
+         <property name="queueNames" value="orderToPayTest"/>
+     </bean>
+      -->
+    <rabbit:listener-container connection-factory="mqconnectionFactory" acknowledge="manual" concurrency="10">
+        <rabbit:listener queues="fsk_result_nyd" ref="risk2CapitalConsumerProxy"/>
+        <rabbit:listener queues="pocket_html" ref="pocketHtmlConsumerProxy"/>
+        <rabbit:listener queues="pocket_callback" ref="pocketCallbackConsumerProxy"/>
+    </rabbit:listener-container>
+    <!-- 真正执行-->
+    <bean id="orderRabbitMqConsumer" class="com.nyd.capital.service.mq.OrderRabbitMqConsumer"/>
+    <bean id="risk2CapitalConsumer" class="com.nyd.capital.service.mq.Risk2CapitalMqConsumer"/>
+    <bean id="pocketHtmlProcessor" class="com.nyd.capital.service.mq.PocketHtmlProcessor"/>
+    <bean id="pocketCallbackProcessor" class="com.nyd.capital.service.mq.PocketCallbackProcessor"/>
+
+</beans>

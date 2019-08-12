@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiwang.zfm.dao.sys.SysChannelMapper" > 
+
+	<!-- Result Map-->
+	<resultMap id="BaseResultMap" type="com.zhiwang.zfm.entity.sys.SysChannel" >
+			<result column="ID" property="id"/>
+			<result column="PLAT_CODE" property="platCode"/>
+			<result column="PLAT_NAME" property="platName"/>
+			<result column="CHANNEL_CODE" property="channelCode"/>
+			<result column="CHANNEL_NAME" property="channelName"/>
+			<result column="CHANNEL_STATUS" property="channelStatus"/>
+		</resultMap>
+	       
+	<!-- sys_channel table all fields -->
+	<sql id="Base_Column_List" >
+		 ID,PLAT_CODE,PLAT_NAME,CHANNEL_CODE,CHANNEL_NAME,CHANNEL_STATUS
+	</sql>
+	   
+	<!-- 查询条件 -->
+	<sql id="where_Clause">
+	where 1=1
+	<trim  suffixOverrides="," >
+				 		<if test="id != null and id != ''" >
+		    and ID =  #{id}
+		</if>
+				 		<if test="platCode != null and platCode != ''" >
+		    and PLAT_CODE =  #{platCode}
+		</if>
+				 		<if test="platName != null and platName != ''" >
+		    and PLAT_NAME =  #{platName}
+		</if>
+				 		<if test="channelCode != null and channelCode != ''" >
+		    and CHANNEL_CODE =  #{channelCode}
+		</if>
+				 		<if test="channelName != null and channelName != ''" >
+		    and CHANNEL_NAME =  #{channelName}
+		</if>
+				 		<if test="channelStatus != null and channelStatus != ''" >
+		    and CHANNEL_STATUS =  #{channelStatus}
+		</if>
+		</trim>
+	</sql>
+	
+	<!-- 插入平台渠道表 -->
+	<insert id="insert" parameterType="com.zhiwang.zfm.entity.sys.SysChannel" >
+	  insert into sys_channel(ID,PLAT_CODE,PLAT_NAME,CHANNEL_CODE,CHANNEL_NAME,CHANNEL_STATUS)
+ values(#{id},#{platCode},#{platName},#{channelCode},#{channelName},#{channelStatus})
+	</insert>
+	
+	<!-- 修改平台渠道表-->  
+	 <update id="update" parameterType="com.zhiwang.zfm.entity.sys.SysChannel" >
+	  update sys_channel set PLAT_CODE=#{platCode},PLAT_NAME=#{platName},CHANNEL_CODE=#{channelCode},CHANNEL_NAME=#{channelName},CHANNEL_STATUS=#{channelStatus} where ID=#{id}
+	 </update>
+	 
+	 <!-- 选择修改平台渠道表-->
+	<update id="updateBySelective" parameterType="com.zhiwang.zfm.entity.sys.SysChannel" >
+		update sys_channel set 
+	<trim  suffixOverrides="," >
+	<if test="platCode != null  and platCode != '' ">
+		PLAT_CODE=#{platCode},
+	</if>
+	<if test="platName != null  and platName != '' ">
+		PLAT_NAME=#{platName},
+	</if>
+	<if test="channelCode != null  and channelCode != '' ">
+		CHANNEL_CODE=#{channelCode},
+	</if>
+	<if test="channelName != null  and channelName != '' ">
+		CHANNEL_NAME=#{channelName},
+	</if>
+	<if test="channelStatus != null  and channelStatus != '' ">
+		CHANNEL_STATUS=#{channelStatus},
+	</if>
+	</trim> where ID=#{id}
+	</update>
+	
+	<!-- 删除平台渠道表 -->
+	<update id="delete" parameterType="Object">
+		delete 	 from sys_channel where ID = #{id}
+	</update>
+	
+	<!-- 批量删除平台渠道表 -->
+	<delete id="batchDelete" parameterType="Object">
+		delete 	 from sys_channel where ID in 
+		<foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+	       	#{item}  
+	   	</foreach> 
+	</delete>
+	 
+	<!-- 依据主键查找平台渠道表 -->
+	<select id="selectById" resultMap="BaseResultMap" >
+		select <include refid="Base_Column_List" /> 
+	 from sys_channel where ID = #{id}
+	</select>
+	  	
+	<!-- 平台渠道表 列表总数  为分页组件使用-->
+	<select id="pageTotalRecord" resultType="java.lang.Long" parameterType="com.zhiwang.zfm.entity.sys.query.SysChannelSearchForm">
+		select count(1) from sys_channel 
+		<include refid="where_Clause"/>
+	</select>
+	  	
+	<!-- 分页中的平台渠道表集合，为分页组件使用 -->
+	<select id="pageData" resultMap="BaseResultMap" parameterType="com.zhiwang.zfm.entity.sys.query.SysChannelSearchForm">
+		select 
+		<include refid="Base_Column_List"/>
+		from sys_channel 
+		<include refid="where_Clause"/>
+		<if test="orderCondition != null and orderCondition != ''" >
+	      ${orderCondition}
+	    </if>
+	    ${queryCondition}
+	</select>
+	
+	<!--依据条件统计 平台渠道表总数-->
+	<select id="count" resultType="java.lang.Long" parameterType="com.zhiwang.zfm.entity.sys.query.SysChannelSearchForm">
+		select count(1) from sys_channel 
+		<include refid="where_Clause"/>
+	</select>
+  	
+</mapper>   

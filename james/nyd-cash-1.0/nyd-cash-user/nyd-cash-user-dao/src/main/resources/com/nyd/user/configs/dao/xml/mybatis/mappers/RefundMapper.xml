@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.user.dao.mapper.RefundMapper">
+	<insert id="save" parameterType="com.nyd.user.model.RefundInfo">
+		insert into t_refund(
+		user_id,
+		user_name,
+		account_number,
+		order_no,
+		refund_no,
+		refund_amonut,
+		request_status,
+		app_list
+		)
+		values(
+		#{userId},
+		#{userName},
+		#{accountNumber},
+		#{orderNo},
+		#{refundNo},
+		#{refundAmonut},
+		#{requestStatus},
+		#{appList}
+		)
+	</insert>
+
+	<update id="update"
+		parameterType="com.nyd.user.model.RefundInfo">
+		update xxd_user.t_refund
+		<set>
+		<trim prefix="" suffix="" suffixOverrides=",">
+		<if test="requestStatus != null">
+			request_status = #{requestStatus,jdbcType=INTEGER},
+		</if>
+		<if test="appName != null and appName != ''">
+			app_name = #{appName,jdbcType=VARCHAR},
+		</if>
+		</trim>
+		</set>
+		where refund_no = #{refundNo}
+	</update>
+
+	<select id="queryRefundTotal"
+		parameterType="com.nyd.user.model.RefundInfo" resultType="Integer">
+		select count(1) from t_refund
+		<where>
+			<if test="userName != null and userName != ''">
+				AND user_name = #{userName}
+			</if>
+			<if test="accountNumber != null and accountNumber != ''">
+				AND account_number = #{accountNumber}
+			</if>
+			<if test="requestStatus != null">
+				and request_status = #{requestStatus,jdbcType=INTEGER}
+			</if>
+			<if test="userId != null and userId != ''">
+				and user_id = #{userId,jdbcType=VARCHAR}
+			</if>
+				and delete_flag = 0
+		</where>
+	</select>
+
+	<select id="queryRefund"
+		parameterType="com.nyd.user.model.RefundInfo"
+		resultType="com.nyd.user.model.RefundInfo">
+		select * from t_refund
+		<where>
+			<if test="userName != null and userName != ''">
+				AND user_name = #{userName}
+			</if>
+			<if test="accountNumber != null and accountNumber != ''">
+				AND account_number = #{accountNumber}
+			</if>
+			<if test="requestStatus != null">
+				and request_status = #{requestStatus,jdbcType=INTEGER}
+			</if>
+			<if test="userId != null and userId != ''">
+				and user_id = #{userId,jdbcType=VARCHAR}
+			</if>
+				and delete_flag = 0
+		</where>
+		order by create_time desc
+	</select>
+	<select id="queryAllRefund"
+		resultType="com.nyd.user.model.RefundInfo">
+		select * from t_refund
+		order by create_time desc
+	</select>
+	<select id="getRefundByRefundNo"
+		parameterType="com.nyd.user.model.RefundInfo"
+		resultType="com.nyd.user.model.RefundInfo">
+		select * from t_refund
+		<where>
+			<if test="refundNo != null and refundNo != ''">
+				AND refund_no = #{refundNo}
+			</if>
+		</where>
+	</select>
+	<select id="getRefundByUserId"
+		parameterType="java.lang.String"
+		resultType="com.nyd.user.model.RefundInfo">
+		select * from t_refund
+		<where>
+			<if test="userId != null and userId != ''">
+				AND user_id = #{userId}
+			</if>
+		</where>
+		order by create_time desc
+	</select>
+	
+
+
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.admin.dao.mapper.RefundUserMapper">
+  
+  <select id="queryRefundUserInfoCount" parameterType="java.util.Map" resultType="Integer">
+      select count(1) from t_refund_user
+       where
+         if_remove = 0
+         <if test="userName != null and userName != ''">
+				AND user_name = #{userName}
+			</if>
+			<if test="accountNumber != null and accountNumber != ''">
+				AND account_number = #{accountNumber}
+			</if>
+  </select>
+  
+  <select id="queryRefundUserInfo" parameterType="java.util.Map" resultType="com.nyd.admin.model.RefundUserInfo">
+      select * from t_refund_user
+       where
+         if_remove = 0
+         <if test="userName != null and userName != ''">
+				AND user_name = #{userName}
+			</if>
+			<if test="accountNumber != null and accountNumber != ''">
+				AND account_number = #{accountNumber}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND user_id = #{userId}
+			</if>     
+  </select>
+</mapper>

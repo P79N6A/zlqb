@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.order.dao.mapper.ProportionMapper">
+	<resultMap id="BaseResultMap"
+		type="com.nyd.order.entity.Proportion">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="sky_ratio" jdbcType="INTEGER"
+			property="skyRatio" />
+		<result column="stable_ratio" jdbcType="INTEGER"
+			property="stableRatio" />
+		<result column="c_ratio" jdbcType="INTEGER" property="cRatio" />
+		<result column="d_ratio" jdbcType="INTEGER" property="dRatio" />
+		<result column="date_type" jdbcType="INTEGER"
+			property="dateType" />
+		<result column="ratio_date" jdbcType="TIMESTAMP"
+			property="ratioDate" />
+		<result column="delete_flag" jdbcType="INTEGER"
+			property="deleteFlag" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
+		<result column="update_time" jdbcType="TIMESTAMP"
+			property="updateTime" />
+		<result column="update_by" jdbcType="VARCHAR"
+			property="updateBy" />
+		<result column="max_amount" jdbcType="DECIMAL"
+			property="maxAmount" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, sky_ratio, stable_ratio, c_ratio,d_ratio,date_type,
+		ratio_date,delete_flag, create_time, update_time, update_by
+	</sql>
+
+
+	<insert id="save"
+		parameterType="com.nyd.order.model.ChannelInfo">
+		insert into xxd_order.t_channel_proportion_config
+		(channel_code,
+		channel_name,
+		channel_ratio,
+		channel_limit,
+		<if test="closeTimes != null">
+			close_times,
+		</if>
+		if_use,
+		ratio_use,
+		limit_use,
+		max_amount,
+		if_risk
+		) values(
+		#{channelCode,jdbcType=VARCHAR},
+		#{channelName,jdbcType=VARCHAR},
+		#{channelRatio,jdbcType=INTEGER},
+		#{channelLimit,jdbcType=INTEGER},
+		<if test="closeTimes != null">
+			#{closeTimes,jdbcType=VARCHAR},
+		</if>
+		#{ifUse,jdbcType=INTEGER},
+		#{ratioUse,jdbcType=INTEGER},
+		#{limitUse,jdbcType=INTEGER},
+		#{maxAmount,jdbcType=DECIMAL},
+		#{ifRisk,jdbcType=INTEGER}
+		)
+	</insert>
+	<select id="selectDate" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_order_proportion
+		WHERE DATE_FORMAT(ratio_date,'%Y-%m-%d') = CURDATE()
+		and delete_flag = 0
+	</select>
+
+	<select id="selectDefaultRadio" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_order_proportion
+		WHERE date_type = 1
+		and delete_flag = 0
+	</select>
+
+	<select id="selectChannelList"
+		resultType="com.nyd.order.entity.ChannelProportionConfig">
+		SELECT * from t_channel_proportion_config
+		where if_use = 0 AND delete_flag = 0
+	</select>
+	<select id="selectAllChannelList"
+		resultType="com.nyd.order.model.ChannelInfo"
+		parameterType="com.nyd.order.model.ChannelInfo">
+		SELECT * from t_channel_proportion_config
+		<where>
+			delete_flag = 0
+			<if test="ifUse != null">
+				AND if_use = #{ifUse,jdbcType=INTEGER}
+			</if>
+			<if test="channelCode != null and channel != ''">
+				AND channel_code = #{channelCode,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+
+	<update id="updateChannelConfig"
+		parameterType="com.nyd.order.ws.controller.dto.UpdateChannelConfigReqDTO">
+
+		update `t_channel_proportion_config`
+		<set>
+			<if test="channelRatio != null and channelRatio >=0">
+				channel_ratio = #{channelRatio,jdbcType=INTEGER},
+			</if>
+			<if test="channelLimit != null and channelLimit >=0">
+				channel_limit = #{channelLimit,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="update"
+		parameterType="com.nyd.order.model.ChannelInfo">
+
+		update `t_channel_proportion_config`
+		<set>
+			<if test="channelRatio != null and channelRatio >=0">
+				channel_ratio = #{channelRatio,jdbcType=INTEGER},
+			</if>
+			<if test="channelLimit != null and channelLimit >=0">
+				channel_limit = #{channelLimit,jdbcType=INTEGER},
+			</if>
+			<if test="maxAmount != null and maxAmount >=0">
+				max_amount = #{maxAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="maxAmountStr != null and maxAmountStr != ''">
+				max_amount = null,
+			</if>
+			<if test="closeTimes != null">
+				close_times = #{closeTimes,jdbcType=VARCHAR},
+			</if>
+			<if test="channelBank != null ">
+				channel_bank = #{channelBank,jdbcType=VARCHAR},
+			</if>
+			<if test="ifUse != null and channelLimit >=0">
+				if_use = #{ifUse,jdbcType=INTEGER},
+			</if>
+		</set>
+		where channel_code = #{channelCode,jdbcType=VARCHAR}
+	</update>
+
+	<select id="selectChannelConfigByCode"
+		resultType="com.nyd.order.entity.ChannelProportionConfig"
+		parameterType="string">
+		select * from t_channel_proportion_config
+		where channel_code = #{channel}
+	</select>
+
+</mapper>

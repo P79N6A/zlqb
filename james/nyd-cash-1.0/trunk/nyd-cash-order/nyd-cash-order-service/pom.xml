@@ -1,0 +1,177 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.creativearts.projects</groupId>
+        <artifactId>nyd-cash-order</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>nyd-cash-order-service</artifactId>
+    <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-order-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-order-dao</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-order-entity</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-order-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-support-service</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-support-model</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-product-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-product-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-user-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-user-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+
+        <!-- 调用Dubbo服务基本 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-uid-service</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tasfe.framework</groupId>
+            <artifactId>tasfe-rabbitmq</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.creativearts.das</groupId>
+            <artifactId>decision_audit_query_model</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+       		<groupId>com.creativearts.das</groupId>
+			<artifactId>decision_audit_query_api</artifactId>
+			<version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-capital-model</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-member-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-capital-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-application-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-msg-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-zeus-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>i-bank-order-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-capital-entity</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.creativearts.das</groupId>
+            <artifactId>decision_audit_query_model</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.8.0-beta0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-activity-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.creativearts.projects</groupId>
+            <artifactId>nyd-cash-activity-model</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        
+
+		<!-- 风控提供的dubbo接口jar -->
+		<dependency>
+            <groupId>com.creativearts.limit</groupId>
+            <artifactId>limit_api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.user.dao.mapper.RefundAmountMapper">
+	<insert id="save"
+		parameterType="com.nyd.user.model.RefundAmountInfo">
+		insert into xxd_user.t_refund_amount
+		(amount_code,
+		min_amount,
+		max_amount,
+		register_count
+		) values(
+		#{amountCode,jdbcType=VARCHAR},
+		#{minAmount,jdbcType=DECIMAL},
+		#{maxAmount,jdbcType=DECIMAL},
+		#{registerCount,jdbcType=INTEGER})
+	</insert>
+
+	<update id="update"
+		parameterType="com.nyd.user.model.RefundAmountInfo">
+		update xxd_user.t_refund_amount
+		<set>
+		<trim prefix="" suffix="" suffixOverrides=",">
+			<if test="minAmount != null">
+				min_amount = #{minAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="maxAmount != null">
+				max_amount = #{maxAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="registerCount != null">
+				register_count = #{registerCount,jdbcType=INTEGER},
+			</if>
+			<if test="amountStatus != null">
+				amount_status = #{amountStatus,jdbcType=INTEGER},
+			</if>
+		</trim>
+		</set>
+		where amount_code = #{amountCode}
+	</update>
+
+	<select id="queryRefundAmount" parameterType="java.util.Map"
+		resultType="com.nyd.user.model.RefundAmountInfo">
+		select * from t_refund_amount
+		<where>
+			<if test="amountStatus != null">
+				and amount_status = #{amountStatus,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+	<select id="getCountByAmount" parameterType="java.math.BigDecimal"
+		resultType="com.nyd.user.model.RefundAmountInfo">
+		select * from t_refund_amount
+		<where>
+			<if test="amount != null">
+				and min_amount &lt;= #{amount,jdbcType=DECIMAL}
+				and max_amount >= #{amount,jdbcType=DECIMAL}
+			</if>
+			and amount_status = 0 and delete_flag = 0
+		</where>
+		order by update_time desc limit 0,1
+	</select>
+	<select id="getRefundAmountByCode" parameterType="com.nyd.user.model.RefundAmountInfo"
+		resultType="com.nyd.user.model.RefundAmountInfo">
+		select * from t_refund_amount
+		<where>
+			<if test="amountCode != null and amountCode != ''">
+				and amount_code = #{amountCode,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+</mapper>

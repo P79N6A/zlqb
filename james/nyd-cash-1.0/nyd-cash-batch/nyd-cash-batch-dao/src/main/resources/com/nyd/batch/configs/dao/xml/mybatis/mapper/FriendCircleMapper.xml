@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.batch.dao.mapper.FriendCircleMapper">
+  <resultMap id="BaseResultMap" type="com.nyd.batch.entity.FriendCircle">
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="peer_num_top3_3m_peer_number_1" jdbcType="VARCHAR" property="peerNumTop33mPeerNumber1" />
+    <result column="peer_num_top3_3m_peer_num_loc_1" jdbcType="VARCHAR" property="peerNumTop33mPeerNumLoc1" />
+    <result column="peer_num_top3_3m_peer_number_2" jdbcType="VARCHAR" property="peerNumTop33mPeerNumber2" />
+    <result column="peer_num_top3_3m_peer_num_loc_2" jdbcType="VARCHAR" property="peerNumTop33mPeerNumLoc2" />
+    <result column="peer_num_top3_3m_peer_number_3" jdbcType="VARCHAR" property="peerNumTop33mPeerNumber3" />
+    <result column="peer_num_top3_3m_peer_num_loc_3" jdbcType="VARCHAR" property="peerNumTop33mPeerNumLoc3" />
+    <result column="peer_num_top3_6m_peer_number_1" jdbcType="VARCHAR" property="peerNumTop36mPeerNumber1" />
+    <result column="peer_num_top3_6m_peer_num_loc_1" jdbcType="VARCHAR" property="peerNumTop36mPeerNumLoc1" />
+    <result column="peer_num_top3_6m_peer_number_2" jdbcType="VARCHAR" property="peerNumTop36mPeerNumber2" />
+    <result column="peer_num_top3_6m_peer_num_loc_2" jdbcType="VARCHAR" property="peerNumTop36mPeerNumLoc2" />
+    <result column="peer_num_top3_6m_peer_number_3" jdbcType="VARCHAR" property="peerNumTop36mPeerNumber3" />
+    <result column="peer_num_top3_6m_peer_num_loc_3" jdbcType="VARCHAR" property="peerNumTop36mPeerNumLoc3" />
+  </resultMap>
+  <select id="selectByMobile" resultMap="BaseResultMap">
+    SELECT * FROM friend_circle WHERE mobile=#{mobile}
+  </select>
+</mapper>

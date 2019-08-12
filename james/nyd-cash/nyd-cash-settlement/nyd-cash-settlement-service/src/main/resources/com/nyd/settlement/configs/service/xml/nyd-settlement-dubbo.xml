@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+
+	<dubbo:application  name="${dubbo.application.name}" owner="dengw" />
+	<dubbo:registry protocol="zookeeper" address="${dubbo.registry.address}" timeout="${dubbo.zookeeper.timeout}" />
+	<dubbo:monitor protocol="registry" />
+	<dubbo:protocol port="${dubbo.protocol.port}"/>
+
+
+	<!--<dubbo:reference id="productContract" interface="com.nyd.product.api.ProductContract" timeout="1000000" />-->
+
+	<!--<dubbo:service ref="memberConfigContract" interface="com.nyd.member.api.MemberConfigContract" protocol="dubbo" />-->
+
+	<dubbo:reference id="productContract" interface="com.nyd.product.api.ProductContract" timeout="1000000" check="false"/>
+	<dubbo:reference id="orderDetailContract" interface="com.nyd.order.api.OrderDetailContract" timeout="1000000" check="false"/>
+	<dubbo:reference id="orderContract" interface="com.nyd.order.api.OrderContract" timeout="1000000" check="false"/>
+	<dubbo:reference id="billContract" interface="com.nyd.zeus.api.BillContract" timeout="1000000" check="false"/>
+	<dubbo:reference id="userBankContract" interface="com.nyd.user.api.UserBankContract" timeout="1000000" check="false"/>
+	<dubbo:reference id="payService" interface="com.nyd.pay.api.service.PayService"  timeout="1000000" check="false"/>
+	<dubbo:reference id="payServiceYmt" interface="com.ibank.pay.api.service.PayService"  timeout="1000000" check="false"/>
+	<dubbo:reference id="userIdentityContract" interface="com.nyd.user.api.UserIdentityContract" timeout="1000000" check="false"/>
+
+	<!-- *****************************生产者***************************** -->
+	<!--<dubbo:service ref="ymtRefundService" interface="com.nyd.settlement.service.YmtRefundService"  protocol="dubbo"/>-->
+
+
+</beans>

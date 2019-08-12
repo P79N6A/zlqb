@@ -1,0 +1,244 @@
+body, div, span, header, footer, nav, section, aside, article, ul, dl, dt, dd, li, a, p, h1, h2, h3, h4,h5, h6, i, b, textarea, button, input, select, figure, figcaption {
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    list-style: none;
+    font-style: normal;
+    text-decoration: none;
+    border: none;
+    font-family: "Microsoft Yahei",sans-serif;
+    -webkit-tap-highlight-color:transparent;
+    -webkit-font-smoothing: antialiased;
+    &:focus {
+        outline: none;
+    }
+}
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/  
+::-webkit-scrollbar  
+{  
+    width: 5px;  
+    height: 10px;  
+    background-color: rgb(218, 212, 212);  
+}  
+  
+// /*定义滚动条轨道 内阴影+圆角*/  
+// ::-webkit-scrollbar-track  
+// {  
+//     -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0);  
+//     border-radius: 10px;  
+//     background-color: #F5F5F5;  
+// }  
+  
+// /*定义滑块 内阴影+圆角*/  
+// ::-webkit-scrollbar-thumb  
+// {  
+//     border-radius: 10px;  
+//     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);  
+//     background-color: #555;  
+// }  
+input[type="button"], input[type="submit"], input[type="search"], input[type="reset"] {
+    -webkit-appearance: none;
+}
+textarea { -webkit-appearance: none;}   
+
+html,body{
+    height: 100%;
+    width: 100%;
+}
+.fillcontain{
+    // height: 100%;
+    width: 100%;
+}
+.clear:after{
+    content: '';
+    display: block;
+    clear: both;
+}
+.clear{
+    zoom:1;
+}
+.ft {
+	float: left;
+}
+.rt {
+	float: right;
+}
+.clearfix:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+  font-size:0;
+}
+.clearfix { *zoom:1;}
+.back_img{
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.margin{
+    margin: 0 auto;
+}
+
+.left{
+    float: left;
+}
+
+.right{
+    float: right;
+}
+
+.hide{
+    display: none;
+}
+
+.show{
+    display: block;
+}
+
+.ellipsis{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.com_pad10_20 {
+    padding: 10px 20px;
+}
+.com_cen {
+    text-align: center;
+}
+.com_left {
+    text-align: left;
+}
+.com_right {
+    text-align: right;
+}
+.com_1px {
+    border: 1px solid #eee;
+}
+.icon_menu_cust {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    margin-right: 10px;
+    background: url("../assets/img/icon/icon_menu_cust.png") no-repeat center;
+    background-size: 24px 24px;
+}
+.icon_menu_set {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    margin-right: 10px;
+    background: url("../assets/img/icon/icon_menu_set.png") no-repeat center;
+    background-size: 24px 24px;
+}
+
+.icon_mune_com {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    margin-right: 10px;
+    background: url("../assets/img/icon/icon_mune_com.png") no-repeat center;
+    background-size: 24px 24px;
+}
+.icon_act {//icon_act（合同管理）
+    background: url("../assets/img/icon/icon_act.png") no-repeat center;
+    background-size: 24px 24px;
+}
+.icon_add {//icon_add（总部催收订单管理）
+    background: url("../assets/img/icon/icon_add.png") no-repeat center;
+    background-size: 24px 24px;
+}
+.icon_add {//icon_add（总部催收订单管理）
+    background: url("../assets/img/icon/icon_add.png") no-repeat center;
+    background-size: 24px 24px;
+}
+
+.icon_dyn{//icon_dyn（数据统计）
+    background: url("../assets/img/icon/icon_dyn.png") no-repeat center;
+    background-size: 24px 24px;
+}
+.icon_gro {
+    //icon_gro（客户管理）
+    background: url("../assets/img/icon/icon_gro.png") no-repeat center;
+    background-size: 24px 24px;
+}
+
+.icon_hea {
+    //icon_hea（财务管理）
+    background: url("../assets/img/icon/icon_hea.png") no-repeat center;
+    background-size: 24px 24px;
+}
+.icon_inv {
+    //icon_inv（邀请好友活动管理）
+    background: url("../assets/img/icon/icon_inv.png") no-repeat center;
+    background-size: 24px 24px;
+}
+.icon_man {
+    //icon_man（公司催收订单管理）
+    background: url("../assets/img/icon/icon_man.png") no-repeat center;
+    background-size: 24px 24px;
+}
+.icon_min {
+    //icon_min（个人催收订单管理）
+    background: url("../assets/img/icon/icon_min.png") no-repeat center;
+    background-size: 24px 24px;
+}
+.icon_ord {
+    //icon_ord（订单管理）
+    background: url("../assets/img/icon/icon_ord.png") no-repeat center;
+    background-size: 24px 24px;
+}
+.icon_pro {
+    //icon_pro（产品管理）
+    background: url("../assets/img/icon/icon_pro.png") no-repeat center;
+    background-size: 24px 24px;
+}
+.icon_set {
+    //icon_set（系统设置）
+    background: url("../assets/img/icon/icon_set.png") no-repeat center;
+    background-size: 24px 24px;
+}
+.icon_sha {
+    //icon_sha（渠道管理）
+    background: url("../assets/img/icon/icon_sha.png") no-repeat center;
+    background-size: 24px 24px;
+}
+.com_pad20 {
+    padding: 5px 0 0px;
+}
+.pagination_wrap {
+    padding: 20px 0 30px;
+}
+.com_relative {
+  position: relative;
+}
+.com_icon_warn {
+  // content: '';
+  display: inline-block;
+  // position: absolute;
+  width: 15px;
+  height: 15px;
+  background: url("../assets/img/warn.png") no-repeat center;
+  background-size: 15px 15px;
+  vertical-align: middle;
+  padding-left: 10px;
+  margin-top: -3px;
+}
+.com_icon_warnBg {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  background: url("../assets/img/warnBg.png") no-repeat center;
+  background-size: 15px 15px;
+  vertical-align: middle;
+  padding-left: 10px;
+  margin-top: -3px;
+}
+.com_absulute {
+  position: absolute;
+  top: 0;
+  left: 0;
+}

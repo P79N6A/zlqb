@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.order.dao.mapper.OrderLoanRecordMapper" > 
+	<!-- Result Map-->
+	<resultMap id="BaseResultMap" type="com.nyd.order.model.TOrderLoanRecord" >
+			<result column="id" property="id"/>
+			<result column="seq_no" property="seqNo"/>
+			<result column="order_no" property="orderNo"/>
+			<result column="create_time" property="createTime"/>
+			<result column="update_time" property="updateTime"/>
+			<result column="status" property="status"/>
+			<result column="remark" property="remark"/>
+			<result column="type" property="type"/>
+			<result column="sys_user_id" property="sysUserId"/>
+			<result column="user_no" property="userNo"/>
+		</resultMap>
+	       
+	<!-- t_order_loan_record table all fields -->
+	<sql id="Base_Column_List" >
+		 id,seq_no,order_no,create_time,update_time,status,remark,type,sys_user_id,user_no
+	</sql>
+	   
+	<!-- 查询条件 -->
+	<sql id="where_Clause">
+	where 1=1
+	<trim  suffixOverrides="," >
+				 		<if test="id != null and id != ''" >
+		    and id =  #{id}
+		</if>
+				 		<if test="seqNo != null and seqNo != ''" >
+		    and seq_no =  #{seqNo}
+		</if>
+				 		<if test="orderNo != null and orderNo != ''" >
+		    and order_no =  #{orderNo}
+		</if>
+				<if test="createTime != null" >
+		    and create_time =  #{createTime}
+		</if>
+				<if test="updateTime != null" >
+		    and update_time =  #{updateTime}
+		</if>
+				<if test="status != null" >
+		    and status =  #{status}
+		</if>
+				 		<if test="remark != null and remark != ''" >
+		    and remark =  #{remark}
+		</if>
+				<if test="type != null" >
+		    and type =  #{type}
+		</if>
+				 		<if test="sysUserId != null and sysUserId != ''" >
+		    and sys_user_id =  #{sysUserId}
+		</if>
+		 		<if test="userNo != null and userNo != ''" >
+		    and user_no =  #{userNo}
+		</if>
+		</trim>
+	</sql>
+	
+	<!-- 插入提现记录-放款 -->
+	<insert id="insert" parameterType="com.nyd.order.model.TOrderLoanRecord" >
+	  insert into t_order_loan_record(id,seq_no,order_no,create_time,update_time,status,remark,type,sys_user_id,user_no)
+ values(#{id},#{seqNo},#{orderNo},#{createTime},#{updateTime},#{status},#{remark},#{type},#{sysUserId},#{userNo})
+	</insert>
+	
+	<!-- 修改提现记录-放款-->  
+	 <update id="update" parameterType="com.nyd.order.model.TOrderLoanRecord" >
+	  update t_order_loan_record set seq_no=#{seqNo},order_no=#{orderNo},create_time=#{createTime},update_time=#{updateTime},status=#{status},remark=#{remark},type=#{type},sys_user_id=#{sysUserId},user_no =  #{userNo} where id=#{id}
+	 </update>
+	 
+	 <!-- 选择修改提现记录-放款-->
+	<update id="updateBySelective" parameterType="com.nyd.order.model.TOrderLoanRecord" >
+		update t_order_loan_record set 
+	<trim  suffixOverrides="," >
+	<if test="seqNo != null  and seqNo != '' ">
+		seq_no=#{seqNo},
+	</if>
+	<if test="orderNo != null  and orderNo != '' ">
+		order_no=#{orderNo},
+	</if>
+	<if test="createTime != null  ">
+		create_time=#{createTime},
+	</if>
+	<if test="updateTime != null  ">
+		update_time=#{updateTime},
+	</if>
+	<if test="status != null  ">
+		status=#{status},
+	</if>
+	<if test="remark != null  and remark != '' ">
+		remark=#{remark},
+	</if>
+	<if test="type != null  ">
+		type=#{type},
+	</if>
+	<if test="sysUserId != null  and sysUserId != '' ">
+		sys_user_id=#{sysUserId},
+	</if>
+	<if test="userNo != null and userNo != ''" >
+		 user_no =  #{userNo}
+	</if>
+	</trim> where id=#{id}
+	</update>
+	
+	<!-- 删除提现记录-放款 -->
+	<update id="delete" parameterType="Object">
+		delete 	 from t_order_loan_record where id = #{id}
+	</update>
+	
+	<!-- 批量删除提现记录-放款 -->
+	<delete id="batchDelete" parameterType="Object">
+		delete 	 from t_order_loan_record where id in 
+		<foreach collection="array" index="index" item="item" open="(" separator="," close=")">  
+	       	#{item}  
+	   	</foreach> 
+	</delete>
+	 
+	<!-- 依据主键查找提现记录-放款 -->
+	<select id="selectById" resultMap="BaseResultMap" >
+		select <include refid="Base_Column_List" /> 
+	 from t_order_loan_record where id = #{id}
+	</select>
+	  	
+	<!-- 提现记录-放款 列表总数  为分页组件使用-->
+	<select id="pageTotalRecord" resultType="java.lang.Long" parameterType="com.nyd.order.model.form.TOrderLoanRecordSearchForm">
+		select count(1) from t_order_loan_record 
+		<include refid="where_Clause"/>
+	</select>
+	  	
+	<!-- 分页中的提现记录-放款集合，为分页组件使用 -->
+	<select id="pageData" resultMap="BaseResultMap" parameterType="com.nyd.order.model.form.TOrderLoanRecordSearchForm">
+		select 
+		<include refid="Base_Column_List"/>
+		from t_order_loan_record 
+		<include refid="where_Clause"/>
+		<if test="orderCondition != null and orderCondition != ''" >
+	      ${orderCondition}
+	    </if>
+	    ${queryCondition}
+	</select>
+	
+	<!--依据条件统计 提现记录-放款总数-->
+	<select id="count" resultType="java.lang.Long" parameterType="com.nyd.order.model.form.TOrderLoanRecordSearchForm">
+		select count(1) from t_order_loan_record 
+		<include refid="where_Clause"/>
+	</select>
+ 
+</mapper>   

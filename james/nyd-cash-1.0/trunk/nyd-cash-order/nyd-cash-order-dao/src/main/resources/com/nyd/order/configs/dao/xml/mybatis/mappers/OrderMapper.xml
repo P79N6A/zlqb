@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.order.dao.mapper.OrderMapper">
+
+<select id="sqlQuery" parameterType="com.nyd.order.model.common.SqlSearchForm" resultType="com.alibaba.fastjson.JSONObject">
+	         <![CDATA[
+          			 ${queryValide}
+        	]]>
+	</select>
+	<select id="sqlCount" parameterType="com.nyd.order.model.common.SqlSearchForm" resultType="java.lang.Long">
+	        <![CDATA[
+          			 SELECT count(1)  FROM (${queryValide}) obj
+        	]]>
+	</select>
+	<select id="sqlPage" parameterType="com.nyd.order.model.common.SqlSearchForm" resultType="com.alibaba.fastjson.JSONObject">
+	         <![CDATA[
+	         		${queryValide}
+        	]]>
+        	
+	</select>
+	
+	<update id="deleteSql" parameterType="com.nyd.order.model.common.SqlSearchForm">
+		  <![CDATA[
+	         		${queryValide}
+        	]]>
+	</update>
+	
+	<insert id="insertSql" parameterType="com.nyd.order.model.common.SqlSearchForm">
+		  <![CDATA[
+	         		${queryValide}
+        	]]>
+	</insert>
+	<insert id="updateSql" parameterType="com.nyd.order.model.common.SqlSearchForm">
+		  <![CDATA[
+	         		${queryValide}
+        	]]>
+	</insert>
+	<select id="sqlSum" parameterType="com.nyd.order.model.common.SqlSearchForm" resultType="java.lang.Long">
+	        <![CDATA[
+          			 ${queryValide}
+        	]]>
+	</select>
+	
+    <resultMap type="com.nyd.order.model.OrderInfo" id="BaseResultMap">
+        <id column="loan_time" property="loanTime" jdbcType="TIMESTAMP" />
+        <result column="loan_amount" property="loanAmount" jdbcType="DECIMAL" />
+        <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+        <result column="borrow_time" property="borrowTime" jdbcType="TIMESTAMP" />
+        <result column="pay_time" property="payTime" jdbcType="TIMESTAMP" />
+        <result column="promise_repayment_time" property="promiseRepaymentTime" jdbcType="TIMESTAMP" />
+        <result column="actual_settle_date" property="actualRepaymentTime" jdbcType="TIMESTAMP" />
+        <result column="interest" property="interest" jdbcType="DECIMAL" />
+        <result column="repay_total_amount" property="repayTotalAmount" jdbcType="DECIMAL" />
+        <result column="order_status" property="orderStatus" jdbcType="INTEGER" />
+        <result column="if_risk" property="ifRisk" jdbcType="INTEGER" />
+        <result column="ibank_order_no" property="iBankOrderNo" jdbcType="VARCHAR" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+    </resultMap>
+
+
+    <!--根据订单编号查找对应订单详情-->
+    <select id="getOrderInfoByOrderNo" resultMap="BaseResultMap" parameterType="String" >
+        SELECT
+        o.loan_time ,
+        o.loan_amount ,
+        o.order_no ,
+        o.borrow_time ,
+        o.pay_time ,
+        o.promise_repayment_time ,
+        o.interest ,
+        o.repay_total_amount ,
+        o.order_status,
+        o.user_id
+        FROM
+        xxd_order.t_order o
+        where o.order_no = #{orderNo,jdbcType=VARCHAR}
+    </select>
+
+	<!--根据订单编号查找对应订单详情-->
+	<select id="getObjectsByOrderNo" resultMap="BaseResultMap" parameterType="java.util.Map" >
+		SELECT
+		o.loan_time ,
+		o.loan_amount ,
+		o.order_no ,
+		o.borrow_time ,
+		o.pay_time ,
+		o.promise_repayment_time ,
+		b.actual_settle_date ,
+		o.interest ,
+		o.repay_total_amount ,
+		o.order_status
+		FROM
+		xxd_order.t_order o
+		LEFT JOIN xxd_zeus.t_bill b ON o.order_no = b.order_no
+
+		<where>
+			AND o.order_no = #{orderNo,jdbcType=VARCHAR}
+			AND o.delete_flag = 0
+			AND b.delete_flag = 0
+		</where>
+
+	</select>
+    <!--根据银码头订单号查找对应订单详情-->
+    <select id="getObjectsByIbankOrderNo" resultMap="BaseResultMap" parameterType="java.util.Map" >
+        SELECT
+        o.loan_time ,
+        o.loan_amount ,
+        o.order_no ,
+        o.ibank_order_no ,
+        o.borrow_time ,
+        o.pay_time ,
+        o.promise_repayment_time,
+        b.actual_settle_date ,
+        o.interest ,
+        o.repay_total_amount ,
+        o.order_status
+        FROM
+        xxd_order.t_order o
+        LEFT JOIN xxd_zeus.t_bill b ON o.order_no = b.order_no
+
+        <where>
+            AND o.ibank_order_no = #{iBankOrderNo,jdbcType=VARCHAR}
+            AND o.delete_flag = 0
+            AND b.delete_flag = 0
+        </where>
+
+    </select>
+
+    <select id="selectTodayOrderCountByFundCode" parameterType="string" resultType="int">
+        SELECT COUNT(user_id) FROM xxd_order.t_order
+        WHERE fund_code = #{fundCode} and order_status in (30,40,50) AND DATE_FORMAT(create_time,'%m-%d-%Y') = DATE_FORMAT(NOW(),'%m-%d-%Y')
+    </select>
+
+    <select id="selectAssetNo" parameterType="string" resultType="com.nyd.order.model.dto.OrderQcgzDto">
+        SELECT a.bank_account,a.bank_name,b.asset_no from xxd_order.t_order a ,xxd_order.t_balance_order b
+        WHERE a.order_no = b.order_no and a.order_no = #{orderNo};
+    </select>
+
+    <select id="selectOrderInfo" parameterType="string" resultType="com.nyd.order.model.OrderInfo">
+        select * from xxd_order.t_order a,xxd_order.t_balance_order b
+        WHERE a.order_no = b.order_no and b.asset_no = #{assetNo};
+    </select>
+
+    <select id="selectOrderInfos" resultType="com.nyd.order.model.OrderInfo" parameterType="java.util.List">
+        select
+        b.asset_no,
+        o.*
+        from xxd_order.t_order o,xxd_order.t_balance_order b
+        WHERE o.order_no = b.order_no and b.asset_no in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+    <update id="updateFundCode" parameterType="string">
+        update xxd_order.t_order set fund_code = 'qcgz' where order_no = #{orderNo};
+    </update>
+
+    <select id="selectOrderInfosFromJx" resultType="com.nyd.order.model.OrderInfo">
+        select   b.asset_no
+        from xxd_order.t_order o,xxd_order.t_balance_order b
+        WHERE o.order_no = b.order_no
+        and o.order_status = '50'
+        and o.fund_code = 'jx'
+        and DATE_FORMAT(o.promise_repayment_time,'%m-%d-%Y') = DATE_FORMAT(DATE_ADD(CURDATE(),INTERVAL 24 HOUR),'%m-%d-%Y')
+
+    </select>
+
+    <select id="queryOrdersWhenOrderStatusIsWait" resultType="com.nyd.order.model.OrderInfo">
+        SELECT
+	      *
+        FROM
+	      xxd_order.t_order
+        WHERE
+	      fund_code = #{fundCode}
+        AND order_status = '30'
+        AND create_time > '2018-09-17 00:00:00'
+    </select>
+
+    <select id="getOrderByIbankOrderNo" resultType="com.nyd.order.model.OrderInfo">
+        SELECT
+	      order_no,user_id
+        FROM
+	      xxd_order.t_order
+        WHERE
+	      ibank_order_no = #{orderNo}
+    </select>
+    <select id="getOrderByMemberId" resultType="com.nyd.order.model.OrderInfo" parameterType="string">
+        SELECT
+	      *
+        FROM
+	      xxd_order.t_order
+        WHERE
+	      member_id = #{memberId} order by create_time limit 0,1
+    </select>
+    
+    <select id="getWaitLoan" resultType="com.nyd.order.model.OrderInfo" parameterType="string">
+       select 
+         *
+       from
+        xxd_order.t_order
+       where 
+           fund_code = #{funCode}
+           AND order_status ='30'
+           AND if_sign = '1'
+           AND date_add(NOW(), interval -10 minute) >= update_time
+    </select>
+    <select id="getSuccessRemitAmount" resultType="java.math.BigDecimal" parameterType="string">
+       select 
+         sum(loan_amount)
+       from
+        xxd_order.t_order
+       where 
+           fund_code = #{funCode}
+           AND if_sign = '1'
+           AND ((order_status=30 and date_format(update_time, '%Y-%m-%d') = date_format(NOW(), '%Y-%m-%d')) or (order_status=50 and date_format(pay_time, '%Y-%m-%d') = date_format(NOW(), '%Y-%m-%d')))
+	</select>
+	
+    <select id="getRefusedOrders" resultType="com.nyd.order.model.OrderInfo">
+        select * from xxd_order.t_order
+        where order_status = 1000
+        and update_time >= #{startTime}
+        and update_time &lt; #{endTime} 
+    </select>
+	
+	
+	<select id="queryOrderByUserType"  resultType="com.nyd.order.model.order.OrderListVO" parameterType="com.nyd.order.model.order.OrderParamVO">
+	    select 
+		t.order_no orderNo,
+		t.user_id user_id,
+		t1.mobile phone,
+		t1.real_name userName,
+		t1.source channel,
+		t.loan_number borrowPeriods,
+		t.create_time inTime,
+		t.loan_time regTime,
+		t.app_name loanProduct 
+		from t_order t 
+		INNER JOIN
+		t_order_detail t1 on t.order_no = t1.order_no
+		where 1=1 and t.order_status = 10 AND t.who_audit =1
+		and (t.assign_id is null or t.assign_id = '')
+		<if test="channel !=null and channel !=''">
+		and t1.source = #{channel}
+		</if>
+		<if test="inTimeStart !=null and inTimeStart !=''">
+		and t.create_time &gt; #{inTimeStart} 
+		</if>
+		<if test="inTimeEnd !=null and inTimeEnd !=''">
+		and t.create_time &lt;  #{inTimeEnd}
+		</if>
+		
+		<if test="userName !=null and userName !=''">
+		and t1.real_name = #{userName}
+		</if>
+		
+		<if test="phone !=null and phone !=''">
+		and t1.mobile = #{phone}
+		</if>
+		 ORDER BY t.create_time asc
+		
+	    ${queryCondition}
+		
+	</select>
+	
+	<select id="queryOrderByUserTypeCount"  resultType="integer" parameterType="com.nyd.order.model.order.OrderParamVO">
+	    select 
+		count(1)
+		from t_order t 
+		INNER JOIN
+		t_order_detail t1 on t.order_no = t1.order_no
+		where 1=1 and t.order_status = 10 AND t.who_audit =1
+		and (t.assign_id is null or t.assign_id = '')
+		<if test="channel !=null and channel !=''">
+		and t1.source = #{channel}
+		</if>
+		<if test="inTimeStart !=null and inTimeStart !=''">
+		and t.create_time &gt; #{inTimeStart} 
+		</if>
+		<if test="inTimeEnd !=null and inTimeEnd !=''">
+		and t.create_time &lt;  #{inTimeEnd}
+		</if>
+		
+		<if test="userName !=null and userName !=''">
+		and t1.real_name = #{userName}
+		</if>
+		
+		<if test="phone !=null and phone !=''">
+		and t1.mobile = #{phone}
+		</if>
+	</select>
+
+
+	<select id="getOrderList" parameterType="com.nyd.order.model.vo.OrderlistVo" resultType="com.nyd.order.model.vo.OrderlistVo">
+		select 
+			o.order_no as orderNo,
+			o.order_status as orderStatus,
+			o.user_id as userId,
+			o.loan_number as productPeriods,
+			od.real_name as custName,od.mobile as mobile,
+			od.source as source, 
+			o.loan_time as createTime,
+			o.app_name as procuctName 
+		from t_order as o  
+		INNER JOIN t_order_detail as od 
+		ON o.order_no = od.order_no
+		where od.delete_flag = 0
+		<if test="mobile !=null and mobile !=''">
+			and od.mobile = #{mobile}
+		</if>
+		<if test="custName !=null and custName !=''">
+			and od.real_name = #{custName}
+		</if>
+		<if test="source !=null and source !=''">
+			and od.source = #{source}
+		</if>
+		<if test="orderStatus !=null and orderStatus !=''">
+			and o.order_status = #{orderStatus}
+		</if>
+		ORDER BY o.loan_time DESC;
+	</select>
+	
+	<select id="getOrderListCount" parameterType="com.nyd.order.model.vo.OrderlistVo" resultType="java.lang.Long">
+		select 
+			count(1)
+		from t_order as o  
+		INNER JOIN t_order_detail as od 
+		ON o.order_no = od.order_no
+		where od.delete_flag = 0
+		<if test="mobile !=null and mobile !=''">
+			and od.mobile = #{mobile}
+		</if>
+		<if test="custName !=null and custName !=''">
+			and od.real_name = #{custName}
+		</if>
+		<if test="source !=null and source !=''">
+			and od.source = #{source}
+		</if>
+		<if test="orderStatus !=null and orderStatus !=''">
+			and o.order_status = #{orderStatus}
+		</if>
+	</select>
+
+	
+	
+	<!-- 后台用户 列表总数  为分页组件使用-->
+	<select id="pageTotalOrderCheck" resultType="java.lang.Long" parameterType="com.nyd.order.model.OrderCheckQuery">
+		
+		select  count(1) 
+		from t_order xo INNER JOIN t_order_detail od on xo.order_no=od.order_no
+		WHERE  1=1  and xo.order_status='10' and xo.who_audit='1' 
+		and (xo.assign_id is not null or xo.assign_id !='')
+    		<if test="userName != null and userName !=''" >
+		and od.real_name = #{userName}
+		</if>
+    	<if test="checkPersonnel != null and checkPersonnel !=''" >
+      		and  xo.assign_name = #{checkPersonnel}
+   	 	</if>
+   	 	<if test="accountNumber != null and accountNumber !=''" >
+		and od.mobile = #{accountNumber}
+		</if>
+    	<if test="appName != null and appName !=''" >
+      		and  od.source = #{appName}
+   	 	</if>
+    	<if test="beginTime != null and beginTime !=''" >
+      		and xo.assign_time &gt; #{beginTime}
+    	</if>
+    	
+    	<if test="endTime != null and endTime !=''" >
+      		and xo.assign_time &lt; #{endTime}
+    	</if>
+	</select>
+	  	
+	<!-- 分页中的后台用户集合，为分页组件使用 -->
+	<select id="getOrderCheck" resultType="com.nyd.order.model.OrderCheckVo" parameterType="com.nyd.order.model.OrderCheckQuery">
+		select xo.user_id as userId,xo.assign_id as assignId, xo.assign_name as assignName,xo.borrow_periods loanNumber,od.real_name userName, od.mobile mobile,od.source channel ,
+		xo.loan_time loanTime,xo.app_name appName,xo.assign_time assignTime,xo.order_no orderNo
+		from t_order xo INNER JOIN t_order_detail od on xo.order_no=od.order_no
+		WHERE  1=1  and xo.order_status='10' and xo.who_audit='1' 
+		and (xo.assign_id is not null or xo.assign_id !='')
+		<if test="userName != null and userName !=''" >
+		and od.real_name = #{userName}
+		</if>
+		<if test="accountNumber != null and accountNumber !=''" >
+		and od.mobile = #{accountNumber}
+		</if>
+    	<if test="checkPersonnel != null and checkPersonnel !=''" >
+      		and  xo.assign_name = #{checkPersonnel}
+   	 	</if>
+    	<if test="appName != null and appName !=''" >
+      		and  od.source = #{appName}
+   	 	</if>
+    	<if test="beginTime != null and beginTime !=''" >
+      		and xo.assign_time &gt; #{beginTime}
+    	</if>
+    	
+    	<if test="endTime != null and endTime !=''" >
+      		and xo.assign_time &lt; #{endTime}
+    	</if>
+    	ORDER BY xo.assign_time
+	</select>
+	
+	
+	<select id="getOrderHisRecord" resultType="com.nyd.order.model.OrderRecordHisVo" parameterType="com.nyd.order.model.UserNoParam" >
+		select  xo.order_no as orderNo,xo.create_time as applyDate,xo.order_status applyResult,xo.reviewed_name approvingOfficer,
+		xo.reviewed_remark applicationOpinion     from   t_order  xo   where 1=1       
+    	<if test="userId != null and userId !=''" >
+      		and  xo.user_id = #{userId}
+   	 	</if>
+    	ORDER BY xo.create_time DESC
+	</select>
+	
+
+
+	
+	<update id="orderApplicationToUser" parameterType="map">
+          update t_order
+          set 
+		assign_time = NOW() ,
+		assign_id = #{id} ,
+		assign_name = #{name} ,
+		order_status = 10 	
+        where order_no = #{entity.orderNo}
+	</update>
+	
+	
+
+</mapper>
