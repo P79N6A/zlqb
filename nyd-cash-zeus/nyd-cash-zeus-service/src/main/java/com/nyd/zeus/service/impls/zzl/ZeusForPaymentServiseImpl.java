@@ -106,26 +106,29 @@ public class ZeusForPaymentServiseImpl implements ZeusForPaymentServise {
 				record.setStatus(1);
 				// 如果扣款成功了， 则需要 减去剩余金额， 因为本次是第一次 所以直接清空0
 				record.setRemainMoney(new BigDecimal(0d));
+				common.setMsg("扣款成功!");
 			}
 			if (FAIL_MSG.equals(resultStatus)) {
 				record.setStatus(0);
+				common.setMsg("扣款失败!");
 			}
 			if (PROCESS_MSG.equals(resultStatus)) {
 				record.setStatus(-1);
 				// 设置备份金额
 				record.setBackupMoney(record.getRemainMoney());
+				common.setMsg("交易处理中!");
 
 			}
 			record.setUpdateTime(new SimpleDateFormat(STYLE_1).format(new Date()));
 			paymentRiskRecordDao.save(record);
+			common.setSuccess(true);
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error(e.getMessage(),e);
+			logger.error(" 讯联主动扣款异常：" + e.getMessage(),e);
+			common.setMsg("操作异常!");
+			common.setSuccess(false);
 		}
-
-		// 流水后期记录>> 暂定
-		common.setSuccess(true);
-		common.setMsg("操作结束!");
+		
 		return common;
 
 	}
