@@ -14,7 +14,10 @@ public class PaymentVo implements Serializable{
 	private String bindUserId;//合利宝绑卡用户id
 	private String mobile;//用户手机号
 	
-	private BigDecimal payMoney;
+	private BigDecimal payMoney;//金额
+	private String settleStatus;//1:结清 ,2:未结清
+	
+	
 	
 	
 	public String getBillNo() {
@@ -46,6 +49,12 @@ public class PaymentVo implements Serializable{
 	}
 	public void setPayMoney(BigDecimal payMoney) {
 		this.payMoney = payMoney;
+	}
+	public String getSettleStatus() {
+		return settleStatus;
+	}
+	public void setSettleStatus(String settleStatus) {
+		this.settleStatus = settleStatus;
 	}
 	
 	
