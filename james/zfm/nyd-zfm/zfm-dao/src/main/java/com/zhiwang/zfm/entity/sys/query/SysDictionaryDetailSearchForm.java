@@ -1,9 +1,0 @@
-package com.zhiwang.zfm.entity.sys.query;
-
-import com.zhiwang.zfm.common.page.BaseSearchForm;
-
-public class SysDictionaryDetailSearchForm extends BaseSearchForm {
-	
-		private String id;			//	private String name;			//明细名称	private String dictionaryId;			//类型(大类)编码	private String code;			//大类编号	private String detailCode;			//类型(明细)编码	private Integer status;			//状态(1:可用 0:停用)	private String price;			//明细值	private Long reorder;			//排序码 	private java.util.Date createTime;			//创建时间	private java.util.Date updateTime;			//更新时间	public String getId() {	    return this.id;	}	public void setId(String id) {	    this.id=id;	}	public String getName() {	    return this.name;	}	public void setName(String name) {	    this.name=name;	}	public String getDictionaryId() {	    return this.dictionaryId;	}	public void setDictionaryId(String dictionaryId) {	    this.dictionaryId=dictionaryId;	}	public String getCode() {	    return this.code;	}	public void setCode(String code) {	    this.code=code;	}	public String getDetailCode() {	    return this.detailCode;	}	public void setDetailCode(String detailCode) {	    this.detailCode=detailCode;	}	public Integer getStatus() {	    return this.status;	}	public void setStatus(Integer status) {	    this.status=status;	}	public String getPrice() {	    return this.price;	}	public void setPrice(String price) {	    this.price=price;	}	public Long getReorder() {	    return this.reorder;	}	public void setReorder(Long reorder) {	    this.reorder=reorder;	}	public java.util.Date getCreateTime() {	    return this.createTime;	}	public void setCreateTime(java.util.Date createTime) {	    this.createTime=createTime;	}	public java.util.Date getUpdateTime() {	    return this.updateTime;	}	public void setUpdateTime(java.util.Date updateTime) {	    this.updateTime=updateTime;	}
-	
-}

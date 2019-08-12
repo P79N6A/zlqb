@@ -1,8 +1,0 @@
-[08-08 09:44:05.449] [INFO] [CatClientModule] Current working directory is D:\nyd-cash
-[08-08 09:44:05.467] [WARN] [DefaultClientConfigManager] Global config file(\data\appdatas\cat\client.xml) not found, IGNORED.
-[08-08 09:44:05.468] [INFO] [DefaultClientConfigManager] Find domain name nyd-cash-application from app.properties.
-[08-08 09:44:05.638] [WARN] [DefaultTransportManager] CAT was DISABLED due to not initialized yet!
-[08-08 09:56:13.516] [INFO] [CatClientModule] Current working directory is D:\nyd-cash
-[08-08 09:56:13.565] [WARN] [DefaultClientConfigManager] Global config file(\data\appdatas\cat\client.xml) not found, IGNORED.
-[08-08 09:56:13.579] [INFO] [DefaultClientConfigManager] Find domain name nyd-cash-application from app.properties.
-[08-08 09:56:13.739] [WARN] [DefaultTransportManager] CAT was DISABLED due to not initialized yet!

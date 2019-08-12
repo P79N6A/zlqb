@@ -1,5 +1,0 @@
-com/nyd/msg/service/ISendSmsService.class
-com/nyd/msg/exception/ChannelException.class
-com/nyd/msg/exception/OverTimesException.class
-com/nyd/msg/exception/ErrorInfo.class
-com/nyd/msg/exception/ValidateException.class
