@@ -22,6 +22,9 @@
 	<dubbo:service ref="zeusForWHServise" interface="com.nyd.zeus.api.zzl.ZeusForWHServise" protocol="dubbo" />
 	<dubbo:service ref="zeusForLXYService" interface="com.nyd.zeus.api.zzl.ZeusForLXYService" protocol="dubbo" />
 	
+	<dubbo:service ref="zeusForPaymentServise" interface="com.nyd.zeus.api.zzl.ZeusForPaymentServise" protocol="dubbo" />
+	
+	
 	<dubbo:service ref="zeusForRiskPaymentServise" interface="com.nyd.zeus.api.payment.PaymentRiskRecordService" protocol="dubbo" />
 	<dubbo:service ref="zeusForOrderPayBackServise" interface="com.nyd.zeus.api.zzl.ZeusForOrderPayBackServise" protocol="dubbo" />
 
