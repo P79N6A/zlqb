@@ -242,6 +242,41 @@ public class BillRepayServiceImpl implements BillRepayService {
 		int referenceHour = param.getReferenceHour();
 		BigDecimal referenceMoney = param.getReferenceMoney();
 		BigDecimal lateFeeMax = param.getLatefeeMax();
+		
+		//还款
+		if(BillStatusEnum.REPAY_SUCESS.getCode().equals(billStatus)){
+			common.setCode(successCode);
+			common.setMsg("还款成功");
+			return common;
+		}
+		
+		
+		//1 成功，2 失败， 3处理中
+		CommonResponse sendResult = null;
+		String payMoney = "";
+		//主动还款 全额还款
+		if("1".equals(requstType)){
+			payMoney = bill.getWaitRepayAmount().toString();
+		}
+		//跑批代扣
+		if("2".equals(requstType)){
+			if(getHour(nowDay)>=referenceHour){
+			   payMoney = getMoney(bill.getWaitRepayAmount(),referenceMoney).toString();
+			}else{
+			   payMoney = bill.getWaitRepayAmount().toString();
+			}
+		}
+		
+		//管理系统代扣 或 平账
+		if("4".equals(requstType) || "5".equals(requstType)){
+			BigDecimal waitMoney = bill.getWaitRepayAmount();
+			if(money.compareTo(waitMoney)==1){
+				common.setCode(nullCode);
+				common.setMsg("代扣金额超出剩余应还金额");
+				return common;
+			}
+			payMoney = money.toString();
+		}
 		//逾期跑批
 		if("3".equals(requstType) && !(BillStatusEnum.REPAY_SUCESS.getCode().equals(billStatus))){
 			Date promiseDate = bill.getPromiseRepaymentDate();
@@ -260,38 +295,6 @@ public class BillRepayServiceImpl implements BillRepayService {
 				saveOrUpdateOverdueInfo(bill,overdueBillInfo,lateFeeMax);
 			}
 			return common;
-		}
-		//还款
-		if(BillStatusEnum.REPAY_SUCESS.getCode().equals(billStatus)){
-			common.setCode(successCode);
-			common.setMsg("还款成功");
-			return common;
-		}
-		
-		
-		//1 成功，2 失败， 3处理中
-		CommonResponse sendResult = null;
-		String payMoney = "";
-		//16点之前的还款单子 或 主动还款 全额还款
-		if("1".equals(requstType)){
-			payMoney = bill.getWaitRepayAmount().toString();
-		}
-		//跑批代扣
-		if("2".equals(requstType)){
-			if(getHour(nowDay)>=referenceHour){
-			   payMoney = getMoney(bill.getWaitRepayAmount(),referenceMoney).toString();
-			}else{
-			   payMoney = bill.getWaitRepayAmount().toString();
-			}
-		}
-		if("4".equals(requstType) || "5".equals(requstType)){
-			BigDecimal waitMoney = bill.getWaitRepayAmount();
-			if(money.compareTo(waitMoney)==1){
-				common.setCode(nullCode);
-				common.setMsg("代扣金额超出剩余应还金额");
-				return common;
-			}
-			payMoney = money.toString();
 		}
 		
 		//平账接口
