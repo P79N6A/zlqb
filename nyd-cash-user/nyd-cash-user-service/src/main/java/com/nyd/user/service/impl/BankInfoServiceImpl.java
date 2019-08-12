@@ -15,6 +15,7 @@ import com.nyd.application.api.AgreeMentContract;
 import com.nyd.dsp.api.BankVerifyContract;
 import com.nyd.dsp.model.request.yuanjin.BankFourModel;
 import com.nyd.user.api.UserBankContract;
+import com.nyd.user.api.zzl.UserSqlService;
 import com.nyd.user.dao.BankDao;
 import com.nyd.user.dao.StepDao;
 import com.nyd.user.dao.UserDao;
@@ -23,6 +24,7 @@ import com.nyd.user.entity.Step;
 import com.nyd.user.model.BankInfo;
 import com.nyd.user.model.BankResponse;
 import com.nyd.user.model.UserInfo;
+import com.nyd.user.model.XunlianBankListInfo;
 import com.nyd.user.service.BankInfoService;
 import com.nyd.user.service.consts.UserConsts;
 import com.nyd.user.service.util.RestTemplateApi;
@@ -51,10 +53,13 @@ public class BankInfoServiceImpl implements BankInfoService,UserBankContract {
     @Autowired(required = false)
     private AgreeMentContract agreeMentContract;
     
-    private static Map<String,String> bankListMap = null;
+    //private static Map<String,String> bankListMap = null;
     
     @Autowired
 	RestTemplateApi restTemplateApi;
+    
+    @Autowired
+    private UserSqlService userSqlService;
 
     /**
      * 保存银行卡信息
@@ -312,14 +317,13 @@ public class BankInfoServiceImpl implements BankInfoService,UserBankContract {
 	public ResponseData getXunlianBankList(BankInfo bankInfo) {
 		ResponseData resp = new ResponseData();
 		try {
-			if(bankListMap==null||bankListMap.isEmpty()){
-				bankListMap = getBankListMap();
-			}
+			String querySql = " select * from xunlian_bank_list where status = '1'";
+			List<XunlianBankListInfo> list = userSqlService.queryT(querySql, XunlianBankListInfo.class);
 	        List<BankResponse> temp = new ArrayList<BankResponse>();
-			for(Map.Entry<String, String> entry : bankListMap.entrySet()){
+			for(XunlianBankListInfo info : list){
 				BankResponse bank = new BankResponse();
-			    String mapKey = entry.getKey();
-			    String mapValue = entry.getValue();
+			    String mapKey = info.getBankNo();
+			    String mapValue = info.getBankName();
 			    bank.setBankCode(mapKey);
 			    bank.setBankName(mapValue);
 			    temp.add(bank);
@@ -335,27 +339,27 @@ public class BankInfoServiceImpl implements BankInfoService,UserBankContract {
 		}
 	}
 	
-	public Map<String,String> getBankListMap(){
-		bankListMap = new HashMap<String,String>();
-		bankListMap.put("4000100005", "中国工商银行");
-		bankListMap.put("4000200006", "中国农业银行");
-		bankListMap.put("4000300007", "中国银行");
-		bankListMap.put("4000400008", "中国建设银行");
-		bankListMap.put("4000500009", "邮储银行");
-		bankListMap.put("4000600000", "交通银行");
-		bankListMap.put("4000700001", "中信银行");
-		//bankListMap.put("4000800002", "光大银行");
-		bankListMap.put("4000900003", "华夏银行");
-		bankListMap.put("4001000005", "民生银行");
-		bankListMap.put("4001100006", "广发银行");
-		//bankListMap.put("4001200007", "招商银行");
-		bankListMap.put("4001300008", "兴业银行");
-		bankListMap.put("4001400009", "浦发银行");
-		bankListMap.put("4001500000", "平安银行");
-		bankListMap.put("4001600001", "上海银行");
-		bankListMap.put("4001800003", "恒丰银行");
-		bankListMap.put("4001900004", "浙商银行");
-		return bankListMap;
-	}
+//	public Map<String,String> getBankListMap(){
+//		bankListMap = new HashMap<String,String>();
+//		bankListMap.put("4000100005", "中国工商银行");
+//		bankListMap.put("4000200006", "中国农业银行");
+//		bankListMap.put("4000300007", "中国银行");
+//		bankListMap.put("4000400008", "中国建设银行");
+//		bankListMap.put("4000500009", "邮储银行");
+//		bankListMap.put("4000600000", "交通银行");
+//		bankListMap.put("4000700001", "中信银行");
+//		//bankListMap.put("4000800002", "光大银行");
+//		bankListMap.put("4000900003", "华夏银行");
+//		bankListMap.put("4001000005", "民生银行");
+//		bankListMap.put("4001100006", "广发银行");
+//		//bankListMap.put("4001200007", "招商银行");
+//		bankListMap.put("4001300008", "兴业银行");
+//		bankListMap.put("4001400009", "浦发银行");
+//		bankListMap.put("4001500000", "平安银行");
+//		bankListMap.put("4001600001", "上海银行");
+//		bankListMap.put("4001800003", "恒丰银行");
+//		bankListMap.put("4001900004", "浙商银行");
+//		return bankListMap;
+//	}
 
 }
