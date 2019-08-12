@@ -18,4 +18,6 @@ public class BankVo {
     private String bankName;
     //银行卡号
     private String bankAccount;
+    //银行类型  1 扣款  2 放款
+    private String bankType;
 }
