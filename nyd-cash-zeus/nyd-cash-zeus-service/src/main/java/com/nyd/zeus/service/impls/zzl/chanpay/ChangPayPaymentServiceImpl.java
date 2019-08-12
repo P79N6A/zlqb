@@ -20,6 +20,7 @@ import com.nyd.zeus.model.helibao.util.chanpay.ChkUtil;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJieCancelCardVO;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJieCardBinVO;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJieMerchantVO;
+import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJiePayVO;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJiePrePayVO;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJieQueryBindVO;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJieQueryMerchantVO;
@@ -234,31 +235,53 @@ public class ChangPayPaymentServiceImpl implements ChangJiePaymentService {
 
 		return common;
 	}
-//	//暂时不用
-//	@Override
-//	public CommonResponse<JSONObject> pay(ChangJiePayVO changJiePayVO) {
-//		CommonResponse<JSONObject> common = new CommonResponse<JSONObject>();
-//		String code = CHANG_PAY;
-//		List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(code);
-//		PayConfigFileVO PayConfigFileVO = list.get(0);
-//		String prdKey = PayConfigFileVO.getPrdKey();
-//		String urlStr = PayConfigFileVO.getPayUrl();
-//		Map<String, String> map;
-//		try {
-//			map = changPayGetDataService.getPayData(changJiePayVO, PayConfigFileVO);
-//			String ret = new ChangPayUtil().gatewayPost(map, charset, prdKey, urlStr);
-//			logger.info(" 畅捷确认支付返回结果：" + ret);
-//			JSONObject responseJson = JSON.parseObject(ret);
-//			common.setData(responseJson);
-//			common.setSuccess(true);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			logger.error("畅捷确认支付异常" + e.getMessage());
-//			common.setSuccess(false);
-//		}
-//
-//		return common;
-//	}
+	//
+	@Override
+	public CommonResponse<ChangJiePayCommonResp> pay(ChangJiePayVO changJiePayVO) {
+		CommonResponse<ChangJiePayCommonResp> common = new CommonResponse<ChangJiePayCommonResp>();
+		String code = CHANG_PAY;
+		List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(code);
+		PayConfigFileVO PayConfigFileVO = list.get(0);
+		String prdKey = PayConfigFileVO.getPrdKey();
+		String urlStr = PayConfigFileVO.getPayUrl();
+		Map<String, String> map;
+		ChangJiePayCommonResp resp = new ChangJiePayCommonResp();
+
+		try {
+			map = changPayGetDataService.getPayData(changJiePayVO, PayConfigFileVO);
+			String ret = new ChangPayUtil().gatewayPost(map, charset, prdKey, urlStr);
+			logger.info(" 畅捷确认支付返回结果：" + ret);
+			if(ChkUtil.isEmpty(ret)){
+				logger.error("畅捷支付返回异常为null 给处理中状态，做下次查询使用");
+				resp.setAcceptStatus("S");
+				resp.setRetCode("");
+				resp.setStatus("P");
+				resp.setRetMsg("未收到请求结果");
+				common.setData(resp);
+				common.setSuccess(true);
+				return common;
+			}
+			JSONObject responseJson = JSON.parseObject(ret);
+
+			String acceptStatus = String.valueOf(responseJson.get("AcceptStatus"));//AcceptStatus ：  S 请求成功   F  请求失败  
+			String status = String.valueOf(responseJson.get("Status"));  //Status： S 交易成功   F  交易失败   P 交易处理中
+			String retMsg =  String.valueOf(responseJson.get("RetMsg"));  //返回描述
+			String retCode =  String.valueOf(responseJson.get("RetCode"));  //返回描述
+			resp.setAcceptStatus(acceptStatus);
+			resp.setRetCode(retCode);
+			resp.setStatus(status);
+			resp.setRetMsg(retMsg);
+			
+			common.setData(resp);
+			common.setSuccess(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("畅捷确认支付异常" + e.getMessage());
+			common.setSuccess(false);
+		}
+
+		return common;
+	}
 
 
 	@Override
@@ -481,6 +504,59 @@ public class ChangPayPaymentServiceImpl implements ChangJiePaymentService {
 		String a = String.format("%.2f", Double.parseDouble(i) / 100);
 		System.out.println(a);
 	}
+
+	@Override
+	public CommonResponse<ChangJiePayCommonResp> paySms(ChangJiePrePayVO changJiePrePayVO) {
+		CommonResponse<ChangJiePayCommonResp> common = new CommonResponse<ChangJiePayCommonResp>();
+		String code = CHANG_PAY;
+		List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(code);
+		PayConfigFileVO PayConfigFileVO = list.get(0);
+		String prdKey = PayConfigFileVO.getPrdKey();
+		String urlStr = PayConfigFileVO.getPayUrl();
+		logger.info(" 畅捷支付请求地址为" + urlStr );
+		ChangJiePayCommonResp resp = new ChangJiePayCommonResp();
+		Map<String, String> map;
+		try {
+			map = changPayGetDataService.getPrePayData(changJiePrePayVO, PayConfigFileVO);
+			resp.setTrxId(map.get("TrxId"));
+			//发送短信
+			map.put("SmsFlag", "1");
+			logger.info(" 畅捷支付短信请求参数为" + map );
+			String ret = new ChangPayUtil().gatewayPost(map, charset, prdKey, urlStr);
+			logger.info(" 畅捷预支付返回结果：" + ret);
+			if(ChkUtil.isEmpty(ret)){
+				logger.error("畅捷支付返回异常为null 给处理中状态，做下次查询使用");
+				resp.setAcceptStatus("S");
+				resp.setRetCode("");
+				resp.setStatus("P");
+				resp.setRetMsg("未收到请求结果");
+				common.setData(resp);
+				common.setSuccess(true);
+				return common;
+			}
+			JSONObject responseJson = JSON.parseObject(ret);
+			
+			String acceptStatus = String.valueOf(responseJson.get("AcceptStatus"));//AcceptStatus ：  S 请求成功   F  请求失败  
+			String status = String.valueOf(responseJson.get("Status"));  //Status： S 交易成功   F  交易失败   P 交易处理中
+			String retMsg =  String.valueOf(responseJson.get("RetMsg"));  //返回描述
+			String retCode =  String.valueOf(responseJson.get("RetCode"));  //返回描述
+			
+			resp.setAcceptStatus(acceptStatus);
+			resp.setRetCode(retCode);
+			resp.setStatus(status);
+			resp.setRetMsg(retMsg);
+			common.setData(resp);
+			common.setSuccess(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("畅捷预支付异常" + e.getMessage());
+			common.setSuccess(false);
+		}
+
+		return common;
+	}
+
+
 
 
 

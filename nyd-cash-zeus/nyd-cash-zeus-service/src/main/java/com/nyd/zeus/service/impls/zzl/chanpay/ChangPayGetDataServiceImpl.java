@@ -334,7 +334,7 @@ public class ChangPayGetDataServiceImpl implements ChangPayGetDataService {
 		String trxId = Long.toString(System.currentTimeMillis());		
 		origMap.put("TrxId", trxId);// 订单号
 
-		origMap.put("OriPayTrxId", "1501123506844");// 原有支付请求订单号
+		origMap.put("OriPayTrxId", changJiePayVO.getOriPayTrxId());// 原有支付请求订单号
 		origMap.put("SmsCode", changJiePayVO.getSmsCode());// 短信验证码
 		return origMap;
 	}

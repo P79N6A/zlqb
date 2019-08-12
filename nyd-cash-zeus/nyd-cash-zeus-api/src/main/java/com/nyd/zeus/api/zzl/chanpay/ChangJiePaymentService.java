@@ -5,6 +5,7 @@ import com.nyd.zeus.model.common.CommonResponse;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJieCancelCardVO;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJieCardBinVO;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJieMerchantVO;
+import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJiePayVO;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJiePrePayVO;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJieQueryBindVO;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJieQueryMerchantVO;
@@ -48,13 +49,21 @@ public interface ChangJiePaymentService {
 	 * @return
 	 */
 	public CommonResponse<ChangJiePayCommonResp> prePay(ChangJiePrePayVO changJiePrePayVO);
+
 	/**
-	 * 	暂时不用
+	 * 发送支付短信  和 pay接口配和使用
+	 * @param changJiePrePayVO
+	 * @return
+	 */
+	public CommonResponse<ChangJiePayCommonResp> paySms(ChangJiePrePayVO changJiePrePayVO);
+
+	/**
+	 * 	确认支付
 	 * 支付 客户-公司
 	 * @param sendMsgVO
 	 * @return
 	 */
-	//public CommonResponse<JSONObject> pay(ChangJiePayVO changJiePayVO);
+	public CommonResponse<ChangJiePayCommonResp> pay(ChangJiePayVO changJiePayVO);
 	/**
 	 * 支付结果查询
 	 * @param sendMsgVO
