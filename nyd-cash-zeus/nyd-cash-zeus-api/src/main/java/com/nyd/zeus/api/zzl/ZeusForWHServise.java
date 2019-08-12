@@ -46,6 +46,13 @@ public interface ZeusForWHServise {
 	
 	
 	/**
+	 * 平账接口
+	 * @param paymentVo
+	 * @return
+	 */
+	public CommonResponse flatAccount(PaymentVo paymentVo);
+	
+	/**
 	 * 需还款列表
 	 * @param task
 	 * @return

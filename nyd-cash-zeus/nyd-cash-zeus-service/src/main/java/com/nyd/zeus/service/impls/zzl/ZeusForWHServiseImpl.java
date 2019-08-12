@@ -70,6 +70,11 @@ public class ZeusForWHServiseImpl implements ZeusForWHServise{
 	}
 
 	@Override
+	public CommonResponse flatAccount(PaymentVo paymentVo) {
+		return billRepayService.flatAccount(paymentVo);
+	}
+
+	@Override
 	public List<BillInfoVO> queryPayList(BillInfoTask task) {
 		String sql = "select * from t_bill where delete_flag='0' and (bill_status='%s' or (bill_status ='%s' and promise_repayment_date>='%s' and promise_repayment_date<'%s')) order by promise_repayment_date desc";
 		List<BillInfoVO> list = zeusSqlService.queryT(String.format(sql, BillStatusEnum.REPAY_OVEDUE.getCode(),BillStatusEnum.REPAY_ING.getCode(),task.getStartTime(),task.getEndTime()), BillInfoVO.class);
@@ -272,6 +277,7 @@ public class ZeusForWHServiseImpl implements ZeusForWHServise{
 	    return pageResp;
 	}
 
+	
 	
 
 }

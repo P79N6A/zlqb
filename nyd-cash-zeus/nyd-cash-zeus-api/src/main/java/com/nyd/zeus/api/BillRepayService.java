@@ -33,6 +33,14 @@ public interface BillRepayService {
 	 */
 	public CommonResponse mannagerRepayment(PaymentVo paymentVo);
 	
+	/**
+	 * 平账接口
+	 * @param paymentVo
+	 * @return
+	 */
+	public CommonResponse flatAccount(PaymentVo paymentVo);
+	
+	
 	
 
 }
