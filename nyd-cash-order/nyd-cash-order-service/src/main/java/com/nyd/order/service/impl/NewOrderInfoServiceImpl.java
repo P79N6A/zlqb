@@ -1309,14 +1309,14 @@ public class NewOrderInfoServiceImpl implements NewOrderInfoService {
                 common.setCode(StatusConstants.SUCCESS_CODE);
                 common.setMsg(StatusConstants.SYSTEM_OPERATION_SUCCESS_MSG);
             }else{
-                LOGGER.info("暂无绑定卡数据", JSON.toJSONString(borrowConfirmDto.getUserId()));
+                LOGGER.info("暂无绑定卡数据,{}", JSON.toJSONString(borrowConfirmDto.getUserId()));
                 common.setStatus("1");
                 common.setCode(StatusConstants.SUCCESS_CODE);
                 common.setMsg(StatusConstants.SYSTEM_OPERATION_SUCCESS_MSG);
             }
             return  common;
         } catch (Exception e) {
-            LOGGER.error("获取银行卡列表发生异常", e);
+            LOGGER.error("获取银行卡列表发生异常,{}", e);
             return ResponseData.error("获取银行卡列表失败");
         }
     }
