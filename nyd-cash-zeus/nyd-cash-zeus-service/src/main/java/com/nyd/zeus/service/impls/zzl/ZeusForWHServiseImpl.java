@@ -71,7 +71,10 @@ public class ZeusForWHServiseImpl implements ZeusForWHServise{
 
 	@Override
 	public CommonResponse flatAccount(PaymentVo paymentVo) {
-		return billRepayService.flatAccount(paymentVo);
+		if(StringUtils.isNotBlank(paymentVo.getBillNo()) && null !=paymentVo.getPayMoney() && StringUtils.isNotBlank(paymentVo.getSettleStatus())){
+		   return billRepayService.flatAccount(paymentVo);
+		}
+		return null;
 	}
 
 	@Override
