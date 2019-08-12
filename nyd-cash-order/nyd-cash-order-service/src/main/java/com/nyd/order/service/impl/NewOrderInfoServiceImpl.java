@@ -1280,7 +1280,7 @@ public class NewOrderInfoServiceImpl implements NewOrderInfoService {
 
 
         if(ChkUtil.isEmptys(borrowConfirmDto.getUserId())){
-            LOGGER.info("暂无绑定卡数据", JSON.toJSONString(borrowConfirmDto.getUserId()));
+            LOGGER.info("暂无绑定卡数据,{}", JSON.toJSONString(borrowConfirmDto.getUserId()));
             common.setStatus("1");
             common.setCode(StatusConstants.SUCCESS_CODE);
             common.setMsg("暂无绑定银行卡数据");
@@ -1297,6 +1297,11 @@ public class NewOrderInfoServiceImpl implements NewOrderInfoService {
                     BankVo bankVo = new BankVo();
                     bankVo.setBankAccount(jsonObject.getString("bank_account"));
                     bankVo.setBankName(jsonObject.getString("bank_name"));
+                    if("3".equals(jsonObject.getString("soure"))){
+                    	bankVo.setBankType("2");
+                    }else{
+                    	bankVo.setBankType("1");
+                    }
                     bankVos.add(bankVo);
                 }
                 common.setData(bankVos);
