@@ -1297,7 +1297,7 @@ public class NewOrderInfoServiceImpl implements NewOrderInfoService {
                     BankVo bankVo = new BankVo();
                     bankVo.setBankAccount(jsonObject.getString("bank_account"));
                     bankVo.setBankName(jsonObject.getString("bank_name"));
-                    if("3".equals(jsonObject.getString("soure"))){
+                    if("2".equals(jsonObject.getString("soure"))){
                     	bankVo.setBankType("2");
                     }else{
                     	bankVo.setBankType("1");
