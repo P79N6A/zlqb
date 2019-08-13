@@ -16,6 +16,9 @@ public class PaymentVo implements Serializable{
 	
 	private BigDecimal payMoney;//金额
 	private String settleStatus;//1:结清 ,2:未结清
+	private String remark;//操作人
+	
+	private String requstType;//请求方式
 	
 	
 	
@@ -55,6 +58,18 @@ public class PaymentVo implements Serializable{
 	}
 	public void setSettleStatus(String settleStatus) {
 		this.settleStatus = settleStatus;
+	}
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+	public String getRequstType() {
+		return requstType;
+	}
+	public void setRequstType(String requstType) {
+		this.requstType = requstType;
 	}
 	
 	

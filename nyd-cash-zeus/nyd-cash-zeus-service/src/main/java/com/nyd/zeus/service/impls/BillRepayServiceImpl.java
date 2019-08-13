@@ -43,6 +43,7 @@ import com.nyd.zeus.model.helibao.vo.pay.req.QuickPayBindPayPreOrderVo;
 import com.nyd.zeus.model.helibao.vo.pay.resp.ConfirmBindPayResponseVo;
 import com.nyd.zeus.model.helibao.vo.pay.resp.QueryOrderResponseVo;
 import com.nyd.zeus.model.helibao.vo.pay.resp.QuickPayBindPayPreOrderResponseVo;
+import com.nyd.zeus.service.enums.RequestTypeEnum;
 import com.nyd.zeus.service.lock.RedisLock;
 
 
@@ -97,7 +98,9 @@ public class BillRepayServiceImpl implements BillRepayService {
 		try {
 			if (redisLock.lock()) {
 			logger.info("用户主动还款请redisKey:"+redisLock.getLockKey());
-			common = payBillBylock(paymentVo.getBillNo(),paymentVo.getBindId(),paymentVo.getBindUserId(),paymentVo.getMobile(),null,"","1");
+			//common = payBillBylock(paymentVo.getBillNo(),paymentVo.getBindId(),paymentVo.getBindUserId(),paymentVo.getMobile(),null,"","1");
+			paymentVo.setRequstType(RequestTypeEnum.ACTIVE_REPAYMENT.getCode());
+			common = payBillBylock(paymentVo);
 			}
 		} catch (Exception e) {
 			logger.error("主动还款异常:"+JSONObject.toJSONString(paymentVo));
@@ -118,7 +121,8 @@ public class BillRepayServiceImpl implements BillRepayService {
 		try {
 			if (redisLock.lock()) {
 			logger.info("跑批还款redisKey:"+redisLock.getLockKey());
-			common = payBillBylock(paymentVo.getBillNo(),paymentVo.getBindId(),paymentVo.getBindUserId(),paymentVo.getMobile(),null,"","2");
+			paymentVo.setRequstType(RequestTypeEnum.BATCH_REPAYTASK.getCode());
+			common = payBillBylock(paymentVo);
 			//根据返回状态判断是否
 			int breakValue = 0;
 			while(true){
@@ -140,7 +144,7 @@ public class BillRepayServiceImpl implements BillRepayService {
 				    if(waitMoney.compareTo(BigDecimal.ZERO)==0){
 				    	break;
 				    }
-				    common = payBillBylock(paymentVo.getBillNo(),paymentVo.getBindId(),paymentVo.getBindUserId(),paymentVo.getMobile(),null,"","2");
+				   common = payBillBylock(paymentVo);
 				}else{
 					break;
 				}
@@ -164,7 +168,8 @@ public class BillRepayServiceImpl implements BillRepayService {
 		try {
 			if (redisLock.lock()) {
 			logger.info("跑批逾期redisKey:"+redisLock.getLockKey());
-		    common = payBillBylock(paymentVo.getBillNo(),paymentVo.getBindId(),paymentVo.getBindUserId(),paymentVo.getMobile(),null,"","3");
+		    paymentVo.setRequstType(RequestTypeEnum.BATCH_OVERDUETASK.getCode());
+			common = payBillBylock(paymentVo);
 			}
 		} catch (Exception e) {
 			logger.error("逾期跑批异常:"+JSONObject.toJSONString(paymentVo));
@@ -184,7 +189,8 @@ public class BillRepayServiceImpl implements BillRepayService {
 		try {
 			if (redisLock.lock()) {
 			logger.info("主动代扣redisKey:"+redisLock.getLockKey());
-	        common = payBillBylock(paymentVo.getBillNo(),paymentVo.getBindId(),paymentVo.getBindUserId(),paymentVo.getMobile(),paymentVo.getPayMoney(),"","4");
+	        paymentVo.setRequstType(RequestTypeEnum.MANAGE_REPAYMENT.getCode());
+			common = payBillBylock(paymentVo);
 			}
 			} catch (Exception e) {
 			logger.error("主动代扣异常:"+JSONObject.toJSONString(paymentVo));
@@ -205,7 +211,8 @@ public class BillRepayServiceImpl implements BillRepayService {
 		try {
 			if (redisLock.lock()) {
 			logger.info("平账接口redisKey:"+redisLock.getLockKey());
-	        common = payBillBylock(paymentVo.getBillNo(),paymentVo.getBindId(),paymentVo.getBindUserId(),paymentVo.getMobile(),paymentVo.getPayMoney(),paymentVo.getSettleStatus(),"5");
+	        paymentVo.setRequstType(RequestTypeEnum.FLAT_ACCOUNT.getCode());
+			common = payBillBylock(paymentVo);
 			}
 			} catch (Exception e) {
 			logger.error("平账异常:"+JSONObject.toJSONString(paymentVo));
@@ -224,8 +231,17 @@ public class BillRepayServiceImpl implements BillRepayService {
 	 * CommonResponse.code 1 成功 2 失败 3 处理中 4 无账单数据
 	 * @return
 	 */
-	private CommonResponse payBillBylock(String billNo,String bindId,String bindUserId,String mobile,BigDecimal money,String settleStatus,String requstType){
-		 Date nowDay = new Date();
+	private CommonResponse payBillBylock(PaymentVo paymentVo){
+		logger.info("调用次方法需加锁:"+JSONObject.toJSONString(paymentVo));
+		String billNo = paymentVo.getBillNo();
+		String bindId = paymentVo.getBindId();
+		String bindUserId = paymentVo.getBindUserId();
+		String mobile = paymentVo.getMobile();
+		BigDecimal money = paymentVo.getPayMoney();
+		String settleStatus = paymentVo.getSettleStatus();
+		String requstType = paymentVo.getRequstType();
+		String remark = paymentVo.getRemark();
+		Date nowDay = new Date();
 		CommonResponse common = new CommonResponse();
 		String billSql = "select * from t_bill where bill_no = '%s' and delete_flag='0' ";
 		List<BillInfo> billList = zeusSqlService.queryT(String.format(billSql, billNo), BillInfo.class);
@@ -308,52 +324,28 @@ public class BillRepayServiceImpl implements BillRepayService {
 				pay.setUserId(bill.getUserId());
 				pay.setOrderNo(bill.getOrderNo());
 				pay.setOutOrderNumber("");
-				pay.setRepayAmount(new BigDecimal(payMoney));
+				pay.setRepayAmount(money);
 				pay.setPayType(requstType);
 				pay.setCreateTime(nowDay);
 				pay.setResultCode("1");
 				pay.setEndTime(nowDay);
-				pay.setRemark("平账");
+				pay.setRemark(remark);
 				saveOrUpdateBillRepay(bill, pay, true);
 			}
 			//已结清
 			if("1".equals(settleStatus)){
-				BillRepay pay1 = new BillRepay();
-				pay1.setId(UUID.randomUUID().toString().replace("-", "")+Uuid.getUuid24());
-				pay1.setBillNo(billNo);
-				pay1.setUserId(bill.getUserId());
-				pay1.setOrderNo(bill.getOrderNo());
-				pay1.setOutOrderNumber("");
-				pay1.setRepayAmount(bill.getWaitRepayAmount());
-				pay1.setPayType(requstType);
-				pay1.setCreateTime(nowDay);
-				pay1.setResultCode("1");
-				pay1.setEndTime(nowDay);
-				pay1.setRemark("平账");
-				clearBill(bill,pay1);
-				
+				BigDecimal clearAmount = money;//结清金额
+				BigDecimal repayAmount =money;//实际还款金额
+				BigDecimal couponDerateAmount = BigDecimal.ZERO;//减免金额
 				BigDecimal waitMoney = bill.getWaitRepayAmount();
-				List<String> pzList = new ArrayList<String>();
-				pzList.add(payMoney);
 				BigDecimal reductionMoney = waitMoney.subtract(money);
 				if(reductionMoney.compareTo(BigDecimal.ZERO)==1){
-					pzList.add(reductionMoney.toString());
+					clearAmount = waitMoney;
+					couponDerateAmount = reductionMoney;
+					saveBillRepay(bill,requstType,"4",couponDerateAmount,nowDay,remark);
 				}
-				for(String m:pzList){
-					BillRepay pay = new BillRepay();
-					pay.setId(UUID.randomUUID().toString().replace("-", "")+Uuid.getUuid24());
-					pay.setBillNo(billNo);
-					pay.setUserId(bill.getUserId());
-					pay.setOrderNo(bill.getOrderNo());
-					pay.setOutOrderNumber("");
-					pay.setRepayAmount(new BigDecimal(m));
-					pay.setPayType(requstType);
-					pay.setCreateTime(nowDay);
-					pay.setResultCode("1");
-					pay.setEndTime(nowDay);
-					pay.setRemark("平账");
-					saveBillRepay(pay);
-				}
+				clearBill(bill,clearAmount,repayAmount,couponDerateAmount);
+				saveBillRepay(bill,requstType,"1",money,nowDay,remark);
 			}
 			
 			common.setCode("1");
@@ -420,12 +412,12 @@ public class BillRepayServiceImpl implements BillRepayService {
 		return common;
 	}
 
-	 private void clearBill(BillInfo bill,BillRepay pay){
+	 private void clearBill(BillInfo bill,BigDecimal clearAmount,BigDecimal repayAmount,BigDecimal couponDerateAmount){
 
 			//已还款金额
-			BigDecimal alreadyRepayAmount = bill.getAlreadyRepayAmount().add(pay.getRepayAmount());
+			BigDecimal alreadyRepayAmount = bill.getAlreadyRepayAmount().add(repayAmount);
 			//剩余应还金额
-			BigDecimal waitRepayAmout = bill.getWaitRepayAmount().subtract(pay.getRepayAmount());
+			BigDecimal waitRepayAmout = bill.getWaitRepayAmount().subtract(clearAmount);
 			if(waitRepayAmout.compareTo(BigDecimal.ZERO) != 1){
 				waitRepayAmout = BigDecimal.ZERO;
 			}
@@ -433,8 +425,8 @@ public class BillRepayServiceImpl implements BillRepayService {
 			//订单状态结清
 			if(waitRepayAmout.compareTo(BigDecimal.ZERO)==0){
 				
-				String updBillSql ="update t_bill set bill_status='%s',wait_repay_amount='%s',already_repay_amount='%s',actual_settle_date=now(),update_time=now(),actual_settle_date=now() where bill_no='%s' and delete_flag='0'";
-				String upd = String.format(updBillSql,billStatus,waitRepayAmout,alreadyRepayAmount,pay.getBillNo());
+				String updBillSql ="update t_bill set bill_status='%s',wait_repay_amount='%s',already_repay_amount='%s',coupon_derate_amount='%s',actual_settle_date=now(),update_time=now(),actual_settle_date=now() where bill_no='%s' and delete_flag='0'";
+				String upd = String.format(updBillSql,billStatus,waitRepayAmout,alreadyRepayAmount,couponDerateAmount,bill.getBillNo());
 				logger.info("订单状态结清更新sql:"+upd);
 				zeusSqlService.updateSql(upd);
 				try {
@@ -448,7 +440,7 @@ public class BillRepayServiceImpl implements BillRepayService {
 				}
 			}else{
 				String updBillSql ="update t_bill set wait_repay_amount='%s',already_repay_amount='%s',actual_settle_date=now(),update_time=now() where bill_no='%s' and delete_flag='0'";
-				String upd = String.format(updBillSql,waitRepayAmout,alreadyRepayAmount,pay.getBillNo());
+				String upd = String.format(updBillSql,waitRepayAmout,alreadyRepayAmount,bill.getBillNo());
 				logger.info("订单状态未结清更新sql:"+upd);
 				zeusSqlService.updateSql(upd);
 			}
@@ -456,8 +448,20 @@ public class BillRepayServiceImpl implements BillRepayService {
 		
 	 }
 	 
-     private void saveBillRepay(BillRepay pay){
-    	 billDao.saveBillRepay(pay);
+     private void saveBillRepay(BillInfo bill,String requstType,String resultCode,BigDecimal repayAmount,Date nowDay,String remark){
+    	    BillRepay pay = new BillRepay();
+			pay.setId(UUID.randomUUID().toString().replace("-", "")+Uuid.getUuid24());
+			pay.setBillNo(bill.getBillNo());
+			pay.setUserId(bill.getUserId());
+			pay.setOrderNo(bill.getOrderNo());
+			pay.setOutOrderNumber("");
+			pay.setRepayAmount(repayAmount);
+			pay.setPayType(requstType);
+			pay.setCreateTime(nowDay);
+			pay.setResultCode(resultCode);
+			pay.setEndTime(nowDay);
+			pay.setRemark(remark);
+    	    billDao.saveBillRepay(pay);
 	 }
 	 private void saveOrUpdateBillRepay(BillInfo bill,BillRepay pay,Boolean flag){
 	   
