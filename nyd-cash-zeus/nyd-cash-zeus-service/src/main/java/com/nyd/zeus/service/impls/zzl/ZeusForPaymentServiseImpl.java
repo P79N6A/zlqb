@@ -72,7 +72,7 @@ public class ZeusForPaymentServiseImpl implements ZeusForPaymentServise {
 		List<PaymentRiskRecordVo> list = zeusSqlService.queryT(queryRemain, PaymentRiskRecordVo.class);
 		if (CollectionUtils.isEmpty(list)) {
 			common.setSuccess(true);
-			common.setMsg("该订单不处于代扣服务费节点");
+			common.setMsg("该订单不处于扣款服务费节点");
 			common.setCode("0");
 			return common;
 		}
