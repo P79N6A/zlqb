@@ -78,11 +78,12 @@ public class ZeusForPaymentServiseImpl implements ZeusForPaymentServise {
 		BigDecimal remainMoney = record.getRemainMoney();
 		// 剩余金额大于0继续扣款
 		int r=remainMoney.compareTo(new BigDecimal(0.00));
-//		if (remainMoney.intValue() <= 0) {
-//			common.setMsg(" 剩余金额为0");
-//			common.setSuccess(true);
-//			return common;
-//		}
+		if (r <= 0) {
+			common.setCode("0");
+			common.setMsg(" 剩余金额为0");
+			common.setSuccess(true);
+			return common;
+		}
 
 		try {
 			PaymentRiskRequestCommon request = JSONObject.parseObject(record.getRequestText(),
@@ -281,12 +282,15 @@ public class ZeusForPaymentServiseImpl implements ZeusForPaymentServise {
 		PaymentRiskRecordVo record = list.get(0);
 		BigDecimal remainMoney = record.getRemainMoney();
 		// 剩余金额大于0继续扣款
-		if (remainMoney.intValue() <= 0) {
+		int r=remainMoney.compareTo(new BigDecimal(0.00));
+		if (r <= 0) {
 			common.setMsg(" 剩余金额为0");
 			common.setCode("0");
 			common.setSuccess(true);
 			return common;
 		}
+
+
 		PaymentRiskRequestCommon request = JSONObject.parseObject(record.getRequestText(),
 				PaymentRiskRequestCommon.class);
 		String channel = request.getChannelCode();
