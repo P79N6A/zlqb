@@ -19,14 +19,12 @@ import com.nyd.zeus.api.zzl.ZeusSqlService;
 import com.nyd.zeus.api.zzl.xunlian.XunlianPayService;
 import com.nyd.zeus.dao.PaymentRiskFlowDao;
 import com.nyd.zeus.dao.PaymentRiskRecordDao;
-import com.nyd.zeus.entity.ExcludeInfo;
 import com.nyd.zeus.entity.PaymentRiskFlow;
 import com.nyd.zeus.model.PaymentRiskRecordPayResult;
 import com.nyd.zeus.model.PaymentRiskRecordVo;
 import com.nyd.zeus.model.PaymentRiskRequestCommon;
 import com.nyd.zeus.model.PaymentRiskRequestXunlian;
 import com.nyd.zeus.model.common.CommonResponse;
-import com.nyd.zeus.model.common.SqlHelper;
 import com.nyd.zeus.model.xunlian.XunlianReqPaymentVO;
 import com.nyd.zeus.model.xunlian.req.XunlianPaymentVO;
 import com.nyd.zeus.model.xunlian.resp.XunlianPayResp;
@@ -274,12 +272,20 @@ public class ZeusForPaymentServiseImpl implements ZeusForPaymentServise {
 				+ xunlianReqPaymentVO.getOrderNo() + "'";
 		List<PaymentRiskRecordVo> list = zeusSqlService.queryT(queryRemain, PaymentRiskRecordVo.class);
 		if (CollectionUtils.isEmpty(list)) {
-			common.setSuccess(false);
+			common.setSuccess(true);
 			common.setMsg(" 未找到订单");
+			common.setCode("0");
 			return common;
 		}
 		PaymentRiskRecordVo record = list.get(0);
-		
+		BigDecimal remainMoney = record.getRemainMoney();
+		// 剩余金额大于0继续扣款
+		if (remainMoney.intValue() <= 0) {
+			common.setMsg(" 剩余金额为0");
+			common.setCode("0");
+			common.setSuccess(true);
+			return common;
+		}
 		PaymentRiskRequestCommon request = JSONObject.parseObject(record.getRequestText(),
 				PaymentRiskRequestCommon.class);
 		String channel = request.getChannelCode();
