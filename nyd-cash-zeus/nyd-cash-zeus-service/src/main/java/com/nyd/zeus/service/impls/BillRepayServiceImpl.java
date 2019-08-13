@@ -284,16 +284,7 @@ public class BillRepayServiceImpl implements BillRepayService {
 			}
 		}
 		
-		//管理系统代扣 或 平账
-		if("4".equals(requstType) || "5".equals(requstType)){
-			BigDecimal waitMoney = bill.getWaitRepayAmount();
-			if(money.compareTo(waitMoney)==1){
-				common.setCode(nullCode);
-				common.setMsg("代扣金额超出剩余应还金额");
-				return common;
-			}
-			payMoney = money.toString();
-		}
+		
 		//逾期跑批
 		if("3".equals(requstType) && !(BillStatusEnum.REPAY_SUCESS.getCode().equals(billStatus))){
 			Date promiseDate = bill.getPromiseRepaymentDate();
@@ -313,7 +304,16 @@ public class BillRepayServiceImpl implements BillRepayService {
 			}
 			return common;
 		}
-		
+		//管理系统代扣 或 平账
+		if("4".equals(requstType) || "5".equals(requstType)){
+			BigDecimal waitMoney = bill.getWaitRepayAmount();
+			if(money.compareTo(waitMoney)==1){
+				common.setCode(nullCode);
+				common.setMsg("代扣金额超出剩余应还金额");
+				return common;
+			}
+			payMoney = money.toString();
+		}
 		//平账接口
 		if("5".equals(requstType)){
 			//未结清
@@ -347,7 +347,7 @@ public class BillRepayServiceImpl implements BillRepayService {
 				clearBill(bill,clearAmount,repayAmount,couponDerateAmount);
 				saveBillRepay(bill,requstType,"1",money,nowDay,remark);
 			}
-			
+			common.setSuccess(true);
 			common.setCode("1");
 			common.setMsg("平账成功");
 			return common;
