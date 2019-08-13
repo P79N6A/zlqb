@@ -77,11 +77,12 @@ public class ZeusForPaymentServiseImpl implements ZeusForPaymentServise {
 
 		BigDecimal remainMoney = record.getRemainMoney();
 		// 剩余金额大于0继续扣款
-		if (remainMoney.intValue() <= 0) {
-			common.setMsg(" 剩余金额为0");
-			common.setSuccess(true);
-			return common;
-		}
+		int r=remainMoney.compareTo(new BigDecimal(0.00));
+//		if (remainMoney.intValue() <= 0) {
+//			common.setMsg(" 剩余金额为0");
+//			common.setSuccess(true);
+//			return common;
+//		}
 
 		try {
 			PaymentRiskRequestCommon request = JSONObject.parseObject(record.getRequestText(),
@@ -118,7 +119,7 @@ public class ZeusForPaymentServiseImpl implements ZeusForPaymentServise {
 
 			}
 			record.setUpdateTime(new SimpleDateFormat(STYLE_1).format(new Date()));
-			paymentRiskRecordDao.save(record);
+			paymentRiskRecordDao.update(record);
 			common.setSuccess(true);
 		} catch (Exception e) {
 			e.printStackTrace();
