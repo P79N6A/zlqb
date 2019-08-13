@@ -104,17 +104,20 @@ public class ZeusForPaymentServiseImpl implements ZeusForPaymentServise {
 			// 成功
 			if (SUCCESS_MSG.equals(resultStatus)) {
 				record.setStatus(1);
+				common.setCode("1");
 				// 如果扣款成功了， 则需要 减去剩余金额， 因为本次是第一次 所以直接清空0
 				record.setRemainMoney(new BigDecimal(0d));
 				common.setMsg("扣款成功!");
 			}
 			if (FAIL_MSG.equals(resultStatus)) {
 				record.setStatus(0);
+				common.setCode("0");
 				common.setMsg("扣款失败!");
 			}
 			if (PROCESS_MSG.equals(resultStatus)) {
 				record.setStatus(-1);
 				// 设置备份金额
+				common.setCode("-1");
 				record.setBackupMoney(record.getRemainMoney());
 				common.setMsg("交易处理中!");
 
