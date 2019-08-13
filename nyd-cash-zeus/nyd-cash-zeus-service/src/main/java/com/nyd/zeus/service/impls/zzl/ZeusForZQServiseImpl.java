@@ -17,6 +17,8 @@ import com.nyd.zeus.model.BillRepayListVO;
 import com.nyd.zeus.model.common.CommonResponse;
 import com.nyd.zeus.model.common.PagedResponse;
 import com.nyd.zeus.model.common.response.BillRepayVo;
+import com.nyd.zeus.service.enums.RequestCodeEnum;
+import com.nyd.zeus.service.enums.RequestTypeEnum;
 import com.tasfe.framework.uid.service.BizCode;
 import com.tasfe.framework.uid.service.IdGenerator;
 
@@ -102,6 +104,12 @@ public class ZeusForZQServiseImpl implements ZeusForZQServise{
 		try{
 			 String sql = "select * from t_bill_repay where order_no = '"+vo.getOrderNo()+"' order by create_time desc";
 			 List<BillRepayVo> list = zeusSqlService.pageT(sql,vo.getPageNo(), vo.getPageSize(), BillRepayVo.class);
+			 if(null != list && list.size()>0){
+				 for(BillRepayVo repay:list){
+					 repay.setPayType(RequestTypeEnum.getValue(repay.getPayType()));
+					 repay.setResultCode(RequestCodeEnum.getValue(repay.getResultCode()));
+				 }
+			 }
 			 long total = zeusSqlService.count(sql.toString());
 			 pageResponse.setCode("1");
 			 pageResponse.setData(list);

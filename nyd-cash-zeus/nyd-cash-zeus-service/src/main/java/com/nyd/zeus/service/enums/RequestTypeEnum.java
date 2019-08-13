@@ -35,4 +35,13 @@ public enum RequestTypeEnum {
     public void setValue(String value) {
         this.value = value;
     }
+    
+    public static String getValue(String code){
+    	for(RequestTypeEnum type:RequestTypeEnum.values()){
+    		if(type.getCode().equals(code)){
+    			return type.getValue();
+    		}
+    	}
+    	return "";
+    }
 }
