@@ -248,7 +248,9 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 	public List<RefundApplyEntity> queryProcessing() {
 		List<RefundApplyEntity> list = new ArrayList<>();
 		try {
-			list = refundApplyMapper.queryProcessing();
+			String sql = "select * from t_refund_apply where status = '1'";
+			list = orderSqlService.queryT(sql, RefundApplyEntity.class);
+			//list = refundApplyMapper.queryProcessing();
 		} catch (Exception e) {
 			LOGGER.error("退款处理--查询所有处理中退款订单系统错误：{}",e.getMessage());
 		}
