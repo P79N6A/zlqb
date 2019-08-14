@@ -58,6 +58,4 @@ public class SettleAccount implements Serializable {
      * 操作人姓名
      */
     private String operatorName;
-    @ApiModelProperty("凭据地址集合")
-    private List<String> urls;
 }

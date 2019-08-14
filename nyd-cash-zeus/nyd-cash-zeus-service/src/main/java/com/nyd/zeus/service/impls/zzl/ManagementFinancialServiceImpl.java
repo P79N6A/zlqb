@@ -62,7 +62,7 @@ public class ManagementFinancialServiceImpl implements ManagementFinancialServic
             buff.append("b.overdue_days as overdueDays,");
             buff.append("b.repay_interest as repayInterest,");
             buff.append("b.already_repay_amount as alreadyRepayAmount ");
-            buff.append(" FROM t_bill b join t_bill_extend_info i on b.order_no=i.order_no where b.bill_status !=4 ");
+            buff.append(" FROM t_bill b join t_bill_extend_info i on b.order_no=i.order_no where b.bill_status !='B003' ");
 
             if (StringUtils.isNotBlank(willSettleListRequest.getUserName())) {
                 buff.append(" and i.user_name='").append(willSettleListRequest.getUserName()).append("'");
