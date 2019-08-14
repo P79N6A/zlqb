@@ -58,6 +58,7 @@
                 <value>com/nyd/zeus/configs/dao/mappers/TimeAttendanceMapper.xml</value>
                 <value>com/nyd/zeus/configs/dao/mappers/CollectionRecordMapper.xml</value>
                 <value>com/nyd/zeus/configs/dao/mappers/PaymentRiskExcludeInfoMapper.xml</value>
+                <value>com/nyd/zeus/configs/dao/mappers/SettleAccountMapper.xml</value>
             </array>
         </property>
     </bean>
