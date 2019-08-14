@@ -145,7 +145,7 @@ public class BindCardServiceImpl implements BindCardService {
                     HnaPayContractReq hnaPayContractReq = new HnaPayContractReq();
                     hnaPayContractReq.setCardNo(req.getCardNo());
                     hnaPayContractReq.setHolderName(user.getRealName());
-                    hnaPayContractReq.setIdentityCode(req.getIdcardNo());
+                    hnaPayContractReq.setIdentityCode(user.getIdNumber());
                     hnaPayContractReq.setMerOrderId(user.getUserId());
                     hnaPayContractReq.setMerUserId(user.getUserId());
                     hnaPayContractReq.setMobileNo(user.getAccountNumber());
