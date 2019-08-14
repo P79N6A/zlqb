@@ -37,6 +37,7 @@
 
 	<dubbo:service ref="userBankCardService" interface="com.nyd.user.api.zzl.UserBankCardService" protocol="dubbo" />
      <dubbo:service ref="userForWHServise" interface="com.nyd.user.api.zzl.UserForWHServise" protocol="dubbo" />
+	<dubbo:service ref="mongoDBService" interface="com.nyd.user.api.MongoDBService" protocol="dubbo" />
 
 		<!-- <dubbo:service ref="userForOrderPayBackServise" interface="com.nyd.user.api.zzl.UserForOrderPayBackServise" protocol="dubbo" /> -->
 
@@ -78,6 +79,7 @@
 	<dubbo:reference id="smsRecordServise" interface="com.nyd.application.api.sms.SmsRecordServise" timeout="1000000" check="false" />
 	
 	<dubbo:reference id="queryContratService" interface="com.nyd.application.api.call.QueryContratService" timeout="1000000" check="false" />
+	<dubbo:reference id="mongoRecordService" interface="com.nyd.application.api.MongoRecordService" timeout="1000000" check="false" />
 
 	<dubbo:reference id="hnaPayPaymentService" interface="com.nyd.zeus.api.zzl.hnapay.HnaPayPaymentService" timeout="1000000" check="false" />
 	<dubbo:reference id="xunlianPayService" interface="com.nyd.zeus.api.zzl.xunlian.XunlianPayService" timeout="1000000" check="false" />
