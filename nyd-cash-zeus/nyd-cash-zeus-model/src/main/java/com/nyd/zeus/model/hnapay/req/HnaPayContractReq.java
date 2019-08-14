@@ -25,7 +25,7 @@ public class HnaPayContractReq implements Serializable {
 	@ApiModelProperty(value = "手机号")
 	private String mobileNo;
 
-	@ApiModelProperty(value = "手机号")
+	@ApiModelProperty(value = "身份证号")
 	private String identityCode;
 
 	@ApiModelProperty(value = "商户请求流水号")
