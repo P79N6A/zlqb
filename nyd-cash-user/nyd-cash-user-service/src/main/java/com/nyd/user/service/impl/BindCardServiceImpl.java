@@ -141,7 +141,7 @@ public class BindCardServiceImpl implements BindCardService {
             }
             try {
                 if ("xinsheng".equals(req.getChannelCode())) {
-                    LOGGER.error("新生请求绑卡发送短信验证码服务失败,订单号:{}",req.getUserId());
+                    LOGGER.info("新生请求绑卡发送短信验证码服务失败,订单号:{}",req.getUserId());
                     HnaPayContractReq hnaPayContractReq = new HnaPayContractReq();
                     hnaPayContractReq.setCardNo(req.getCardNo());
                     hnaPayContractReq.setHolderName(user.getRealName());
@@ -150,9 +150,9 @@ public class BindCardServiceImpl implements BindCardService {
                     hnaPayContractReq.setMerUserId(user.getUserId());
                     hnaPayContractReq.setMobileNo(user.getAccountNumber());
                     //调用新生 预绑卡
-                    LOGGER.error("调用新生 预绑卡,请求信息:{}",hnaPayContractReq);
+                    LOGGER.info("调用新生 预绑卡,请求信息:{}",hnaPayContractReq);
                     CommonResponse<HnaPayContractResp> hnaPayContractRespCommonResponse = hnaPayPaymentService.contract(hnaPayContractReq);
-                    LOGGER.error("调用新生 预绑卡,返回信息:{}",hnaPayContractRespCommonResponse);
+                    LOGGER.info("调用新生 预绑卡,返回信息:{}",hnaPayContractRespCommonResponse);
                     if(hnaPayContractRespCommonResponse.isSuccess()){
                         ResponseData resp = new ResponseData();
                         JSONObject json = new JSONObject();
@@ -304,9 +304,9 @@ public class BindCardServiceImpl implements BindCardService {
                     hnaPayConfirmReq.setSmsCode(req.getValidatecode());
                     hnaPayConfirmReq.setHnapayOrderId(userBindInfo.getUserId());
                     hnaPayConfirmReq.setMerOrderId(userBindInfo.getMerOrderId());
-                    LOGGER.error("新生请求绑卡确认服务信息：{}",JSON.toJSONString(hnaPayConfirmReq));
+                    LOGGER.info("新生请求绑卡确认服务信息：{}",JSON.toJSONString(hnaPayConfirmReq));
                     CommonResponse<HnaPayConfirmResp> hnaPayConfirmRespCommonResponse = hnaPayPaymentService.confirm(hnaPayConfirmReq);
-                    LOGGER.error("新生请求绑卡返回服务信息：{}",JSON.toJSONString(hnaPayConfirmRespCommonResponse));
+                    LOGGER.info("新生请求绑卡返回服务信息：{}",JSON.toJSONString(hnaPayConfirmRespCommonResponse));
                     if (hnaPayConfirmRespCommonResponse.isSuccess()){
                         //绑卡成功
                         HnaPayConfirmResp hnaPayConfirmResp = hnaPayConfirmRespCommonResponse.getData();
