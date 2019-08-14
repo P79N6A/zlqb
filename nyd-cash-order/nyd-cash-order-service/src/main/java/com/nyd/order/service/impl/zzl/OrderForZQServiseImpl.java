@@ -486,7 +486,7 @@ public class OrderForZQServiseImpl implements OrderForZQServise{
 				//新生代付
 				HnaPayPayReq payReq = new HnaPayPayReq();
 				payReq.setMerOrderId(serialNum);//流水号
-				payReq.setPayeeAccount(bankInfo.getBankName());//收款方账户
+				payReq.setPayeeAccount(bankInfo.getBankAccount());//收款方账户
 				payReq.setPayeeName(bankInfo.getAccountName());//收款方姓名
 				payReq.setTranAmt(vo.getRefundAmount());//金额
 				com.nyd.zeus.model.common.CommonResponse<HnaPayPayResp> result = hnaPayPaymentService.pay(payReq);
