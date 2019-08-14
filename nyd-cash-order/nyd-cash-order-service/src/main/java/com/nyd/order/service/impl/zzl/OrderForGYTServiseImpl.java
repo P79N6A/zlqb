@@ -217,16 +217,11 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 				com.nyd.zeus.model.common.CommonResponse<HnaPayQueryPayResp> result = hnaPayPaymentService.queryPay(payReq);
 				if(result.isSuccess()){
 					HnaPayQueryPayResp payResp = result.getData();
-					if("0000".equals(payResp.getResultCode())){//查询成功
-						if("1".equals(payResp.getOrderStatus())){//成功
+					if("0000".equals(payResp.getResultCode()) && "1".equals(payResp.getOrderStatus())){//成功
 							entity.setReal_refund_date(DateUtil.dateToString(new Date()));
 							entity.setStatus("2");
-						}else if("0".equals(payResp.getOrderStatus())){
-							entity.setStatus("1");//处理中
-						}else{//失败
-							entity.setStatus("3");
-						}
-					}else if("9999".equals(payResp.getResultCode())){//处理中
+					}else if("9999".equals(payResp.getResultCode()) 
+							|| ("0000".equals(payResp.getResultCode()) && "0".equals(payResp.getOrderStatus()))){//处理中
 						entity.setStatus("1");
 					}else{//失败
 						entity.setStatus("3");
