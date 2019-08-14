@@ -23,7 +23,7 @@ public class HnaPayPreTransReq implements Serializable {
 	private String payProtocolNo;
 	
 	@ApiModelProperty(value = "后台通知地址")
-	private String notifyUrl;
+	private String notifyUrl = "http://www.baidu.com";
 	
 	@ApiModelProperty(value = "商户用户ID")
 	private String merUserId;
