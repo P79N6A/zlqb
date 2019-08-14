@@ -19,7 +19,7 @@ public class HnaPayPreTransReq implements Serializable {
 	@ApiModelProperty(value = "业务协议号")
 	private String bizProtocolNo;
 	
-	@ApiModelProperty(value = "的支付协议号")
+	@ApiModelProperty(value = "支付协议号")
 	private String payProtocolNo;
 	
 	@ApiModelProperty(value = "后台通知地址")
