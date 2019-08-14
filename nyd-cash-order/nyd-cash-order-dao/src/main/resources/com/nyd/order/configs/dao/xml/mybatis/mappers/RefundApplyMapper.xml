@@ -90,7 +90,7 @@
 
 	<insert id="save" parameterType="com.nyd.order.model.refund.request.SaveRefundApplyRequest">
 	INSERT INTO `t_refund_apply` VALUES (#{id}, #{orderNo}, #{refundDate}, #{realRefundDate}, #{custId}, #{phone}, #{name},#{refundAmount}, #{realRefundAmount}, #{userId},
-	#{userName}, #{serialNum},#{applyRemarks},#{remarks}, #{status}, #{createTime}, #{updateTime},#{handleUserId},#{handleUserName});
+	#{userName}, #{serialNum},#{applyRemarks},#{submitTime},#{remarks}, #{status}, #{createTime}, #{updateTime},#{handleUserId},#{handleUserName});
 	</insert>
 	
 	<select id="queryIsApplay" resultType="java.lang.Long" parameterType="java.util.HashMap">
@@ -154,6 +154,9 @@
             </if>
             <if test="apply_remarks != null and apply_remarks != ''">
                 apply_remarks = #{apply_remarks},
+            </if>
+            <if test="submitTime != null and submitTime != ''">
+                submitTime = #{submitTime},
             </if>
             <if test="remarks != null and remarks != ''">
                 remarks = #{remarks},
