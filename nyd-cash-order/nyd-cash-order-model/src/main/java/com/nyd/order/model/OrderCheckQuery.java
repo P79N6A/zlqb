@@ -41,6 +41,9 @@ public class OrderCheckQuery extends PageCommon{
     
 	@ApiModelProperty(value="分配结束时间")
     private String endTime;
+
+    //分配id
+    private String assignId;
 	//
     private String mobile;
     
