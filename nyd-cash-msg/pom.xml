@@ -95,17 +95,24 @@
 
     </build>
 
-    <distributionManagement>
+   <distributionManagement>
         <repository>
-            <id>public</id>
-            <!--   <url>http://nexus.fenqi.im:8081/repository/maven-releases/</url>-->
-            <url>http://47.105.147.7:8081/nexus/content/repositories/releases</url>
+            <id>nexus-releases</id>
+            <name>nexus-releases</name>
+            <url>http://47.103.129.129:8081/nexus/content/repositories/releases/</url>
         </repository>
+        <!--<repository>-->
+            <!--<id>public</id>-->
+            <!--<name>public</name>-->
+            <!--<url>http://47.105.147.7:8081/nexus/content/groups/public/</url>-->
+        <!--</repository>-->
         <snapshotRepository>
-            <id>public</id>
-            <name>Local Nexus Repository</name>
-            <url>http://47.105.147.7:8081/nexus/content/repositories/snapshots</url>
+            <id>nexus-snapshots</id>
+            <name>nexus-snapshots</name>
+            <url>http://47.103.129.129:8081/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+
+
 
 </project>
