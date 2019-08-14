@@ -68,6 +68,9 @@ public class OrderForZLQServiseImpl implements OrderForZLQServise{
 		if(StringUtils.isNotBlank(orderCheckQuery.getUserName())){
 			buff.append(" and od.real_name ='").append(orderCheckQuery.getUserName()).append("'");
 		}
+		if(StringUtils.isNotBlank(orderCheckQuery.getAssignId())){
+			buff.append(" and xo.assign_id ='").append(orderCheckQuery.getAssignId()).append("'");
+		}
 		if(StringUtils.isNotBlank(orderCheckQuery.getAccountNumber())){
 			buff.append(" and od.mobile='").append(orderCheckQuery.getAccountNumber()).append("'");
 		}
