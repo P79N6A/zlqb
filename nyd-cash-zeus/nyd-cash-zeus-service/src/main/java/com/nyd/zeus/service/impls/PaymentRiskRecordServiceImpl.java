@@ -824,6 +824,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			} catch (Exception e) {
 				logger.error(e.getMessage(),e);
 			}
+		}
 		     //TODO
 		    if(channel.equals(channel3)) {
 			     try {
@@ -874,10 +875,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 				}
 				 
 			}
-			
-			
-			 
-		}
+
 		// 响应时间
 		result.setResponseTime(new Date());
 		return result;
