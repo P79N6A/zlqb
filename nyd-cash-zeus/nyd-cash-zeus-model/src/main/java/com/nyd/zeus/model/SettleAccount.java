@@ -25,17 +25,17 @@ public class SettleAccount implements Serializable {
      * id
      */
     private Integer id;
-    @ApiModelProperty("账单编号")
+    @ApiModelProperty(value="账单编号",required=true)
     private String billNo;
-    @ApiModelProperty("订单编号")
+    @ApiModelProperty(value="订单编号",required=true)
     private String orderNo;
-    @ApiModelProperty("1:支付宝，2:微信，3:银行卡")
+    @ApiModelProperty(value="方式 1:支付宝，2:微信，3:银行卡",required=true)
     private String payType;
-    @ApiModelProperty("还款日期")
+    @ApiModelProperty(value="还款日期",required=true)
     private String payTime;
-    @ApiModelProperty("凭证号")
+    @ApiModelProperty(value="凭证号",required=true)
     private String voucherNo;
-    @ApiModelProperty("1:结清，2:未结清")
+    @ApiModelProperty(value="是否结清 1:结清，2:未结清",required=true)
     private String settleState;
     @ApiModelProperty("备注")
     private String remark;
@@ -44,9 +44,9 @@ public class SettleAccount implements Serializable {
      * 创建时间
      */
     private Date createDate;
-    @ApiModelProperty("减免金额")
+    @ApiModelProperty(value="减免金额",required=true)
     private BigDecimal reductionAmount;
-    @ApiModelProperty("还款金额")
+    @ApiModelProperty(value="还款金额",required=true)
     private BigDecimal repaymentAmount;
 
     /**
