@@ -27,6 +27,7 @@ public class SaveRefundApplyRequest implements Serializable {
     private String userName;
     private String serialNum;
     private String applyRemarks;
+    private String submitTime;
     private String remarks;
     private String status;
     private String createTime;
