@@ -254,5 +254,19 @@ public class MongoApi {
         return mongoTemplate.findOne(new Query(criteria), AttachmentModel.class, "attachment");
     }
 
-
+    /**
+     * 保存或更新账单相关数据
+     */
+    public Integer upsertByBillNo(Map<String, Object> map, String collectionName) {
+        if (map != null && map.size()>0){
+            String billNo = String.valueOf(map.get("billNo"));
+            addCreateTimeAndupdateTimeContractId(map, collectionName);
+            Update update = new Update();
+            map.remove("billNo");
+            fillUpdate(update, map);
+            mongoTemplate.upsert(new Query(new Criteria("_id").is(billNo)), update, collectionName);
+            return 1;
+        }
+        return 0;
+    }
 }
