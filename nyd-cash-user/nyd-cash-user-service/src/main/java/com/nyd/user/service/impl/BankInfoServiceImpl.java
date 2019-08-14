@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.dubbo.common.utils.CollectionUtils;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.nyd.application.api.AgreeMentContract;
 import com.nyd.dsp.api.BankVerifyContract;
 import com.nyd.dsp.model.request.yuanjin.BankFourModel;
@@ -23,6 +27,8 @@ import com.nyd.user.entity.Bank;
 import com.nyd.user.entity.Step;
 import com.nyd.user.model.BankInfo;
 import com.nyd.user.model.BankResponse;
+import com.nyd.user.model.ChannelBankData;
+import com.nyd.user.model.ChannelBankInfo;
 import com.nyd.user.model.UserInfo;
 import com.nyd.user.model.XunlianBankListInfo;
 import com.nyd.user.service.BankInfoService;
@@ -337,6 +343,71 @@ public class BankInfoServiceImpl implements BankInfoService,UserBankContract {
 			resp.setStatus("1");
 			return ResponseData.error();
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ResponseData<List<ChannelBankInfo>> getBankListV2() {
+		ResponseData<List<ChannelBankInfo>> resp = new ResponseData<>();
+		try {
+			String querySql = "select distinct bank_name from channel_bank_list where status = 1 and ratio > 0";
+			List<ChannelBankInfo> list = userSqlService.queryT(querySql,
+					ChannelBankInfo.class);
+			resp.setStatus("0");
+			resp.setData(list);
+			LOGGER.info("getBankListV2：{} ", JSON.toJSONString(resp));
+			return resp;
+		} catch (Exception e) {
+			LOGGER.error("getBankListV2：{}", e.getMessage(), e);
+			return (ResponseData<List<ChannelBankInfo>>) ResponseData.error();
+		}
+	}
+	@Override
+	public ResponseData<ChannelBankData> getBankChannel(ChannelBankInfo info) {
+		ResponseData<ChannelBankData> res = new ResponseData<>();
+		ChannelBankData data = new ChannelBankData();
+		
+		String sql = "select * from channel_bank_list where status = 1 and ratio > 0 and bank_name = '%s'";
+		List<JSONObject> list = userSqlService.query(String.format(sql, info.getBankName()));
+		
+		if (CollectionUtils.isEmpty(list))
+			res = (ResponseData<ChannelBankData>) ResponseData.error("该银行没有支持渠道");
+
+		List<Paychannel> limitList = new ArrayList<>();
+		int startIndex = 0;
+		for (JSONObject json : list) {
+			try {
+				int ratio = json.getInteger("ratio");
+				Paychannel channelObj = new BankInfoServiceImpl().new Paychannel();
+				channelObj.bankNo = json.getString("bank_no");
+				channelObj.channelName = json.getString("channel_name");
+				channelObj.begin = startIndex;
+				startIndex += ratio;
+				channelObj.end = startIndex;
+				limitList.add(channelObj);
+			} catch (Exception e) {
+				LOGGER.error(e.getMessage(), e);
+			}
+		}
+
+		Random r = new Random();
+		int number = 1 + r.nextInt(startIndex);
+		Optional<Paychannel> opt = limitList
+				.stream()
+				.filter(channelObj -> channelObj.begin < number
+						&& number <= channelObj.end).findFirst();
+		if (opt.isPresent()){
+			data.setBankNo(opt.get().bankNo);
+			data.setChannelName(opt.get().channelName);
+			res = (ResponseData<ChannelBankData>) ResponseData.success(data);
+		}
+		return res;
+	}
+	private class Paychannel {
+		String channelName;
+		String bankNo;
+		int begin;
+		int end;
 	}
 	
 //	public Map<String,String> getBankListMap(){

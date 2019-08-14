@@ -1,10 +1,12 @@
 package com.nyd.user.service;
 
+import java.util.List;
+
 import com.nyd.user.entity.Bank;
 import com.nyd.user.model.BankInfo;
+import com.nyd.user.model.ChannelBankData;
+import com.nyd.user.model.ChannelBankInfo;
 import com.tasfe.framework.support.model.ResponseData;
-
-import java.util.List;
 
 /**
  * Created by Dengw on 17/11/3.
@@ -20,4 +22,7 @@ public interface BankInfoService {
     void saveBank(Bank bank);
     ResponseData getBankList(BankInfo bankInfo);
     ResponseData getXunlianBankList(BankInfo bankInfo);
+    
+    ResponseData<List<ChannelBankInfo>> getBankListV2();
+    ResponseData<ChannelBankData> getBankChannel(ChannelBankInfo info);
 }
