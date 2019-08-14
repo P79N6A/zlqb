@@ -79,7 +79,7 @@
 	
 	<dubbo:reference id="queryContratService" interface="com.nyd.application.api.call.QueryContratService" timeout="1000000" check="false" />
 
-
+	<dubbo:reference id="hnaPayPaymentService" interface="com.nyd.zeus.api.zzl.hnapay.HnaPayPaymentService" timeout="1000000" check="false" />
 	<dubbo:reference id="xunlianPayService" interface="com.nyd.zeus.api.zzl.xunlian.XunlianPayService" timeout="1000000" check="false" />
 
 </beans>

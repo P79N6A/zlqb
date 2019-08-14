@@ -68,6 +68,7 @@ public class UserBind implements Serializable{
     //短信编号 迅捷
     private String smsSendNo;
 
-
+    //商户请求流水号
+    private String merOrderId;
 }
 

@@ -13,8 +13,13 @@ import com.nyd.user.model.vo.IdentityVo;
 import com.nyd.user.service.consts.UserConsts;
 import com.nyd.zeus.api.zzl.ZeusForLXYService;
 import com.nyd.zeus.api.zzl.ZeusForOrderPayBackServise;
+import com.nyd.zeus.api.zzl.hnapay.HnaPayPaymentService;
 import com.nyd.zeus.api.zzl.xunlian.XunlianPayService;
 import com.nyd.zeus.model.common.CommonResponse;
+import com.nyd.zeus.model.hnapay.req.HnaPayConfirmReq;
+import com.nyd.zeus.model.hnapay.req.HnaPayContractReq;
+import com.nyd.zeus.model.hnapay.resp.HnaPayConfirmResp;
+import com.nyd.zeus.model.hnapay.resp.HnaPayContractResp;
 import com.nyd.zeus.model.xunlian.req.IdentifyauthVO;
 import com.nyd.zeus.model.xunlian.req.XunlianSignVO;
 import com.nyd.zeus.model.xunlian.resp.IdentifyResp;
@@ -75,6 +80,8 @@ public class BindCardServiceImpl implements BindCardService {
     @Autowired
     private XunlianPayService xunlianPayService;
 
+    @Autowired
+    private HnaPayPaymentService hnaPayPaymentService;
     /**
      * 银行卡验证获取验证码
      */
@@ -126,6 +133,35 @@ public class BindCardServiceImpl implements BindCardService {
                         //发送短信验证码失败
                         LOGGER.error("讯联请求绑卡发送短信验证码服务失败,订单号:{}",req.getUserId());
                         return ResponseData.error("讯联请求绑卡发送短信验证码服务异常，请稍后处理！");
+                    }
+                }
+            } catch (Exception e) {
+                LOGGER.error("讯联请求绑卡发送短信验证码服务失败，异常信息：{}", e.getMessage());
+                e.printStackTrace();
+            }
+            try {
+                if ("xinsheng".equals(req.getChannelCode())) {
+                    HnaPayContractReq hnaPayContractReq = new HnaPayContractReq();
+                    hnaPayContractReq.setCardNo(req.getCardNo());
+                    hnaPayContractReq.setHolderName(user.getRealName());
+                    hnaPayContractReq.setIdentityCode(req.getIdcardNo());
+                    hnaPayContractReq.setMerOrderId(user.getUserId());
+                    hnaPayContractReq.setMerUserId(user.getUserId());
+                    hnaPayContractReq.setMobileNo(user.getAccountNumber());
+                    //调用新生 预绑卡
+                    CommonResponse<HnaPayContractResp> hnaPayContractRespCommonResponse = hnaPayPaymentService.contract(hnaPayContractReq);
+                    if(hnaPayContractRespCommonResponse.isSuccess()){
+                        ResponseData resp = new ResponseData();
+                        JSONObject json = new JSONObject();
+                        HnaPayContractResp hnaPayContractResp = hnaPayContractRespCommonResponse.getData();
+                        json.put("requestno", hnaPayContractResp.getMerOrderId());
+                        json.put("channelCode",req.getChannelCode());
+                        resp.setData(json);
+                        insertUserBind(user, req, resp);
+                    }else{
+                        //发送短信验证码失败
+                        LOGGER.error("新生请求绑卡发送短信验证码服务失败,订单号:{}",req.getUserId());
+                        return ResponseData.error("新生请求绑卡发送短信验证码服务异常，请稍后处理！");
                     }
                 }
             } catch (Exception e) {
@@ -258,6 +294,34 @@ public class BindCardServiceImpl implements BindCardService {
                             return ResponseData.error("请求确认绑卡服务异常，请稍后处理！");
                         }
                     }
+                }
+                if ("xinsheng".equals(userBindInfo.getChannelCode())){
+                    HnaPayConfirmReq hnaPayConfirmReq = new HnaPayConfirmReq();
+                    hnaPayConfirmReq.setSmsCode(req.getValidatecode());
+                    hnaPayConfirmReq.setHnapayOrderId(userBindInfo.getUserId());
+                    hnaPayConfirmReq.setMerOrderId(userBindInfo.getMerOrderId());
+                    CommonResponse<HnaPayConfirmResp> hnaPayConfirmRespCommonResponse = hnaPayPaymentService.confirm(hnaPayConfirmReq);
+                    if (hnaPayConfirmRespCommonResponse.isSuccess()){
+                        //绑卡成功
+                        HnaPayConfirmResp hnaPayConfirmResp = hnaPayConfirmRespCommonResponse.getData();
+                        BankInfo bankInfo = new BankInfo();
+                        UserBind bind = userBind.get(0);
+                        bankInfo.setAccountName(bind.getUserName());
+                        bankInfo.setAccountNumber(bind.getIdNumber());
+                        bankInfo.setBankAccount(bind.getCardNo());
+                        bankInfo.setBankName(bind.getBankName());
+                        bankInfo.setReservedPhone(bind.getPhone());
+                        bankInfo.setSoure(4);
+                        bankInfo.setChannelCode(userBindInfo.getChannelCode());
+//                        bankInfo.setProtocolId(reslut.getData().getProtocolId());
+                        bankInfo.setUserId(bind.getUserId());
+                        bankInfo.setBizProtocolNo(hnaPayConfirmResp.getBizProtocolNo());
+                        bankInfo.setPayProtocolNo(hnaPayConfirmResp.getPayProtocolNo());
+                        bankDao.save(bankInfo);
+                        LOGGER.info("新生更新t_user_bank表记录：" + JSON.toJSONString(bankInfo));
+                    }
+
+
                 }
             }
         } catch (Exception e) {

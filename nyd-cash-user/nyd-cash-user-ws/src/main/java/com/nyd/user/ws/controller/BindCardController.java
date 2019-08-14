@@ -30,6 +30,9 @@ public class BindCardController {
     @Autowired
     private BindCardService bindCardService;
 
+    /**
+     * 银行卡验证获取验证码
+     */
     @RequestMapping(value = "/bindCard", method = RequestMethod.POST, produces = "application/json")
     public ResponseData saveBank(@RequestBody UserBindCardReq req) throws Throwable{
         return bindCardService.bindCard(req);
