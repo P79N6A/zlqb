@@ -528,6 +528,11 @@ public class HnaPayPaymentServiceImpl implements HnaPayPaymentService {
 			resp.setSuccess(false);
 			resp.setCode(preTransResp.getCode());
 			resp.setMsg(preTransResp.getMsg());
+			HnaPayTransResp hnaPayTransResp = new HnaPayTransResp();
+			hnaPayTransResp.setResultCode(preTransResp.getCode());
+			hnaPayTransResp.setErrorCode(preTransResp.getCode());
+			hnaPayTransResp.setErrorMsg(preTransResp.getMsg());
+			resp.setData(hnaPayTransResp);
 			return resp;
 		}
 	}
