@@ -57,7 +57,7 @@ public class BankInfo implements Serializable {
 	private String protocolId;
 
     // 业务协议号
-    private String BizProtocolNo;
+    private String bizProtocolNo;
     // 支付协议号
     private String payProtocolNo;
 }
