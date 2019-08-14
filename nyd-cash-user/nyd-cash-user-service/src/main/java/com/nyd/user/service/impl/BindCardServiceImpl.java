@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.nyd.order.model.common.ChkUtil;
+import com.nyd.order.model.common.DateUtils;
 import com.nyd.user.dao.BankDao;
 import com.nyd.user.dao.StepDao;
 import com.nyd.user.entity.Step;
@@ -146,9 +147,9 @@ public class BindCardServiceImpl implements BindCardService {
                     hnaPayContractReq.setCardNo(req.getCardNo());
                     hnaPayContractReq.setHolderName(user.getRealName());
                     hnaPayContractReq.setIdentityCode(user.getIdNumber());
-                    hnaPayContractReq.setMerOrderId(user.getUserId());
+                    hnaPayContractReq.setMerOrderId(user.getUserId() + DateUtils.gethhhhmmss());
                     hnaPayContractReq.setMerUserId(user.getUserId());
-                    hnaPayContractReq.setMobileNo(user.getAccountNumber());
+                    hnaPayContractReq.setMobileNo(req.getPhone());
                     //调用新生 预绑卡
                     LOGGER.info("调用新生 预绑卡,请求信息:{}",hnaPayContractReq);
                     CommonResponse<HnaPayContractResp> hnaPayContractRespCommonResponse = hnaPayPaymentService.contract(hnaPayContractReq);
@@ -157,7 +158,7 @@ public class BindCardServiceImpl implements BindCardService {
                         ResponseData resp = new ResponseData();
                         JSONObject json = new JSONObject();
                         HnaPayContractResp hnaPayContractResp = hnaPayContractRespCommonResponse.getData();
-                        json.put("requestno", hnaPayContractResp.getMerOrderId());
+                        json.put("hnapayOrderId", hnaPayContractResp.getHnapayOrderId());
                         json.put("channelCode",req.getChannelCode());
                         resp.setData(json);
                         insertUserBind(user, req, resp);
@@ -220,6 +221,8 @@ public class BindCardServiceImpl implements BindCardService {
             bind.setSmsSendNo(re.getString("smsSendNo"));
             bind.setRequestNo(reqNo);
             bind.setChannelCode(re.getString("channelCode"));
+            String hnapayOrderId = re.getString("hnapayOrderId");
+            bind.setMerOrderId(hnapayOrderId);
         }
         bind.setCardNo(req.getCardNo());
         bind.setIdNumber(user.getIdNumber());
@@ -302,8 +305,8 @@ public class BindCardServiceImpl implements BindCardService {
                 if ("xinsheng".equals(userBindInfo.getChannelCode())){
                     HnaPayConfirmReq hnaPayConfirmReq = new HnaPayConfirmReq();
                     hnaPayConfirmReq.setSmsCode(req.getValidatecode());
-                    hnaPayConfirmReq.setHnapayOrderId(userBindInfo.getUserId());
-                    hnaPayConfirmReq.setMerOrderId(userBindInfo.getMerOrderId());
+                    hnaPayConfirmReq.setHnapayOrderId(userBindInfo.getMerOrderId());
+                    hnaPayConfirmReq.setMerOrderId(userBindInfo.getUserId());
                     LOGGER.info("新生请求绑卡确认服务信息：{}",JSON.toJSONString(hnaPayConfirmReq));
                     CommonResponse<HnaPayConfirmResp> hnaPayConfirmRespCommonResponse = hnaPayPaymentService.confirm(hnaPayConfirmReq);
                     LOGGER.info("新生请求绑卡返回服务信息：{}",JSON.toJSONString(hnaPayConfirmRespCommonResponse));
@@ -334,6 +337,9 @@ public class BindCardServiceImpl implements BindCardService {
 
                         //如果是已有绑定卡，则返回成功
                         return ResponseData.success();
+                    }else {
+                        LOGGER.info("新生绑卡请求异常{}",JSON.toJSONString(hnaPayConfirmRespCommonResponse));
+                        return ResponseData.error(hnaPayConfirmRespCommonResponse.getMsg());
                     }
 
 

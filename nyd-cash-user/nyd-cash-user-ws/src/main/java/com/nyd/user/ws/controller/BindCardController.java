@@ -3,6 +3,7 @@ package com.nyd.user.ws.controller;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
+import com.nyd.user.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +57,9 @@ public class BindCardController {
         return bindCardService.bindCardConfirm(req);
     }
 
-    @RequestMapping(value = "/queryCardChannelCode", method = RequestMethod.POST)
-    public JSONObject queryCardChannelCode(String userId) throws Throwable{
-        return bindCardService.queryBindCardChannelCode(userId);
+    @RequestMapping(value = "/queryCardChannelCode", method = RequestMethod.POST,produces = "application/json")
+    public JSONObject queryCardChannelCode(@RequestBody User user) throws Throwable{
+        return bindCardService.queryBindCardChannelCode(user.getUserId());
     }
 
     /**
