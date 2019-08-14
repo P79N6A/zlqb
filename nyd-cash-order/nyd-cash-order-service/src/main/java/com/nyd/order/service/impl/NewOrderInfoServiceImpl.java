@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.creativearts.das.query.api.model.ZLQBAssessDetailDto;
-import com.nyd.zeus.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -26,8 +24,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.creativearts.das.query.api.QiniuContract;
 import com.creativearts.das.query.api.ReportDetailQueryService;
-import com.creativearts.das.query.api.model.AssessDetailDto;
 import com.creativearts.das.query.api.model.ReportType;
+import com.creativearts.das.query.api.model.ZLQBAssessDetailDto;
 import com.creativearts.limit.api.AssessService;
 import com.creativearts.limit.query.dto.UserLimitDto;
 import com.ibank.pay.model.RepayType;
@@ -104,6 +102,13 @@ import com.nyd.user.model.UserInfo;
 import com.nyd.zeus.api.BillContract;
 import com.nyd.zeus.api.payment.PaymentRiskRecordService;
 import com.nyd.zeus.api.zzl.ZeusForLXYService;
+import com.nyd.zeus.model.BillInfo;
+import com.nyd.zeus.model.PaymentRiskRecordExtendVo;
+import com.nyd.zeus.model.PaymentRiskRequestChangjie;
+import com.nyd.zeus.model.PaymentRiskRequestCommon;
+import com.nyd.zeus.model.PaymentRiskRequestXinsheng;
+import com.nyd.zeus.model.PaymentRiskRequestXunlian;
+import com.nyd.zeus.model.RepayInfo;
 import com.nyd.zeus.model.common.CommonResponse;
 import com.nyd.zeus.model.helibao.util.StatusConstants;
 import com.tasfe.framework.rabbitmq.RabbitmqProducerProxy;
@@ -1136,6 +1141,13 @@ public class NewOrderInfoServiceImpl implements NewOrderInfoService {
                     xl.setName(userInfo.getRealName());
                     xl.setProtocolId(bankDetail.getProtocolId());
                     paymentRiskRequest.setChannelJson(JSONObject.toJSONString(xl));
+                }else if(!ChkUtil.isEmpty(channelCode) && "xinsheng".equals(channelCode)) {
+                	PaymentRiskRequestXinsheng xs = new PaymentRiskRequestXinsheng();
+                	xs.setAmount(String.valueOf(memberFee));
+                	xs.setBizProtocolNo(bankDetail.getBizProtocolNo());
+                	xs.setMerUserId(borrowConfirmDto.getUserId());
+                	xs.setPayProtocolNo(bankDetail.getPayProtocolNo());
+                	paymentRiskRequest.setChannelJson(JSONObject.toJSONString(xs));
                 }
 
                 LOGGER.info("请求扣款参数" + JSON.toJSONString(paymentRiskRequest));
