@@ -141,6 +141,7 @@ public class BindCardServiceImpl implements BindCardService {
             }
             try {
                 if ("xinsheng".equals(req.getChannelCode())) {
+                    LOGGER.error("新生请求绑卡发送短信验证码服务失败,订单号:{}",req.getUserId());
                     HnaPayContractReq hnaPayContractReq = new HnaPayContractReq();
                     hnaPayContractReq.setCardNo(req.getCardNo());
                     hnaPayContractReq.setHolderName(user.getRealName());
@@ -149,7 +150,9 @@ public class BindCardServiceImpl implements BindCardService {
                     hnaPayContractReq.setMerUserId(user.getUserId());
                     hnaPayContractReq.setMobileNo(user.getAccountNumber());
                     //调用新生 预绑卡
+                    LOGGER.error("调用新生 预绑卡,请求信息:{}",hnaPayContractReq);
                     CommonResponse<HnaPayContractResp> hnaPayContractRespCommonResponse = hnaPayPaymentService.contract(hnaPayContractReq);
+                    LOGGER.error("调用新生 预绑卡,返回信息:{}",hnaPayContractRespCommonResponse);
                     if(hnaPayContractRespCommonResponse.isSuccess()){
                         ResponseData resp = new ResponseData();
                         JSONObject json = new JSONObject();
@@ -158,6 +161,7 @@ public class BindCardServiceImpl implements BindCardService {
                         json.put("channelCode",req.getChannelCode());
                         resp.setData(json);
                         insertUserBind(user, req, resp);
+                        return resp.success(json);
                     }else{
                         //发送短信验证码失败
                         LOGGER.error("新生请求绑卡发送短信验证码服务失败,订单号:{}",req.getUserId());
@@ -165,7 +169,7 @@ public class BindCardServiceImpl implements BindCardService {
                     }
                 }
             } catch (Exception e) {
-                LOGGER.error("讯联请求绑卡发送短信验证码服务失败，异常信息：{}", e.getMessage());
+                LOGGER.error("新生请求绑卡发送短信验证码服务失败，异常信息：{}", e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -300,7 +304,9 @@ public class BindCardServiceImpl implements BindCardService {
                     hnaPayConfirmReq.setSmsCode(req.getValidatecode());
                     hnaPayConfirmReq.setHnapayOrderId(userBindInfo.getUserId());
                     hnaPayConfirmReq.setMerOrderId(userBindInfo.getMerOrderId());
+                    LOGGER.error("新生请求绑卡确认服务信息：{}",JSON.toJSONString(hnaPayConfirmReq));
                     CommonResponse<HnaPayConfirmResp> hnaPayConfirmRespCommonResponse = hnaPayPaymentService.confirm(hnaPayConfirmReq);
+                    LOGGER.error("新生请求绑卡返回服务信息：{}",JSON.toJSONString(hnaPayConfirmRespCommonResponse));
                     if (hnaPayConfirmRespCommonResponse.isSuccess()){
                         //绑卡成功
                         HnaPayConfirmResp hnaPayConfirmResp = hnaPayConfirmRespCommonResponse.getData();
@@ -319,6 +325,15 @@ public class BindCardServiceImpl implements BindCardService {
                         bankInfo.setPayProtocolNo(hnaPayConfirmResp.getPayProtocolNo());
                         bankDao.save(bankInfo);
                         LOGGER.info("新生更新t_user_bank表记录：" + JSON.toJSONString(bankInfo));
+                        //更新信息完整度
+                        LOGGER.info("begin to update stepInfo");
+                        Step step = new Step();
+                        step.setUserId(req.getUserId());
+                        step.setBankFlag(UserConsts.FILL_FLAG);
+                        stepDao.updateStep(step);
+
+                        //如果是已有绑定卡，则返回成功
+                        return ResponseData.success();
                     }
 
 
