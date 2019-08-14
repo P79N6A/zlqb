@@ -62,6 +62,7 @@ import com.nyd.zeus.api.zzl.HelibaoEntrustedLoanService;
 import com.nyd.zeus.api.zzl.ZeusForOrderPayBackServise;
 import com.nyd.zeus.api.zzl.ZeusForZQServise;
 import com.nyd.zeus.api.zzl.chanpay.ChangJiePaymentService;
+import com.nyd.zeus.api.zzl.hnapay.HnaPayPaymentService;
 import com.nyd.zeus.api.zzl.xunlian.XunlianPayService;
 import com.nyd.zeus.model.BillExtendInfoVo;
 import com.nyd.zeus.model.BillInfo;
@@ -73,6 +74,8 @@ import com.nyd.zeus.model.helibao.vo.entrustedloan.OrderResVo;
 import com.nyd.zeus.model.helibao.vo.entrustedloan.OrderVo;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJieMerchantVO;
 import com.nyd.zeus.model.helibao.vo.pay.resp.chanpay.ChangJieDFResp;
+import com.nyd.zeus.model.hnapay.req.HnaPayPayReq;
+import com.nyd.zeus.model.hnapay.resp.HnaPayPayResp;
 import com.nyd.zeus.model.xunlian.req.XunlianChargeVO;
 import com.nyd.zeus.model.xunlian.resp.XunlianChargeResp;
 
@@ -132,6 +135,9 @@ public class OrderForZQServiseImpl implements OrderForZQServise{
     
     @Autowired
 	private XunlianPayService xunlianPayService;
+    
+    @Autowired
+	private HnaPayPaymentService hnaPayPaymentService;
     
 	@Override
 	public PagedResponse<List<OrderlistVo>> getOrderList(OrderlistVo vo) {
@@ -475,6 +481,23 @@ public class OrderForZQServiseImpl implements OrderForZQServise{
 					}else{//处理中
 						entity.setStatus("1");
 					}
+				}
+			}else if(bankInfo.getSoure()==4 && "xinsheng".equals(bankInfo.getChannelCode())){
+				//新生代付
+				HnaPayPayReq payReq = new HnaPayPayReq();
+				payReq.setMerOrderId(serialNum);//流水号
+				payReq.setPayeeAccount(bankInfo.getBankName());//收款方账户
+				payReq.setPayeeName(bankInfo.getAccountName());//收款方姓名
+				payReq.setTranAmt(vo.getRefundAmount());//金额
+				com.nyd.zeus.model.common.CommonResponse<HnaPayPayResp> result = hnaPayPaymentService.pay(payReq);
+				logger.info("退款处理--确认退款新生代付返回参数：{}",JSON.toJSONString(result));
+				if(!result.isSuccess()){//失败
+					entity.setStatus("3");
+				}else{//处理中
+					if(!ChkUtil.isEmpty(result.getData())){
+						entity.setSubmitTime(result.getData().getSubmitTime());//新生代付返回的提交时间，查询需用到
+					}
+					entity.setStatus("1");
 				}
 			}
 			entity.setId(vo.getRefundId());

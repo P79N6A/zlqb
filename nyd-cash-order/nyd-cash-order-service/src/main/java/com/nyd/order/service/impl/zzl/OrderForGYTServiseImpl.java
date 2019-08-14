@@ -17,7 +17,6 @@ import com.nyd.order.dao.mapper.RefundApplyMapper;
 import com.nyd.order.entity.refund.RefundApplyEntity;
 import com.nyd.order.model.common.ChkUtil;
 import com.nyd.order.model.common.CommonResponse;
-import com.nyd.order.model.common.DateUtils;
 import com.nyd.order.model.common.PagedResponse;
 import com.nyd.order.model.enums.OrderStatus;
 import com.nyd.order.model.refund.request.RefundListRequest;
@@ -30,12 +29,13 @@ import com.nyd.user.api.zzl.UserForZQServise;
 import com.nyd.user.model.BankInfo;
 import com.nyd.zeus.api.payment.PaymentRiskRecordService;
 import com.nyd.zeus.api.zzl.chanpay.ChangJiePaymentService;
+import com.nyd.zeus.api.zzl.hnapay.HnaPayPaymentService;
 import com.nyd.zeus.api.zzl.xunlian.XunlianPayService;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJieQueryMerchantVO;
 import com.nyd.zeus.model.helibao.vo.pay.resp.chanpay.ChangJieDFResp;
-import com.nyd.zeus.model.xunlian.req.XunlianChargeVO;
+import com.nyd.zeus.model.hnapay.req.HnaPayQueryPayReq;
+import com.nyd.zeus.model.hnapay.resp.HnaPayQueryPayResp;
 import com.nyd.zeus.model.xunlian.req.XunlianQueryChargeVO;
-import com.nyd.zeus.model.xunlian.resp.XunlianChargeResp;
 import com.nyd.zeus.model.xunlian.resp.XunlianQueryChargeResp;
 
 @Service("orderForGYTServise")
@@ -60,6 +60,9 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
     
     @Autowired
 	private XunlianPayService xunlianPayService;
+    
+    @Autowired
+	private HnaPayPaymentService hnaPayPaymentService;
 	
 	/**
 	 * 退款处理列表查询
@@ -204,6 +207,32 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 							entity.setStatus("1");
 						}
 					}
+				}
+			}else if(bankInfo.getSoure()==4 && "xinsheng".equals(bankInfo.getChannelCode())){
+				//新生代付
+				HnaPayQueryPayReq payReq = new HnaPayQueryPayReq();
+				payReq.setMerOrderId(entity.getSerialNum());
+				//原商户订单请求时间 格式：YYYYMMDD
+				payReq.setSubmitTime(!ChkUtil.isEmpty(entity.getSubmitTime()) ? entity.getSubmitTime().substring(0,8) : null);
+				com.nyd.zeus.model.common.CommonResponse<HnaPayQueryPayResp> result = hnaPayPaymentService.queryPay(payReq);
+				if(result.isSuccess()){
+					HnaPayQueryPayResp payResp = result.getData();
+					if("0000".equals(payResp.getResultCode())){//查询成功
+						if("1".equals(payResp.getOrderStatus())){//成功
+							entity.setReal_refund_date(DateUtil.dateToString(new Date()));
+							entity.setStatus("2");
+						}else if("0".equals(payResp.getOrderStatus())){
+							entity.setStatus("1");//处理中
+						}else{//失败
+							entity.setStatus("3");
+						}
+					}else if("9999".equals(payResp.getResultCode())){//处理中
+						entity.setStatus("1");
+					}else{//失败
+						entity.setStatus("3");
+					}
+				}else{//失败
+					entity.setStatus("3");
 				}
 			}
 			refundApplyMapper.updateInfo(entity);
