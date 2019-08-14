@@ -19,7 +19,7 @@ public interface BindCardService {
     ResponseData bindCardConfirm(UserBindCardConfirm req);
     ResponseData bindCardReset(List<UserBindCardConfirm> req);
 
-    JSONObject queryBindCardChannelCode();
+    JSONObject queryBindCardChannelCode(String userId);
     //void userBindUpdate(UserBindCardConfirm req, ResponseData resp);
 
 }

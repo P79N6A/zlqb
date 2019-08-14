@@ -57,8 +57,8 @@ public class BindCardController {
     }
 
     @RequestMapping(value = "/queryCardChannelCode", method = RequestMethod.POST)
-    public JSONObject queryCardChannelCode() throws Throwable{
-        return bindCardService.queryBindCardChannelCode();
+    public JSONObject queryCardChannelCode(String userId) throws Throwable{
+        return bindCardService.queryBindCardChannelCode(userId);
     }
 
     /**

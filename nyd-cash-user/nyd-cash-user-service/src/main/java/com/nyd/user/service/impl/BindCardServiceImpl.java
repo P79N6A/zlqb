@@ -496,15 +496,17 @@ public class BindCardServiceImpl implements BindCardService {
      * 获取绑卡渠道
      * @return
      */
-    public JSONObject queryBindCardChannelCode(){
+    public JSONObject queryBindCardChannelCode(String userId){
 
         JSONObject jsonObject = new JSONObject();
+
+        LOGGER.info("请求获取渠道用户id{}"+userId);
 
         String channleCode = "";
         try {
         	
             channleCode = zeusForOrderPayBackServise.getPaychannel();
-            LOGGER.info("获取绑卡渠道返回参数:" + channleCode);
+            LOGGER.info("获取绑卡渠道用户id{}，渠道{}:"+userId,channleCode);
             jsonObject.put("channelCode",channleCode);
             if(ChkUtil.isEmptys(channleCode)){
                 LOGGER.error("获取绑卡渠道异常,响应参数:{}",channleCode);
