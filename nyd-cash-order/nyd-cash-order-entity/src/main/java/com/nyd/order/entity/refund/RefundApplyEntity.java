@@ -21,6 +21,7 @@ public class RefundApplyEntity implements Serializable {
     private String user_name;
     private String serialNum;
     private String apply_remarks;
+    private String submitTime;
     private String remarks;
     private String status;
     private String create_time;
