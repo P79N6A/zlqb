@@ -224,14 +224,9 @@ public class ZeusForWHServiseImpl implements ZeusForWHServise{
 	    		 buff.append(" and bill_status ='").append(BillStatusEnum.REPAY_SUCESS.getCode()).append("'");
 	    	 }else{
 	    		 Integer status = Integer.valueOf(req.getUrgeStatus());
-	    		 if(3 == status){
-	    			 buff.append(" and urge_status ='").append(status).append("'");
-	    			 buff.append(" and bill_status !='").append(BillStatusEnum.REPAY_SUCESS.getCode()).append("'");
-	    		 }else{
-	    			 buff.append(" and urge_status ='").append(status).append("'"); 
-	    		 }
-	    		
-	    	 }
+	    		 buff.append(" and urge_status ='").append(status).append("'");
+	    		 buff.append(" and bill_status !='").append(BillStatusEnum.REPAY_SUCESS.getCode()).append("'");
+	    	}
 	     }
 	     buff.append(" ) b");
 	     buff.append(" inner join ");
