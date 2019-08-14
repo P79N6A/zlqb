@@ -16,6 +16,7 @@
     <dubbo:service ref="flowConfigContract" interface="com.nyd.application.api.FlowConfigContract" protocol="dubbo" />
     
     <dubbo:service ref="mongoService" interface="com.nyd.application.service.MongoService" protocol="dubbo" />
+	<dubbo:service ref="mongoRecordService" interface="com.nyd.application.api.MongoRecordService" protocol="dubbo" />
     <!-- 通话记录 -->
     <dubbo:service ref="callRecordService" interface="com.nyd.application.api.call.CallRecordService" protocol="dubbo" />
     <dubbo:service ref="smsRecordServise" interface="com.nyd.application.api.sms.SmsRecordServise" protocol="dubbo" />
@@ -32,5 +33,5 @@
 	<dubbo:reference id="couponContract" interface="com.nyd.activity.api.CouponContract"  timeout="1000000" check="false" />
 	<dubbo:reference id="userSourceContract" interface="com.nyd.user.api.UserSourceContract"  timeout="1000000" check="false" />
 	<dubbo:reference id="memberLogContract" interface="com.nyd.member.api.MemberLogContract"  timeout="1000000" check="false" />
-	
+
 </beans>
