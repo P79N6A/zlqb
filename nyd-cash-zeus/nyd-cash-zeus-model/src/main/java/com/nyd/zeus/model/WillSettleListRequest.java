@@ -29,4 +29,6 @@ public class WillSettleListRequest extends PageCommon implements Serializable {
     // 贷款编号
     @ApiModelProperty("贷款编号")
     private String orderNo;
+    
+    private String billNo;
 }
