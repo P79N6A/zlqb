@@ -1,9 +1,14 @@
 package com.nyd.user.service.impl.zzl;
 
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nyd.zeus.model.SettleAccount;
+import com.tasfe.framework.support.model.ResponseData;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +22,11 @@ import com.nyd.user.dao.mapper.UserSourceMapper;
 import com.nyd.user.entity.UserBind;
 import com.nyd.user.model.t.UserInfo;
 import com.nyd.user.model.vo.UserBankInfo;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service("userForSLHServise")
 public class UserForSLHServiseImpl implements UserForSLHServise{
+	private Logger log = LoggerFactory.getLogger(UserForSLHServiseImpl.class);
 	@Autowired
 	private UserSourceMapper mapper;
 	@Autowired
@@ -77,6 +84,35 @@ public class UserForSLHServiseImpl implements UserForSLHServise{
 				e.printStackTrace();
 			}
 			return info;
+	}
+
+	/**
+	 * 根据用户id、银行卡类型获取绑卡信息
+	 * @param userId
+	 * @param soure
+	 * @return ResponseData<UserBankInfo>
+	 */
+	public ResponseData<List<UserBankInfo>> getUserBankByUserIdAndSoure(String userId, String soure) {
+		String sql="select * from t_user_bank where  user_id = '"+userId+"'";
+		if(StringUtil.isNotEmpty(soure)){
+			sql+=" and soure = '"+soure+"' ";
+		}
+		sql+=" order by create_time desc limit 1 ";
+		List<UserBankInfo> data =new ArrayList<>();
+		try {
+			data = userSqlService.queryT(sql, UserBankInfo.class);
+			ResponseData<List<UserBankInfo>> responseData = new ResponseData<List<UserBankInfo>>();
+			responseData.setStatus("0");
+			responseData.setMsg("查询成功");
+			responseData.setData(data);
+			return responseData;
+		}catch (Exception e){
+			ResponseData<List<UserBankInfo>> responseData = new ResponseData<List<UserBankInfo>>();
+			responseData.setStatus("1");
+			responseData.setMsg("系统异常，请联系管理员");
+			log.error("UserForSLHServise getUserBankByUserId e="+e.getMessage());
+			return responseData;
+		}
 	}
 
 }
