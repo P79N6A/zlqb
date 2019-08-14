@@ -171,6 +171,10 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 		Boolean status = false;
 		try {
 			BankInfo bankInfo = userForZQServise.getAccountNo(entity.getUser_id());
+			if(ChkUtil.isEmpty(bankInfo)){
+				LOGGER.error("退款处理--跑批处理退款状态为处理中订单查询绑卡信息为空.入参：{}",JSON.toJSONString(entity));
+				return false;
+			}
 			if(bankInfo.getSoure()==1 && "changjie".equals(bankInfo.getChannelCode())){
 				//畅捷
 				//1、调用畅捷退款接口
