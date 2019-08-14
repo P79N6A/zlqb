@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2017. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
  * www.hnapay.com
  */
