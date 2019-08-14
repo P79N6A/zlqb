@@ -394,11 +394,11 @@ public class UserLoginServiceImpl implements UserLoginService {
             }
 
             // 校验验证码正确性
-            /*if (!verifyMsgCode(accountInfo.getAccountNumber(), accountInfo.getSmsCode())) {
+            if (!verifyMsgCode(accountInfo.getAccountNumber(), accountInfo.getSmsCode())) {
                 LOGGER.info("register failed , msgCode is wrong ! mobile :{}", accountInfo.getAccountNumber());
                 responseData = ResponseData.error(RegisterCode.SMSCODE_ERROR.getMsg());
                 return responseData;
-            }*/
+            }
         }
         // 检验手机号
         if (!accountInfo.getAccountNumber().matches(PHONE_REGEX)) {
