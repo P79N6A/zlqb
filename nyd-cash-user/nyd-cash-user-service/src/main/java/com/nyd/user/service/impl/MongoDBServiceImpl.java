@@ -1,9 +1,7 @@
-package com.nyd.user.service;
+package com.nyd.user.service.impl;
 
 import com.nyd.application.api.MongoRecordService;
-import com.nyd.application.model.mongo.FileImagesInfo;
 import com.nyd.user.api.MongoDBService;
-import com.nyd.user.service.impl.AccountInfoServiceImpl;
 import com.tasfe.framework.support.model.ResponseData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
