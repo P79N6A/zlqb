@@ -18,6 +18,4 @@ import java.util.List;
 public class SettleAccountImg implements Serializable {
     @ApiModelProperty(value="账单编号",required=true)
     private String billNo;
-    @ApiModelProperty("凭据地址集合")
-    private List<String> urls;
 }

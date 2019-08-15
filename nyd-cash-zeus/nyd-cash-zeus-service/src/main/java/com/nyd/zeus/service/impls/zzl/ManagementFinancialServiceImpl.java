@@ -9,6 +9,7 @@ import com.nyd.zeus.dao.enums.UrgeStatusEnum;
 import com.nyd.zeus.model.SettleAccount;
 import com.nyd.zeus.model.WillSettleListRequest;
 import com.nyd.zeus.model.WillSettleListVo;
+import com.nyd.zeus.model.common.CommonResponse;
 import com.nyd.zeus.model.common.PagedResponse;
 import com.nyd.zeus.model.helibao.PaymentVo;
 import com.tasfe.framework.support.model.ResponseData;
@@ -155,11 +156,15 @@ public class ManagementFinancialServiceImpl implements ManagementFinancialServic
      */
     @Transactional(rollbackFor = Exception.class)
     public ResponseData settleAccount(SettleAccount settleAccount, PaymentVo paymentVo) throws Exception{
-
+        ResponseData responseData=ResponseData.success();
+        responseData.setMsg("平账成功");
+        CommonResponse response=zeusForWHServise.flatAccount(paymentVo);
+        if(response==null||(!response.isSuccess())){
+            responseData.setMsg(response.getMsg());
+            responseData.setStatus("1");
+            return responseData;
+        }
         settleAccountDao.save(settleAccount);
-        zeusForWHServise.flatAccount(paymentVo);
-        ResponseData response=ResponseData.success();
-        response.setMsg("平账成功");
-        return response;
+        return responseData;
     }
 }

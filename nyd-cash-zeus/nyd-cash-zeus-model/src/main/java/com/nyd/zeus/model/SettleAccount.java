@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -20,10 +22,12 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @ApiModel(value="平账参数对象")
+@Table(name="t_settle_account")
 public class SettleAccount implements Serializable {
     /**
      * id
      */
+    @Id
     private Integer id;
     @ApiModelProperty(value="账单编号",required=true)
     private String billNo;
