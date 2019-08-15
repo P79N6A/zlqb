@@ -164,9 +164,8 @@ public class BindCardServiceImpl implements BindCardService {
                         insertUserBind(user, req, resp);
                         return resp.success(json);
                     }else{
-                        //发送短信验证码失败
-                        LOGGER.error("新生请求绑卡发送短信验证码服务失败,订单号:{}",req.getUserId());
-                        return ResponseData.error("新生请求绑卡发送短信验证码服务异常，请稍后处理！");
+                        LOGGER.info("新生绑卡请求异常{}",JSON.toJSONString(hnaPayContractRespCommonResponse));
+                        return ResponseData.error(hnaPayContractRespCommonResponse.getMsg());
                     }
                 }
             } catch (Exception e) {
