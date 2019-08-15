@@ -170,7 +170,7 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 		LOGGER.info("退款跑批--跑批处理退款状态为处理中订单开始.入参：{}",JSON.toJSONString(entity));
 		Boolean status = false;
 		try {
-			BankInfo bankInfo = userForZQServise.getAccountNo(entity.getUser_id());
+			BankInfo bankInfo = userForZQServise.getAccountNo(entity.getCust_id());
 			if(ChkUtil.isEmpty(bankInfo)){
 				LOGGER.error("退款处理--跑批处理退款状态为处理中订单查询绑卡信息为空.入参：{}",JSON.toJSONString(entity));
 				return false;
