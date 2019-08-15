@@ -1,6 +1,6 @@
 package com.nyd.zeus.dao;
 
-import com.nyd.zeus.model.SettleAccount;
+import com.nyd.zeus.entity.SettleAccount;
 
 /**
  * @ClassName: SettleAccountDao

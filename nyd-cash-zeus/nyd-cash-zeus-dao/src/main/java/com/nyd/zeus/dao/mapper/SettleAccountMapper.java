@@ -1,6 +1,7 @@
 package com.nyd.zeus.dao.mapper;
 
-import com.nyd.zeus.model.SettleAccount;
+
+import com.nyd.zeus.entity.SettleAccount;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

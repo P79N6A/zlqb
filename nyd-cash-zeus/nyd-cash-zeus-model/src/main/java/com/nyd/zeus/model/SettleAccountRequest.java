@@ -12,7 +12,6 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by dengqingfeng on 2019/8/12
@@ -22,8 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @ApiModel(value="平账参数对象")
-@Table(name="t_settle_account")
-public class SettleAccount implements Serializable {
+public class SettleAccountRequest implements Serializable {
     /**
      * id
      */

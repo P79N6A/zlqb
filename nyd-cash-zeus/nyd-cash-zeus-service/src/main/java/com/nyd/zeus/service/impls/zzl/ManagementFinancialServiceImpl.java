@@ -5,14 +5,15 @@ import com.nyd.zeus.api.zzl.ManagementFinancialService;
 import com.nyd.zeus.api.zzl.ZeusForWHServise;
 import com.nyd.zeus.api.zzl.ZeusSqlService;
 import com.nyd.zeus.dao.SettleAccountDao;
-import com.nyd.zeus.dao.enums.UrgeStatusEnum;
-import com.nyd.zeus.model.SettleAccount;
+import com.nyd.zeus.entity.SettleAccount;
+import com.nyd.zeus.model.SettleAccountRequest;
 import com.nyd.zeus.model.WillSettleListRequest;
 import com.nyd.zeus.model.WillSettleListVo;
 import com.nyd.zeus.model.common.CommonResponse;
 import com.nyd.zeus.model.common.PagedResponse;
 import com.nyd.zeus.model.helibao.PaymentVo;
 import com.tasfe.framework.support.model.ResponseData;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,11 +152,11 @@ public class ManagementFinancialServiceImpl implements ManagementFinancialServic
 
     /**
      * 平账操作
-     * @param settleAccount
+     * @param request
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    public ResponseData settleAccount(SettleAccount settleAccount, PaymentVo paymentVo) throws Exception{
+    public ResponseData settleAccount(SettleAccountRequest request, PaymentVo paymentVo) throws Exception{
         ResponseData responseData=ResponseData.success();
         responseData.setMsg("平账成功");
         CommonResponse response=zeusForWHServise.flatAccount(paymentVo);
@@ -164,6 +165,8 @@ public class ManagementFinancialServiceImpl implements ManagementFinancialServic
             responseData.setStatus("1");
             return responseData;
         }
+        SettleAccount settleAccount=new SettleAccount();
+        BeanUtils.copyProperties(settleAccount, request);
         settleAccountDao.save(settleAccount);
         return responseData;
     }

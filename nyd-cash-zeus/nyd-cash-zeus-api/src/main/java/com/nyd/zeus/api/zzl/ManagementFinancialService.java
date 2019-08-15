@@ -1,12 +1,11 @@
 package com.nyd.zeus.api.zzl;
 
-import com.nyd.zeus.model.SettleAccount;
+import com.nyd.zeus.model.SettleAccountRequest;
 import com.nyd.zeus.model.WillSettleListRequest;
 import com.nyd.zeus.model.WillSettleListVo;
 import com.nyd.zeus.model.common.PagedResponse;
 import com.nyd.zeus.model.helibao.PaymentVo;
 import com.tasfe.framework.support.model.ResponseData;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,5 +32,5 @@ public interface ManagementFinancialService {
      * @param settleAccount
      * @return
      */
-    public ResponseData settleAccount(SettleAccount settleAccount, PaymentVo paymentVo)throws Exception;
+    public ResponseData settleAccount(SettleAccountRequest settleAccount, PaymentVo paymentVo)throws Exception;
 }
