@@ -9,7 +9,7 @@ public enum RequestTypeEnum {
 	BATCH_REPAYTASK("2","跑批还款"),
 	BATCH_OVERDUETASK("3","逾期"),
 	MANAGE_REPAYMENT("4","代扣"),
-	FLAT_ACCOUNT("5","平账");
+	FLAT_ACCOUNT("5","销账");
 
     RequestTypeEnum(String code, String value) {
         this.code = code;
