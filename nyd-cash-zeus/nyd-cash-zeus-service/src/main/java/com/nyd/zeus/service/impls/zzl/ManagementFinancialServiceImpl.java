@@ -174,6 +174,7 @@ public class ManagementFinancialServiceImpl implements ManagementFinancialServic
         settleAccount.setCreateDate(new Date());
         if(request.getSettleState().equals("2")){
             settleAccount.setReductionAmount(null);
+            responseData.setMsg("操作成功");
         }
         settleAccountDao.save(settleAccount);
         return responseData;

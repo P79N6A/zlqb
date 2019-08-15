@@ -21,14 +21,14 @@ public class MongoDBServiceImpl implements MongoDBService {
     private MongoRecordService mongoRecordService;
 
     /**
-     * 保存或更新账单相关数据
+     * 保存数据
      * @param map
      * @param collectionName
      * @return
      */
-    public ResponseData upsertByBillNo(Map<String,Object> map, String collectionName){
+    public ResponseData save(Map<String,Object> map, String collectionName){
         try {
-            return mongoRecordService.upsertByBillNo(map, collectionName);
+            return mongoRecordService.save(map, collectionName);
         }catch (Exception e){
             ResponseData response=ResponseData.error();
             response.setMsg("mongo服务异常");
