@@ -4,7 +4,7 @@ import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nyd.zeus.model.SettleAccount;
+
 import com.tasfe.framework.support.model.ResponseData;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
