@@ -1,9 +1,6 @@
 package com.nyd.application.service.util;
 
-import com.nyd.application.model.mongo.AddressBook;
-import com.nyd.application.model.mongo.CallInfo;
-import com.nyd.application.model.mongo.FilePDFInfo;
-import com.nyd.application.model.mongo.SmsInfo;
+import com.nyd.application.model.mongo.*;
 import com.nyd.application.model.request.AttachmentModel;
 import com.nyd.application.service.commonEnum.MongoCollection;
 import com.nyd.application.service.impl.AgreeMentServiceImpl;
@@ -268,5 +265,16 @@ public class MongoApi {
             return 1;
         }
         return 0;
+    }
+
+    /**
+     * 根据账单编号获取相关数据
+     * @param billNo
+     * @param collectionName
+     * @return
+     */
+    public List<FileImagesInfo> getSettleAccountImg(String billNo,String collectionName) {
+        Criteria criteria = Criteria.where("billNo").is(billNo);
+        return mongoTemplate.find(new Query(criteria),FileImagesInfo.class);
     }
 }
