@@ -27,27 +27,21 @@ public class MongoRecordServiceImpl implements MongoRecordService {
     @Autowired
     private MongoApi mongoApi;
     /**
-     * 保存或更新账单相关数据
+     * 保存数据
      * @param map
      * @param collectionName
      * @return
      */
-    public ResponseData upsertByBillNo(Map<String, Object> map,String collectionName) {
-        LOGGER.info("begin to saveMapByCollectionName");
+    public ResponseData save(Map<String, Object> map,String collectionName) {
+        LOGGER.info("begin to save");
         ResponseData responseData = ResponseData.success();
         try {
-            Object billNo=map.get("billNo");
-            if(billNo==null|| StringUtils.isBlank(String.valueOf(billNo))){
-                responseData.setStatus("1");
-                responseData.setMsg("账单编号不能为空");
-                return responseData;
-            }
-            mongoApi.upsertByBillNo(map,collectionName);
-            LOGGER.info("saveMapByCollectionName success !");
+            mongoApi.save(map,collectionName);
+            LOGGER.info("save success !");
         } catch (Exception e) {
             responseData.setStatus("1");
             responseData.setMsg("数据存储失败");
-            LOGGER.error("saveMapByCollectionName error !",e);
+            LOGGER.error("save error !",e);
         }
         return responseData;
     }

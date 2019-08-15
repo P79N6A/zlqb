@@ -11,12 +11,12 @@ import java.util.Map;
  */
 public interface MongoRecordService {
     /**
-     * 保存或更新账单相关数据
+     * 保存数据
      * @param map
      * @param collectionName
      * @return
      */
-    public ResponseData upsertByBillNo(Map<String, Object> map, String collectionName);
+    public ResponseData save(Map<String, Object> map, String collectionName);
     /**
      * 根据账单编号获取相关数据
      * @param billNo
