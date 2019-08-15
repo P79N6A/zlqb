@@ -58,10 +58,15 @@ public class WillSettleListVo implements Serializable {
     private String curPeriod;
     @ApiModelProperty("逾期天数")
     private String overdueDays;
-    @ApiModelProperty("应还利息")
+    @ApiModelProperty("应还利率")
     private BigDecimal repayInterest;
     @ApiModelProperty("已还总金额")
     private BigDecimal alreadyRepayAmount;
     @ApiModelProperty("银行卡号")
     private String bankAccount;
+    @ApiModelProperty("银行名称")
+    private String bankName;
+    @ApiModelProperty("应还利息")
+    private BigDecimal shouldInterest;
+
 }

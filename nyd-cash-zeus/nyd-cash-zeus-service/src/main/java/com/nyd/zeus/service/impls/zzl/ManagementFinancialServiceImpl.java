@@ -1,6 +1,7 @@
 package com.nyd.zeus.service.impls.zzl;
 
 import com.nyd.order.model.YmtKzjrBill.enums.BillStatusEnum;
+import com.nyd.order.model.common.DateUtils;
 import com.nyd.zeus.api.zzl.ManagementFinancialService;
 import com.nyd.zeus.api.zzl.ZeusForWHServise;
 import com.nyd.zeus.api.zzl.ZeusSqlService;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 /**
  * 后台财务管理
@@ -54,6 +56,7 @@ public class ManagementFinancialServiceImpl implements ManagementFinancialServic
             buff.append("i.user_mobile as userMobile,");
             buff.append("b.cur_repay_amount+b.late_fee+b.penalty_fee as repayTotalAmount,");
             buff.append("b.late_fee as lateFee,");
+            buff.append("b.should_interest as shouldInterest,");
             buff.append("b.penalty_fee as penaltyFee,");
             buff.append("b.manager_fee as managerFee,");
             buff.append("b.wait_repay_amount as waitRepayAmount,");
@@ -113,6 +116,7 @@ public class ManagementFinancialServiceImpl implements ManagementFinancialServic
             buff.append("i.user_mobile as userMobile,");
             buff.append("b.cur_repay_amount+b.late_fee+b.penalty_fee as repayTotalAmount,");
             buff.append("b.late_fee as lateFee,");
+            buff.append("b.should_interest as shouldInterest,");
             buff.append("b.penalty_fee as penaltyFee,");
             buff.append("b.manager_fee as managerFee,");
             buff.append("b.wait_repay_amount as waitRepayAmount,");
@@ -167,6 +171,10 @@ public class ManagementFinancialServiceImpl implements ManagementFinancialServic
         }
         SettleAccount settleAccount=new SettleAccount();
         BeanUtils.copyProperties(settleAccount, request);
+        settleAccount.setCreateDate(new Date());
+        if(request.getSettleState().equals("2")){
+            settleAccount.setReductionAmount(null);
+        }
         settleAccountDao.save(settleAccount);
         return responseData;
     }

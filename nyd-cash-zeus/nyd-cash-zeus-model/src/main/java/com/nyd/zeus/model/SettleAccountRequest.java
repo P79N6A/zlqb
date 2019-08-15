@@ -26,7 +26,7 @@ public class SettleAccountRequest implements Serializable {
      * id
      */
     @Id
-    private Integer id;
+    private Long id;
     @ApiModelProperty(value="账单编号",required=true)
     private String billNo;
     @ApiModelProperty(value="订单编号",required=true)
