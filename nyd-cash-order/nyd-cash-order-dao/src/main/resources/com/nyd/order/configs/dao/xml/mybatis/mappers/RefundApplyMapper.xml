@@ -94,7 +94,7 @@
 	</insert>
 	
 	<select id="queryIsApplay" resultType="java.lang.Long" parameterType="java.util.HashMap">
-		 SELECT COUNT(1) FROM t_refund_apply where order_no = #{orderNo} and refund_date =#{refundDate} and status = '0' or status = '1'
+		 SELECT COUNT(1) FROM t_refund_apply where order_no = #{orderNo} and refund_date =#{refundDate} and (status = '0' or status = '1')
     </select>
     
     <!-- 查询当天批核费总金额 -->
