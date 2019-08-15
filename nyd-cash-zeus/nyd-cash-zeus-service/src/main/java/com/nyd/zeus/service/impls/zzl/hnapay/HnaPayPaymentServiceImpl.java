@@ -15,6 +15,7 @@ import com.nyd.zeus.api.zzl.ZeusSqlService;
 import com.nyd.zeus.api.zzl.hnapay.HnaPayPaymentService;
 import com.nyd.zeus.model.common.CommonResponse;
 import com.nyd.zeus.model.common.SqlHelper;
+import com.nyd.zeus.model.helibao.util.chanpay.ChkUtil;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.PayConfigFileVO;
 import com.nyd.zeus.model.hnapay.ExpConstant;
 import com.nyd.zeus.model.hnapay.req.HnaPayConfirmReq;
@@ -383,6 +384,8 @@ public class HnaPayPaymentServiceImpl implements HnaPayPaymentService {
 	public CommonResponse<HnaPayPreTransResp> preTrans(
 			HnaPayPreTransReq hnaPayPreTransReq) {
 		PayConfigFileVO config = getPayConfigFileVO(HNAPAY_IN);
+		if (ChkUtil.isEmpty(hnaPayPreTransReq.getNotifyUrl()))
+			hnaPayPreTransReq.setNotifyUrl(config.getNoticeUrl());
 		Map<String, String> param = genExp12Data(hnaPayPreTransReq.getAmount(),
 				hnaPayPreTransReq.getBizProtocolNo(),
 				hnaPayPreTransReq.getPayProtocolNo(),
@@ -653,6 +656,8 @@ public class HnaPayPaymentServiceImpl implements HnaPayPaymentService {
 	public CommonResponse<HnaPayRefundResp> refund(
 			HnaPayRefundReq hnaPayRefundReq) {
 		PayConfigFileVO config = getPayConfigFileVO(HNAPAY_IN);
+		if (ChkUtil.isEmpty(hnaPayRefundReq.getNotifyUrl()))
+			hnaPayRefundReq.setNotifyUrl(config.getNoticeUrl());
 		Map<String, String> param = genExp09Data(
 				hnaPayRefundReq.getMerOrderId(),
 				hnaPayRefundReq.getOrgMerOrderId(),
@@ -781,6 +786,8 @@ public class HnaPayPaymentServiceImpl implements HnaPayPaymentService {
 	@Override
 	public CommonResponse<HnaPayPayResp> pay(HnaPayPayReq hnaPayPayReq) {
 		PayConfigFileVO config = getPayConfigFileVO(HNAPAY_OUT);
+		if (ChkUtil.isEmpty(hnaPayPayReq.getNotifyUrl()))
+			hnaPayPayReq.setNotifyUrl(config.getNoticeUrl());
 		Map<String, String> param = buildPayReqParams(
 				hnaPayPayReq.getMerOrderId(), hnaPayPayReq.getTranAmt(),
 				hnaPayPayReq.getPayeeName(), hnaPayPayReq.getPayeeAccount(),

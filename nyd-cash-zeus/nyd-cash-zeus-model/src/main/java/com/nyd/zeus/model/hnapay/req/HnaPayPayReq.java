@@ -26,6 +26,6 @@ public class HnaPayPayReq implements Serializable {
 	private String payeeAccount;
 
 	@ApiModelProperty(value = "商户异步通知地址")
-	private String notifyUrl = "http://www.baidu.com";
+	private String notifyUrl;
 
 }

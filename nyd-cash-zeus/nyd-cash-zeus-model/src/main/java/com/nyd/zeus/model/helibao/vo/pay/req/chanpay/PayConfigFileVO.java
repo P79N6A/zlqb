@@ -25,7 +25,8 @@ public class PayConfigFileVO {
 	private String payKey;			//密钥
 	@ApiModelProperty(value = "渠道")
 	private String channel;			//
-
+	@ApiModelProperty(value = "回調url")
+	private String noticeUrl;			//
 	
 	
 }

@@ -15,11 +15,12 @@
 			<result column="pay_url" property="payUrl"/>
 			<result column="pay_key" property="payKey"/>
 			<result column="channel" property="channel"/>
+			<result column="notice_url" property="noticeUrl"/>
 		</resultMap>
 	       
 	<!-- pay_config_file table all fields -->
 	<sql id="Base_Column_List" >
-		 id,code,member_id,version,pub_key,prd_key,pay_url,pay_key,channel
+		 id,code,member_id,version,pub_key,prd_key,pay_url,pay_key,channel,notice_url
 	</sql>
 	   
 	<!-- 查询条件 -->
