@@ -1,5 +1,6 @@
 package com.nyd.application.service.impl;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.nyd.application.api.MongoRecordService;
 import com.nyd.application.model.mongo.FileImagesInfo;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,18 +72,7 @@ public class MongoRecordServiceImpl implements MongoRecordService {
             }
             List<Map<String,String>> list=new ArrayList<Map<String,String>>(data.size());
             for(FileImagesInfo info:data){
-                Map<String, String> map = new HashMap<String, String>();
-                Method[] methods = info.getClass().getMethods(); // 获取所有方法
-                for (Method method : methods) {
-                    if (method.getName().startsWith("get")) {
-                        String field = method.getName(); // 拼接属性名
-                        field = field.substring(field.indexOf("get") + 3);
-                        field = field.toLowerCase().charAt(0) + field.substring(1);
-                        Object value = method.invoke(info, (Object[]) null); // 执行方法
-                        map.put(field, String.valueOf(value));
-                    }
-                }
-                list.add(map);
+                list.add(objectToMap(info));
             }
             responseData.setData(list);
             LOGGER.info("getFilesInfo success !");
@@ -92,5 +83,20 @@ public class MongoRecordServiceImpl implements MongoRecordService {
             LOGGER.error("getFilesInfo error !",e);
             return responseData;
         }
+    }
+    private Map<String, String> objectToMap(Object obj) throws Exception {
+        if(obj == null){
+            return null;
+        }
+        Map<String, String> map = new HashMap<String, String>();
+        Field[] declaredFields = obj.getClass().getDeclaredFields();
+        for (Field field : declaredFields) {
+            //使private成员可以被访问、修改
+            field.setAccessible(true);
+            if(null != field.get(obj)) {
+                map.put(field.getName(), String.valueOf(field.get(obj)));
+            }
+        }
+        return map;
     }
 }
