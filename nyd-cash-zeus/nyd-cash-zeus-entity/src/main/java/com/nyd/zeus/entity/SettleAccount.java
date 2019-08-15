@@ -25,7 +25,7 @@ public class SettleAccount implements Serializable {
      * id
      */
     @Id
-    private Integer id;
+    private Long id;
     private String billNo;
     private String orderNo;
     private String payType;
