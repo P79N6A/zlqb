@@ -101,7 +101,7 @@ public class CustomerServiceServiceImpl implements CustomerServiceService {
 	}
 	/**
 	 * 统计风控扣款排除表信息
-	 * @param orderNo
+	 * @param qaymentRiskExcludeInfoRequest
 	 * @return ResponseData
 	 */
     public ResponseData queryListCount(PaymentRiskExcludeInfoRequest qaymentRiskExcludeInfoRequest)  throws Exception{
