@@ -133,7 +133,7 @@ public class BindCardServiceImpl implements BindCardService {
                     } else {
                         //发送短信验证码失败
                         LOGGER.error("讯联请求绑卡发送短信验证码服务失败,订单号:{}",req.getUserId());
-                        return ResponseData.error(reslut.getMsg());
+                        return ResponseData.error(reslut.getData().getResultMsg());
                     }
                 }
             } catch (Exception e) {
@@ -298,7 +298,7 @@ public class BindCardServiceImpl implements BindCardService {
                         }else{
                         	 LOGGER.info("1111111");
                             LOGGER.info("迅捷请求绑卡确认服务失败，异常信息：{}",JSON.toJSONString(reslut));
-                            return ResponseData.error(reslut.getMsg());
+                            return ResponseData.error(reslut.getData().getResultMsg());
 //                            return ResponseData.error("请求确认绑卡服务异常，请稍后处理！");
                         }
                     }
