@@ -297,7 +297,8 @@ public class BindCardServiceImpl implements BindCardService {
 
                         }else{
                             LOGGER.error("迅捷请求绑卡确认服务失败，异常信息：{}",JSON.toJSONString(reslut));
-                            return ResponseData.error("请求确认绑卡服务异常，请稍后处理！");
+                            return ResponseData.error(reslut.getMsg());
+//                            return ResponseData.error("请求确认绑卡服务异常，请稍后处理！");
                         }
                     }
                 }
