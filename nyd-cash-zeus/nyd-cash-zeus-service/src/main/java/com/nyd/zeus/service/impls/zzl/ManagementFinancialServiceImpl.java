@@ -42,7 +42,8 @@ public class ManagementFinancialServiceImpl implements ManagementFinancialServic
     /**
      * 贷后管理 待平账列表
      * @param willSettleListRequest
-     * @return
+     * @return PagedResponse<List<WillSettleListVo>>
+     * @Description: 根据借款人姓名、手机号、借款编号，从t_bill,t_bill_extend_info中获取账单信息集合
      */
     public PagedResponse<List<WillSettleListVo>> getWillSettleList(WillSettleListRequest willSettleListRequest){
         PagedResponse<List<WillSettleListVo>> pageResp = new PagedResponse<List<WillSettleListVo>>();
@@ -103,6 +104,7 @@ public class ManagementFinancialServiceImpl implements ManagementFinancialServic
      * 贷后管理 获取待平账借款信息
      * @param billNo
      * @return
+     * @Description:根据账单编号，从t_bill,t_bill_extend_info中获取账单信息
      */
     public PagedResponse<List<WillSettleListVo>> getWillSettleDetail(String billNo){
         PagedResponse<List<WillSettleListVo>> pageResp = new PagedResponse<List<WillSettleListVo>>();
@@ -158,11 +160,13 @@ public class ManagementFinancialServiceImpl implements ManagementFinancialServic
      * 平账操作
      * @param request
      * @return
+     * @Description:调用平账接口修改账单数据,添加平账操作记录
      */
     @Transactional(rollbackFor = Exception.class)
     public ResponseData settleAccount(SettleAccountRequest request, PaymentVo paymentVo) throws Exception{
         ResponseData responseData=ResponseData.success();
         responseData.setMsg("平账成功");
+        //调用平账接口 修改账单数据
         CommonResponse response=zeusForWHServise.flatAccount(paymentVo);
         if(response==null||(!response.isSuccess())){
             responseData.setMsg(response.getMsg());
@@ -176,6 +180,7 @@ public class ManagementFinancialServiceImpl implements ManagementFinancialServic
             settleAccount.setReductionAmount(null);
             responseData.setMsg("操作成功");
         }
+        //添加平账操作记录
         settleAccountDao.save(settleAccount);
         return responseData;
     }
