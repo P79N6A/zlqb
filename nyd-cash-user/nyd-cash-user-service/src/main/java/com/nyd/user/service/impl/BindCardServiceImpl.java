@@ -133,7 +133,7 @@ public class BindCardServiceImpl implements BindCardService {
                     } else {
                         //发送短信验证码失败
                         LOGGER.error("讯联请求绑卡发送短信验证码服务失败,订单号:{}",req.getUserId());
-                        return ResponseData.error("讯联请求绑卡发送短信验证码服务异常，请稍后处理！");
+                        return ResponseData.error(reslut.getMsg());
                     }
                 }
             } catch (Exception e) {
