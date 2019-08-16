@@ -527,6 +527,9 @@ public class BillRepayServiceImpl implements BillRepayService {
 			
 			//已罚滞纳金
 			BigDecimal waitLateFee = bill.getLateFee();
+			if(null == waitLateFee){
+				waitLateFee = BigDecimal.ZERO;
+			}
 			BigDecimal toTalLateFee = waitLateFee.add(lateFee);
 			logger.info("已罚滞纳金"+toTalLateFee+"="+waitLateFee+"+"+lateFee);
 			if(waitLateFee.compareTo(lateFeeMax)==-1){
@@ -545,6 +548,9 @@ public class BillRepayServiceImpl implements BillRepayService {
 			BigDecimal pennaltyRate = pro.getPenaltyRate();
 			//已罚逾期费
 			BigDecimal waitPenaltyFee = bill.getPenaltyFee();
+			if(null == waitPenaltyFee){
+				waitPenaltyFee = BigDecimal.ZERO;
+			}
 			//当天罚息 本金*罚息*当前逾期天数(1)
 			BigDecimal penaltyFeeDay = repayPrinciple.multiply(pennaltyRate);
 			//保留两位小数
