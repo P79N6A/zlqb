@@ -378,7 +378,7 @@ public class BillRepayServiceImpl implements BillRepayService {
 				pay.setRemark("系统");
 			}
 			if("4".equals(requstType)){
-				pay.setRemark("代扣");
+				pay.setRemark(remark);
 			}
 			pay.setId(UUID.randomUUID().toString().replace("-", "")+Uuid.getUuid24());
 			pay.setBillNo(billNo);
