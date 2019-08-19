@@ -17,5 +17,11 @@ public interface ZeusForGYTServise {
 	CommonResponse<JSONObject> updateAttendance(TimeAttendance request);
 	
 	CommonResponse<JSONObject> saveAttendance(List<CreditUserVo> userList);
+	/**
+	 * 贷中考勤--根据用户id查询
+	 * @param sysUserId
+	 * @return
+	 */
+	public CommonResponse<TimeAttendance> queryBySysUserId(String sysUserId);
 
 }

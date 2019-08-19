@@ -176,6 +176,7 @@ public class ManagementFinancialServiceImpl implements ManagementFinancialServic
         SettleAccount settleAccount=new SettleAccount();
         BeanUtils.copyProperties(settleAccount, request);
         settleAccount.setCreateDate(new Date());
+        //如果没有结清，则减免金额为null，返回信息为操作成功
         if(request.getSettleState().equals("2")){
             settleAccount.setReductionAmount(null);
             responseData.setMsg("操作成功");

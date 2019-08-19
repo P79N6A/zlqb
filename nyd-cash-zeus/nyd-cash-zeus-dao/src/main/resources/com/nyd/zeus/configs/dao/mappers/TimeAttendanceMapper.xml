@@ -44,7 +44,7 @@
             <if test="updateUserName != null and updateUserName != ''">
                 update_user_name = #{updateUserName},
             </if>
-            <if test="updateTime != null and updateTime != ''">
+            <if test="updateTime != null">
                 update_time = #{updateTime},
             </if>
         </trim>

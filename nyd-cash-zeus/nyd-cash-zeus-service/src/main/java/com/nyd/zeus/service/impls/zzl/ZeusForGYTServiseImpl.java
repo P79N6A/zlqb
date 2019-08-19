@@ -1,5 +1,6 @@
 package com.nyd.zeus.service.impls.zzl;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
@@ -55,12 +56,29 @@ public class ZeusForGYTServiseImpl implements ZeusForGYTServise{
 		return response;
 	}
 
+	/**
+	 * 更新出勤信息
+	 *
+	 * @Description:根据系统用户id获取贷中考勤信息，如果存在则修改，不存在则新增
+	 * @param request
+	 * @return
+	 */
 	@Override
 	public CommonResponse<JSONObject> updateAttendance(TimeAttendance request) {
 		LOGGER.info("贷中考勤--更新出勤状态开始入参：{}",JSON.toJSONString(request));
 		CommonResponse<JSONObject> response = new CommonResponse<>();
 		try {
-			timeAttendanceMapper.update(request);
+			//根据系统用户id获取贷中考勤
+			AttendanceRequest req=new AttendanceRequest();
+			req.setSysUserId(request.getSysUserId());
+			List<TimeAttendance> list = timeAttendanceMapper.queryList(req);
+			if(list!=null&&list.size()!=0){
+				request.setUpdateTime(new Date());
+				timeAttendanceMapper.update(request);
+			}else{
+				request.setId(UUID.randomUUID().toString().replace("-", ""));
+				timeAttendanceMapper.save(request);
+			}
 			response.setData(null);
 			response.setCode("1");
 			response.setMsg("操作成功");
@@ -100,5 +118,32 @@ public class ZeusForGYTServiseImpl implements ZeusForGYTServise{
 		}
 		return response;
 	}
-	
+
+	/**
+	 * 贷中考勤--根据用户id查询
+	 * @param sysUserId
+	 * @return
+	 */
+	public CommonResponse<TimeAttendance> queryBySysUserId(String sysUserId) {
+		LOGGER.info("贷中考勤--根据用户id查询开始入参：sysUserId="+sysUserId);
+		CommonResponse<TimeAttendance> response = new CommonResponse<TimeAttendance>();
+		try {
+			AttendanceRequest request=new AttendanceRequest();
+			request.setSysUserId(sysUserId);
+			List<TimeAttendance> list = timeAttendanceMapper.queryList(request);
+			if(list!=null&&list.size()!=0){
+				response.setData(list.get(0));
+			}
+			response.setCode("1");
+			response.setMsg("操作成功");
+			response.setSuccess(true);
+		} catch (Exception e) {
+			response.setData(null);
+			response.setCode("0");
+			response.setMsg("系统错误，请联系管理员！");
+			response.setSuccess(false);
+			LOGGER.error("贷中考勤--根据用户id查询系统错误：sysUserId="+sysUserId);
+		}
+		return response;
+	}
 }
