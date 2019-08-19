@@ -36,6 +36,7 @@ public class MongoController {
 
     @RequestMapping(value = "/addressBook/infos", method = RequestMethod.POST, produces = "application/json")
     public ResponseData saveAddressBook2(@RequestBody AddressBookRequest map){
+        LOGGER.info("saveAddressBook2 请求参数" + map);
     	List<AddressBook> list = map.getContent();
     	String appName = map.getAppName();
     	String userId = map.getUserId();
@@ -51,6 +52,7 @@ public class MongoController {
 
     @RequestMapping(value = "/addressBook/infos/ios", method = RequestMethod.POST, produces = "application/json")
     public ResponseData saveAddressBook(@RequestBody AddressBookRequest map){
+        LOGGER.info("saveAddressBook 请求参数" + map);
         List<AddressBook> list = map.getContent();
         String appName = map.getAppName();
         String userId = map.getUserId();
