@@ -9,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.nyd.zeus.api.zzl.ZeusSqlService;
 import com.nyd.zeus.api.zzl.liandong.LiandongPayPaymentService;
 import com.nyd.zeus.model.common.CommonResponse;
@@ -31,6 +33,7 @@ import com.umf.api.service.UmfService;
 import com.umf.api.service.UmfServiceImpl;
 import com.umf.api.util.StringUtil;
 
+@Service(value="liandongPayPaymentService")
 public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService {
 
 	private Logger logger = LoggerFactory.getLogger(LiandongPayPaymentServiceImpl.class);
