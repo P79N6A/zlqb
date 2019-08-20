@@ -519,7 +519,8 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			paymentRiskRecord.setUpdateTime(new SimpleDateFormat(STYLE_1)
 					.format(new Date()));
 			paymentRiskRecordDao.update(paymentRiskRecord);
-
+			logger.info("追加扣款... resultStatus：{} ，failNum：{}", resultStatus,
+					paymentRiskRecord.getFailNum());
 			if (!PROCESS_MSG.equals(resultStatus)
 					&& paymentRiskRecord.getFailNum() >= 0) {// 仅处理非成功和失败，线上已经有的数据失败次数均为-1不进行处理
 				if ("xinsheng".equals(payRequest.getChannelCode())) {
@@ -546,9 +547,9 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 	// 第三次失败2次 recentMoney033 停止
 	public void xinshengContinuePay(PaymentRiskRecordVo paymentRiskRecord,
 			String resultStatus) {
+		logger.info("xinshengContinuePay start... {}", JSONObject.toJSONString(paymentRiskRecord));
 		if (needRemove(paymentRiskRecord.getOrderNo()))
 			return;
-
 		try {
 			// 开始请求规则的判断
 			Long days = getDays(
@@ -587,6 +588,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			}
 			// 优化逻辑，成功继续扣原金额，失败扣下一档位，由超扣逻辑跳出
 			if (SUCCESS_MSG.equals(resultStatus)) {
+				logger.info("xinshengContinuePay last success");
 				// 最大金额成功停止
 				if (paymentRiskRecord.getRecentMoney().compareTo(
 						paymentRiskRecord.getShouldMoney()) == 0)
@@ -594,6 +596,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 				else
 					thisMoney = paymentRiskRecord.getRecentMoney();
 			} else if (FAIL_MSG.equals(resultStatus)) {
+				logger.info("xinshengContinuePay last fail");
 				// 失败则扣下一个档位的钱
 				if (paymentRiskRecord.getRecentMoney().compareTo(
 						paymentRiskRecord.getShouldMoney()) == 0)
@@ -606,12 +609,13 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			} else {
 				return;
 			}
+			logger.info("xinshengContinuePay thisMoney: {}", thisMoney);
 			// 超扣统一控制逻辑
 			if (thisMoney.compareTo(remainMoney) == 1
 					|| thisMoney.compareTo(BigDecimal.ZERO) == -1
 					|| remainMoney.compareTo(BigDecimal.ZERO) == -1)
 				return;
-
+			
 			// 统一支付入口 开始 ↓↓↓↓↓
 			PaymentRiskRequestCommon request = JSONObject.parseObject(
 					paymentRiskRecord.getRequestText(),
