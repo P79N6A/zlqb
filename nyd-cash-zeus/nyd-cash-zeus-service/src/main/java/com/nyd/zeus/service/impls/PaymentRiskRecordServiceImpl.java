@@ -551,12 +551,6 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 		if (needRemove(paymentRiskRecord.getOrderNo()))
 			return;
 		try {
-			// 开始请求规则的判断
-			Long days = getDays(
-					new SimpleDateFormat(STYLE_1).parse(paymentRiskRecord
-							.getRiskTime()), new Date());
-			if (days > 3 || days <= 0)
-				return;
 			// 仅对当天的数据进行追加扣款
 			if (!String.valueOf(paymentRiskRecord.getDealTime()).startsWith(
 					new SimpleDateFormat(STYLE_2).format(new Date())))
