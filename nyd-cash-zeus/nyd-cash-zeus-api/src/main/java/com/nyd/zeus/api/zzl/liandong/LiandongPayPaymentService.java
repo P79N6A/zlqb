@@ -1,5 +1,7 @@
 package com.nyd.zeus.api.zzl.liandong;
 
+import java.util.Map;
+
 import com.nyd.zeus.model.common.CommonResponse;
 import com.nyd.zeus.model.liandong.vo.LiandongCancelVO;
 import com.nyd.zeus.model.liandong.vo.LiandongChargeVO;
@@ -36,7 +38,7 @@ public interface LiandongPayPaymentService {
 	/**
 	 * 解绑卡
 	 */
-	public CommonResponse<?> unbind(LiandongCancelVO liandongCancelVO);
+	public CommonResponse<Map> unbind(LiandongCancelVO liandongCancelVO);
 
 
 
