@@ -15,6 +15,7 @@ import com.nyd.zeus.model.helibao.util.chanpay.DateUtils;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.PayConfigFileVO;
 import com.nyd.zeus.model.xunlian.req.IdentifyauthVO;
 import com.nyd.zeus.model.xunlian.req.XunlianCancelBindVO;
+import com.nyd.zeus.model.xunlian.req.XunlianChargeEnterVO;
 import com.nyd.zeus.model.xunlian.req.XunlianChargeVO;
 import com.nyd.zeus.model.xunlian.req.XunlianPaymentVO;
 import com.nyd.zeus.model.xunlian.req.XunlianQueryChargeVO;
@@ -239,5 +240,42 @@ public class XunlianGetDataServiceImpl implements XunlianGetDataService {
 		map.put("sign", signedString);
 		return map;
 	}
+
+	@Override
+	public Map getChargeEnter(XunlianChargeEnterVO xunlianChargeVO, PayConfigFileVO payConfigFileVO) {
+		Map<String,String> map = convertBean(xunlianChargeVO, Map.class);
+		if(null==bankListMap||bankListMap.isEmpty()){
+			setBankList();
+		}
+		map.put("merchantId", payConfigFileVO.getMemberId());
+		String reqDate = DateUtils.format(new Date(), DateUtils.DATETIME_FULL_QUICK_PAY);
+		map.put("reqDate", reqDate);//
+		map.put("version", "1.0.1");
+		map.put("subMercId", "");
+		map.put("subMercName", "");
+		map.put("idType", "10");
+		map.put("accountType", "96");
+		
+		//TODO
+		String bankName = xunlianChargeVO.getBankName();
+		map.remove("bankName");
+		String organCode = getBankCode(bankName);
+        logger.info(" 银行名称： " + bankName);
+        if(StringUtils.isEmpty(organCode)){
+        	logger.error(" 不支持的银行");
+        }
+		map.put("organCode", organCode);
+
+		//获得需要进行加签的字符串（通过拼接元素）
+		String preSignStr = MerchantSignAndVerify.createLinkString(map);
+		logger.info(preSignStr);
+		//调用CFCA方法得到加签sign
+		String signedString = new String(MerchantSignAndVerify.sign(preSignStr, payConfigFileVO.getMemberId(),payConfigFileVO));
+		//加签sign放入map
+		map.put("sign", signedString);
+		return map;
+	}
+
+
 
 }

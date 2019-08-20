@@ -17,12 +17,14 @@ import com.nyd.zeus.api.zzl.xunlian.XunlianGetDataService;
 import com.nyd.zeus.api.zzl.xunlian.XunlianPayService;
 import com.nyd.zeus.model.common.CommonResponse;
 import com.nyd.zeus.model.common.SqlHelper;
+import com.nyd.zeus.model.helibao.util.chanpay.DateUtils;
 import com.nyd.zeus.model.helibao.util.xunlian.ECTXmlUtil;
 import com.nyd.zeus.model.helibao.util.xunlian.HttpClientUtil;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.PayConfigFileVO;
 import com.nyd.zeus.model.payment.PaychannelTempFlow;
 import com.nyd.zeus.model.xunlian.req.IdentifyauthVO;
 import com.nyd.zeus.model.xunlian.req.XunlianCancelBindVO;
+import com.nyd.zeus.model.xunlian.req.XunlianChargeEnterVO;
 import com.nyd.zeus.model.xunlian.req.XunlianChargeVO;
 import com.nyd.zeus.model.xunlian.req.XunlianPaymentVO;
 import com.nyd.zeus.model.xunlian.req.XunlianQueryChargeVO;
@@ -41,6 +43,8 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 	private Logger logger = LoggerFactory.getLogger(XunlianPayServiceimpl.class);
 
 	private static String XUNLIAN_PAY = "200008-0001";
+	
+	//private static String XUNLIAN_PAY = "200008-0012";
 
 	@Autowired
 	private XunlianGetDataService xunlianGetDataService;
@@ -561,6 +565,85 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 		QUERY_CHARGE = String.valueOf(json.get("queryCharge"));
 		CANCEL_URL = String.valueOf(json.get("cancelUrl"));
 		
+	}
+
+	@Override
+	public CommonResponse<XunlianChargeResp> chargeEnterprise(XunlianChargeEnterVO xunlianChargeVO) {
+		CommonResponse<XunlianChargeResp> common = new CommonResponse<XunlianChargeResp>();
+		XunlianChargeResp resp = new XunlianChargeResp();
+		try {
+			// 入流水表
+			PaychannelTempFlow paychannelTempFlow = new PaychannelTempFlow();
+			paychannelTempFlow.setBusinessType("代付对公");
+			paychannelTempFlow.setPayChannelCode("xunlian");
+			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(XUNLIAN_PAY);
+			PayConfigFileVO payConfigFileVO = list.get(0);
+			String orderId = getSerialNum();
+			xunlianChargeVO.setMerOrderId(orderId);
+			paychannelTempFlow.setSeriNo(orderId);
+			resp.setOrderId(orderId);
+			Map<String, String> map = xunlianGetDataService.getChargeEnter(xunlianChargeVO, payConfigFileVO);
+
+			//获得需要进行加签的字符串（通过拼接元素）
+			String preSignStr = MerchantSignAndVerify.createLinkString(map);
+			logger.info(preSignStr);
+			//调用CFCA方法得到加签sign
+			String signedString = new String(MerchantSignAndVerify.sign(preSignStr, payConfigFileVO.getMemberId(),payConfigFileVO));
+			//加签sign放入map
+			map.put("sign", signedString);
+			//============
+			// 获取请求地址
+			// String url = "https://pay.zhengtongcf.com/pgw-pay/charge";
+			String url = "https://pay.zhengtongcf.com/pgw-pay/enterprisepay";
+			logger.info("xunlian 代付请求地址为" + url);
+			// 拼装成xml请求报文，并发送post请求
+			// 这里只是给出了一种写法，开发者可以自由编写，只要请求报文符合接口文档的规范
+			String xmlString = ECTXmlUtil.mapToXml(map, ECTXmlUtil.CPREQ_QIAREQ);
+			logger.info("商户身份认证接口测试请求报文：" + xmlString);
+			paychannelTempFlow.setRequestText(xmlString);
+			paychannelTempFlow.setRequestTime(new Date());
+			String responseString = HttpClientUtil.postToServerByXml(xmlString, url);
+			logger.info("证通返回报文：" + responseString);
+			paychannelTempFlow.setResponseText(responseString);
+			paychannelTempFlow.setResponseTime(new Date());
+
+			// 保存流水表
+			try {
+				zeusSqlService.insertSql(SqlHelper.getInsertSqlByBean(paychannelTempFlow));
+			} catch (Exception e) {
+				logger.error(" xunlian 代付流水信息异常" + e + e.getMessage());
+			}
+			// 将返回的xml字符串解析成map，map中包含了<CSReq>标签内的元素
+			Map<String, String> resultMap = ECTXmlUtil.xmlToMap(responseString);
+
+			//resp.setOrderId(resultMap.get("orderId"));
+			resp.setSerialNo(resultMap.get("serialNo"));
+			resp.setRespDate(resultMap.get("respDate"));
+			resp.setResultCode(resultMap.get("resultCode"));
+			resp.setResultMsg(resultMap.get("resultMsg"));
+			resp.setRetFlag(resultMap.get("retFlag"));
+			resp.setAmount(resultMap.get("amount"));
+			resp.setAccount(resultMap.get("account"));
+			common.setData(resp);
+			common.setSuccess(true);
+			// String result_sign = resultMap.get("sign");
+			// String to_verify =
+			// MerchantSignAndVerify.createLinkString(resultMap);
+			// // 调用CFCA方法进行验签
+			// if (MerchantSignAndVerify.verify(to_verify.getBytes(),
+			// result_sign.getBytes())) {
+			// logger.info("验签成功");
+			// } else {
+			// logger.error("验签失败");
+			// }
+
+		} catch (Exception e) {
+			logger.error(" 证通确认签约异常:" + e + e.getMessage());
+			e.printStackTrace();
+
+		}
+
+		return common;
 	}
 
 }
