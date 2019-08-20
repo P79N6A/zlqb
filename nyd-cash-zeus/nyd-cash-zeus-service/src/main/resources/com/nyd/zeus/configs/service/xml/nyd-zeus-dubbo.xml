@@ -36,6 +36,7 @@
 	<dubbo:service ref="customerServiceService" interface="com.nyd.zeus.api.zzl.CustomerServiceService" protocol="dubbo" />
 	<dubbo:service ref="xunlianPayService" interface="com.nyd.zeus.api.zzl.xunlian.XunlianPayService" protocol="dubbo" />
 	<dubbo:service ref="hnaPayPaymentService" interface="com.nyd.zeus.api.zzl.hnapay.HnaPayPaymentService" protocol="dubbo" />
+	<dubbo:service ref="liandongPayPaymentService" interface="com.nyd.zeus.api.zzl.liandong.LiandongPayPaymentService" protocol="dubbo" />
 
 
 
