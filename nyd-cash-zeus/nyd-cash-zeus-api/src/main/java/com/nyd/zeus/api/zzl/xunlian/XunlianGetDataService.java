@@ -5,6 +5,7 @@ import java.util.Map;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.PayConfigFileVO;
 import com.nyd.zeus.model.xunlian.req.IdentifyauthVO;
 import com.nyd.zeus.model.xunlian.req.XunlianCancelBindVO;
+import com.nyd.zeus.model.xunlian.req.XunlianChargeEnterVO;
 import com.nyd.zeus.model.xunlian.req.XunlianChargeVO;
 import com.nyd.zeus.model.xunlian.req.XunlianPaymentVO;
 import com.nyd.zeus.model.xunlian.req.XunlianQueryChargeVO;
@@ -56,6 +57,8 @@ public interface XunlianGetDataService {
 	public Map getChargeData(XunlianChargeVO xunlianChargeVO,PayConfigFileVO payConfigFileVO);
 
 	public Map getQueryChargeData(XunlianQueryChargeVO xunlianQueryChargeVO,PayConfigFileVO payConfigFileVO);
+	
+	public Map getChargeEnter(XunlianChargeEnterVO xunlianChargeVO,PayConfigFileVO payConfigFileVO);
 
 	
 

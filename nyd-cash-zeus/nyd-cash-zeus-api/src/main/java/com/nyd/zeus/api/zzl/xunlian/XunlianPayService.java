@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.nyd.zeus.model.common.CommonResponse;
 import com.nyd.zeus.model.xunlian.req.IdentifyauthVO;
 import com.nyd.zeus.model.xunlian.req.XunlianCancelBindVO;
+import com.nyd.zeus.model.xunlian.req.XunlianChargeEnterVO;
 import com.nyd.zeus.model.xunlian.req.XunlianChargeVO;
 import com.nyd.zeus.model.xunlian.req.XunlianPaymentVO;
 import com.nyd.zeus.model.xunlian.req.XunlianQueryChargeVO;
@@ -73,6 +74,14 @@ public interface XunlianPayService {
 	 * @return
 	 */
 	public CommonResponse<XunlianQueryChargeResp> queryCharge(XunlianQueryChargeVO xunlianQueryChargeVO);
+	
+	/**
+	 * 代付接口
+	 * @param identifyauthVO
+	 * @return
+	 */
+	public CommonResponse<XunlianChargeResp> chargeEnterprise(XunlianChargeEnterVO xunlianChargeVO);
+	
 	
 	
 	
