@@ -39,6 +39,12 @@ public class PaymentRiskRecordVo implements Serializable{
     private BigDecimal shouldMoney;
     // 剩余金额
     private BigDecimal remainMoney;
+    // 最近一次扣款（异步交易用）
+    private BigDecimal recentMoney;
+    // 当日失败次数（异步交易用）
+    private Integer failNum;
+    // 处理日期（异步交易用）
+    private String dealTime;
     // 订单编号
     private String orderNo;
     // 流水号

@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -41,6 +42,12 @@ public class PaymentRiskRecord {
     private BigDecimal shouldMoney;
     // 剩余金额
     private BigDecimal remainMoney;
+    // 最近一次扣款（异步交易用）
+    private BigDecimal recentMoney;
+    // 当日失败次数（异步交易用）
+    private Integer failNum = -1;
+    // 处理日期（异步交易用）
+    private String dealTime;
     // 订单编号
     private String orderNo;
     // 流水号
