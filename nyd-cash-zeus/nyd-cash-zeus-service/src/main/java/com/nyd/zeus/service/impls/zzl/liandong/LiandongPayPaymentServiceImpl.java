@@ -126,7 +126,7 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 	}
 
 	@Override
-	public CommonResponse<?> unbind(LiandongCancelVO liandongCancelVO) {
+	public CommonResponse<Map> unbind(LiandongCancelVO liandongCancelVO) {
 		CommonResponse<Map> common = new CommonResponse<Map>();
 		List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(LIANDONG_CODE);
 		PaychannelTempFlow paychannelTempFlow = new PaychannelTempFlow();
