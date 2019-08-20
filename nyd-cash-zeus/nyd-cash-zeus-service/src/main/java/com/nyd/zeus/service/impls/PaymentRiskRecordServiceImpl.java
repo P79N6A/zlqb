@@ -520,7 +520,8 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 					.format(new Date()));
 			paymentRiskRecordDao.update(paymentRiskRecord);
 
-			if (!PROCESS_MSG.equals(resultStatus)) {// 仅处理非成功和失败
+			if (!PROCESS_MSG.equals(resultStatus)
+					&& paymentRiskRecord.getFailNum() >= 0) {// 仅处理非成功和失败，线上已经有的数据失败次数均为-1不进行处理
 				if ("xinsheng".equals(payRequest.getChannelCode())) {
 					xinshengContinuePay(paymentRiskRecord, resultStatus);
 				}
