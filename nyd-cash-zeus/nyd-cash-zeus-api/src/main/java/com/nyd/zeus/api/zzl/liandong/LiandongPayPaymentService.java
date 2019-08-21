@@ -41,13 +41,20 @@ public interface LiandongPayPaymentService {
 	public CommonResponse<Map> unbind(LiandongCancelVO liandongCancelVO);
 
 
+	/**
+	 * 支付预处理
+	 */
+	public CommonResponse<LiandongPaymentResp> preTrans(LiandongPaymentVO liandongPaymentVO);
 
 	/**
 	 * 扣款
 	 */
 	public CommonResponse<LiandongPaymentResp> trans(LiandongPaymentVO liandongPaymentVO);
 
-
+	/**
+	 * 扣款 整合
+	 */
+	public CommonResponse<LiandongPaymentResp> summarizeTrans(LiandongPaymentVO liandongPaymentVO);
 
 	/**
 	 * 查询扣款
