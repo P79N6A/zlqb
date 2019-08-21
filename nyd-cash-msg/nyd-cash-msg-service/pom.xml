@@ -83,5 +83,9 @@
             <artifactId>nyd-cash-admin-model</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+        </dependency>
     </dependencies>
 </project>

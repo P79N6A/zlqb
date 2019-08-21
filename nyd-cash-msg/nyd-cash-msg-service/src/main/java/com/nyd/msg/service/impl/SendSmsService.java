@@ -11,7 +11,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.nyd.msg.service.channel.TianRuiChannelStrategy;
+import com.nyd.msg.service.channel.model.SmsConfigDto;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,15 +74,106 @@ public class SendSmsService implements ISendSmsService {
 	@Autowired
 	private ChannelStrategyFactory channelStrategyFactory;
 
+	@Autowired
+	private TianRuiChannelStrategy tianRuiChannelStrategy;
+
 	@Override
 	public ResponseData sendSingleSms(SmsRequest vo) {
+		logger.info("****新发送短信入口***" + vo.toString());
+		// 验证码校验
+		try {
+			ValidatorUtil.validateObject(vo, new SmsRequestValidator());
+		} catch (ValidateException e) {
+			return ResponseData.error(e.getErrorInfo().getErrorMsg());
+		}
+		// 拉数据库配置
+		List<SysSmsConfig> configList = sysSmsConfigDao.queryList();
+		logger.info("<<<< 配置参数 >>>> " + JSONObject.toJSONString(configList));
+		if (configList == null || configList.isEmpty()) {
+			logger.warn("缺少短信平台.");
+			return ResponseData.error("缺少短信平台");
+		}
+		// 查询短信模板 现在最主要的是拿模板id
+		SysSmsParam sysSmsParam = sysSmsParamDao.selectBySourceType(vo.getSmsType());
+		if (sysSmsParam == null) {
+			return ResponseData.error("不支持的短信类型");
+		}
+
+		String verifyCode = null;
+		// 验证码
+		if (sysSmsParam.getCodeFlag() == 1) {
+			String cacheKey1 = vo.getSmsType() + vo.getCellphone();
+			String cacheKey2 = cacheKey1 + "count";
+			verifyCode = generateVerifyCode(6);
+			redisService.setString(cacheKey1, verifyCode, 120000);
+			if (sysSmsParam.getCount() != null) {
+				Integer curentCount = (Integer) redisService.getObject(cacheKey2, 2);
+				if (curentCount == null) {
+					redisService.setObject(cacheKey2, 1, getDuring(sysSmsParam.getDuring()));
+				} else {
+					redisService.incr(cacheKey2, 1);
+				}
+			}
+		}
+		boolean resultFlag = false;
+		for (int size = 0; size < configList.size(); size++) {
+			SmsConfigDto smsConfigDto = new SmsConfigDto()
+					.setSign("【助乐钱包】")
+					.setTemplateId(sysSmsParam.getTianRuiYunCode())
+					.setMobile(vo.getCellphone())
+					.setSmsPlatUrlSingle(configList.get(size).getSmsPlatUrlSingle())
+					.setSmsPlatAccount(configList.get(size).getSmsPlatAccount())
+					.setSmsPlatPwd(configList.get(size).getSmsPlatPwd())
+			;
+			if ("39".equals(String.valueOf(vo.getSmsType()))){
+				smsConfigDto.setContent(vo.getSender() +
+						"##" + vo.getMap().get("prince") +
+						"##" + vo.getMap().get("amount") +
+						"##" + vo.getMap().get("sumAmount") +
+						"##" + vo.getMap().get("phone"));
+			}else if("50".equals(String.valueOf(vo.getSmsType()))){
+				smsConfigDto.setContent(vo.getSender() +
+						"##" + vo.getMap().get("custName") +
+						"##" + vo.getMap().get("price") +
+						"##" + vo.getMap().get("empName") +
+						"##" + vo.getMap().get("expireTime"));
+			}else if("38".equals(String.valueOf(vo.getSmsType()))){
+				smsConfigDto.setContent(vo.getMap().get("phone").toString());
+			}else if("9".equals(String.valueOf(vo.getSmsType()))){
+				smsConfigDto.setContent(vo.getSender() +
+						"##" + vo.getMap().get("金额") +
+						"##" + vo.getMap().get("日期"));
+			}else if("33".equals(String.valueOf(vo.getSmsType()))){
+				smsConfigDto.setContent(vo.getSender() +
+						"##" + vo.getMap().get("userName") +
+						"##" + vo.getMap().get("limitAmount") +
+						"##" + vo.getMap().get("appNmae"));
+			}
+			else if(verifyCode != null){
+				smsConfigDto.setContent(verifyCode);
+			}
+			try {
+				resultFlag = tianRuiChannelStrategy.sendSms(smsConfigDto);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if (resultFlag) {
+			return ResponseData.success("成功");
+		}else{
+			return ResponseData.error("短信平台都没发成功或者符合条件的短信平台没有");
+		}
+	}
+
+
+	public ResponseData sendSingleSmsPro(SmsRequest vo) {
 		logger.info("****发送短信入口***" + vo.toString());
 		try {
 			ValidatorUtil.validateObject(vo, new SmsRequestValidator());
 		} catch (ValidateException e) {
 			return ResponseData.error(e.getErrorInfo().getErrorMsg());
 		}
-		
+
 
 		Map<String, Object> params = new HashMap<>();
 		List<SysSmsConfig> configList = sysSmsConfigDao.queryList();

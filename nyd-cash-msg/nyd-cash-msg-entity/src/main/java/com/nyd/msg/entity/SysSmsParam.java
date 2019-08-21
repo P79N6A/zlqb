@@ -24,4 +24,5 @@ public class SysSmsParam {
     private Integer codeFlag;
     private Integer count;
     private Integer during;
+    private String tianRuiYunCode;
 }
