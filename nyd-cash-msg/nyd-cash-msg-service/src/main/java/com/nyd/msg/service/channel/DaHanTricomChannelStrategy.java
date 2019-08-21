@@ -70,6 +70,7 @@ public class DaHanTricomChannelStrategy implements ChannelStrategy{
             } else {
 
                 SmsDaHanResponse response = JSON.parseObject(resultStr, new TypeReference<SmsDaHanResponse>(){});
+                logger.info("{}:短信返送后返回参数：{}", commonLog,JSON.toJSONString(response));
                 if(DaHanResultEnum.SUCCESS.getCode().equals(response.getResult())) {
                     logger.info("{}短信发送成功", commonLog);
                     return Boolean.TRUE;
