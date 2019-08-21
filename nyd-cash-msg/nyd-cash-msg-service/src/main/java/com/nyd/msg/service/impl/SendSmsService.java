@@ -126,26 +126,28 @@ public class SendSmsService implements ISendSmsService {
 					.setSmsPlatPwd(configList.get(size).getSmsPlatPwd())
 			;
 			if ("39".equals(String.valueOf(vo.getSmsType()))){
-				smsConfigDto.setContent(vo.getSender() +
+				smsConfigDto.setContent(
+						vo.getMap().get("custName") +
 						"##" + vo.getMap().get("prince") +
 						"##" + vo.getMap().get("amount") +
 						"##" + vo.getMap().get("sumAmount") +
 						"##" + vo.getMap().get("phone"));
 			}else if("50".equals(String.valueOf(vo.getSmsType()))){
-				smsConfigDto.setContent(vo.getSender() +
-						"##" + vo.getMap().get("custName") +
+				smsConfigDto.setContent(
+						vo.getMap().get("custName") +
 						"##" + vo.getMap().get("price") +
 						"##" + vo.getMap().get("empName") +
 						"##" + vo.getMap().get("expireTime"));
 			}else if("38".equals(String.valueOf(vo.getSmsType()))){
 				smsConfigDto.setContent(vo.getMap().get("phone").toString());
 			}else if("9".equals(String.valueOf(vo.getSmsType()))){
-				smsConfigDto.setContent(vo.getSender() +
-						"##" + vo.getMap().get("金额") +
-						"##" + vo.getMap().get("日期"));
+				smsConfigDto.setContent(
+						vo.getMap().get("金额") +
+						"##" + vo.getMap().get("日期") +
+						"##助乐钱包");
 			}else if("33".equals(String.valueOf(vo.getSmsType()))){
-				smsConfigDto.setContent(vo.getSender() +
-						"##" + vo.getMap().get("userName") +
+				smsConfigDto.setContent(
+						vo.getMap().get("userName") +
 						"##" + vo.getMap().get("limitAmount") +
 						"##" + vo.getMap().get("appNmae"));
 			}
