@@ -47,7 +47,7 @@ public class MongoController {
     		addressBook.setAppName(appName);
     		addressBook.setUserId(userId);
     	}
-    ResponseData responseData = mongoService.saveAddressBook(list);
+    ResponseData responseData = mongoService.saveAddressBook(list,userId);
     return responseData;}
 
     @RequestMapping(value = "/addressBook/infos/ios", method = RequestMethod.POST, produces = "application/json")
@@ -63,7 +63,7 @@ public class MongoController {
             addressBook.setAppName(appName);
             addressBook.setUserId(userId);
         }
-        ResponseData responseData = mongoService.saveAddressBook(list);
+        ResponseData responseData = mongoService.saveAddressBook(list,userId);
         return responseData;
     }
 

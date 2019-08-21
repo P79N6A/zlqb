@@ -15,7 +15,7 @@ public interface MongoService {
     /**
      * 保存通讯录
      */
-    ResponseData saveAddressBook(List<AddressBook> list);
+    ResponseData saveAddressBook(List<AddressBook> list,String userId);
 
     /**
      * 保存通话记录

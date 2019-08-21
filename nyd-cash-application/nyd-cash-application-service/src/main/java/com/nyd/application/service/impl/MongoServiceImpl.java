@@ -3,6 +3,11 @@ package com.nyd.application.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import com.nyd.user.api.UserIdentityContract;
+import com.nyd.user.model.UserInfo;
+import com.nyd.user.model.XunlianBankListInfo;
+import com.nyd.user.model.dto.UserDto;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +43,30 @@ public class MongoServiceImpl implements MongoService {
     @Autowired
     private AddressBookDao addressBookDao;
 
+    @Autowired
+    private UserIdentityContract userIdentityContract;
+
     @Override
-    public ResponseData saveAddressBook(List<AddressBook> list) {
+    public ResponseData saveAddressBook(List<AddressBook> list,String userId) {
         LOGGER.info("begin to save addressBook success !");
         ResponseData responseData = ResponseData.success();
 
         if(list != null && list.size()>0){
-            LOGGER.info("saveAddressBook param phone is " + list.get(0).getPhoneNo());
+            String phone = list.get(0).getPhoneNo();
+            LOGGER.info("用户手机号为saveAddressBook param phone is " + phone);
+            LOGGER.info("userid....." + userId);
+            //如果userid位空去查询
+            if (!StringUtils.isNotBlank(userId)){
+                UserDto userDto = new UserDto();
+                userDto.setAccountNumber(phone);
+                UserInfo userInfo = userIdentityContract.getUserInfos(userDto).getData().get(0);
+                LOGGER.info("用户手机号为:{},查询出来的userid为{}",phone,userInfo.getUserId());
+                userId = userInfo.getUserId();
+                for (AddressBook addressBook : list){
+                    addressBook.setUserId(userId);
+                }
+            }
+
             try {
                 List<AddressBook> listFromDB = mongoApi.getAddressBooks(list.get(0).getPhoneNo(), list.get(0).getDeviceId());
                 if (listFromDB != null && listFromDB.size() > 0) {
