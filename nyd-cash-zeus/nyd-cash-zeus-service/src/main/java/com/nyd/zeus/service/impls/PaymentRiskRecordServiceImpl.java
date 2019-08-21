@@ -621,6 +621,11 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			} else {
 				return;
 			}
+			// 特殊情况扣款金额大于剩余金额，则将剩余金额全部扣掉
+			if (thisMoney.compareTo(remainMoney) == 1
+					&& remainMoney.compareTo(BigDecimal.ZERO) == 1) {
+				thisMoney = remainMoney;
+			}
 			logger.info("xinshengContinuePay thisMoney: {}", thisMoney);
 			// 超扣统一控制逻辑
 			if (thisMoney.compareTo(remainMoney) == 1
