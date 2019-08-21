@@ -1,10 +1,9 @@
 package com.nyd.zeus.service.impls.zzl;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.UUID;
+import java.lang.reflect.Field;
+import java.util.*;
 
+import com.nyd.zeus.service.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,5 +144,67 @@ public class ZeusForGYTServiseImpl implements ZeusForGYTServise{
 			LOGGER.error("贷中考勤--根据用户id查询系统错误：sysUserId="+sysUserId);
 		}
 		return response;
+	}
+
+	/**
+	 * 查询今天的所有信审考勤信息集合
+	 * @return
+	 */
+	public CommonResponse<List<TimeAttendance>> getNowAttendance(List<TimeAttendance> tList){
+		LOGGER.info("查询今天的所有信审考勤信息集合 开始");
+		CommonResponse<List<TimeAttendance>> response = new CommonResponse<List<TimeAttendance>>();
+		try {
+			AttendanceRequest request=new AttendanceRequest();
+			Long listCount = timeAttendanceMapper.queryListCount(request);
+			if(listCount==null||listCount.longValue()==0){
+				response.setCode("1");
+				response.setMsg("操作成功");
+				response.setSuccess(true);
+				return response;
+			}
+			List<TimeAttendance> list = timeAttendanceMapper.queryList(request);
+			String weekDay=DateUtil.getDayWeekOfDate1(new Date());
+			Map<String,String> tAMap=new HashMap<String,String>(list.size());
+			for(TimeAttendance t:list){
+				Map<String,Object> map=objectToMap(list.get(0));
+				int state=(int)map.get(weekDay);
+				if(state==1) {
+					tAMap.put(t.getSysUserId(),t.getSysUserName());
+				}
+			}
+			for(int i=0;i<tList.size();i++){
+				TimeAttendance t=tList.get(i);
+				if(tAMap.containsKey(t.getSysUserId())){
+					tList.remove(i);
+				}
+			}
+			response.setData(tList);
+			response.setCode("1");
+			response.setMsg("操作成功");
+			response.setSuccess(true);
+		} catch (Exception e) {
+			response.setData(null);
+			response.setCode("0");
+			response.setMsg("系统错误，请联系管理员！");
+			response.setSuccess(false);
+			LOGGER.error("查询今天的所有信审考勤信息集合 系统错误：e="+e.getMessage());
+		}
+		return response;
+	}
+
+	private Map<String, Object> objectToMap(Object obj) throws Exception {
+		if(obj == null){
+			return null;
+		}
+		Map<String,Object> map = new HashMap<String,Object>();
+		Field[] declaredFields = obj.getClass().getDeclaredFields();
+		for (Field field : declaredFields) {
+			//使private成员可以被访问、修改
+			field.setAccessible(true);
+			if(null != field.get(obj)) {
+				map.put(field.getName(),field.get(obj));
+			}
+		}
+		return map;
 	}
 }

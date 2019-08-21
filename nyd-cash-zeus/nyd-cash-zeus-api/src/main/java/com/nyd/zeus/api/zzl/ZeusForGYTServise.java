@@ -1,6 +1,7 @@
 package com.nyd.zeus.api.zzl;
 
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
 import com.nyd.zeus.model.attendance.AttendanceRequest;
@@ -23,5 +24,10 @@ public interface ZeusForGYTServise {
 	 * @return
 	 */
 	public CommonResponse<TimeAttendance> queryBySysUserId(String sysUserId);
+	/**
+	 * 查询今天的所有信审考勤信息集合
+	 * @return
+	 */
+	public CommonResponse<List<TimeAttendance>> getNowAttendance(List<TimeAttendance> list);
 
 }

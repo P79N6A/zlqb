@@ -92,4 +92,20 @@ public class DateUtil {
 		}
 		return null;
 	}
+    /**
+     * 获取某个日期为星期几
+     * @param date
+     * @return String "sunday"
+     */
+    public static String getDayWeekOfDate1(Date date) {
+        String[] weekDays = {"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+
+        int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if (w < 0)
+            w = 0;
+
+        return weekDays[w];
+    }
 }
