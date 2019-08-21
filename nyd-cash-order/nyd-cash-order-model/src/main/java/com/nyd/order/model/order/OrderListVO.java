@@ -41,5 +41,12 @@ public class OrderListVO extends PageCommon{
     private Date inTime;//进入时间
 	@ApiModelProperty(value = "放款产品")
     private String loanProduct;//放款产品
-	
+	@ApiModelProperty(value = "分配状态 0为已分配，1为未分配")
+	private Integer isExistAssignId;
+	@ApiModelProperty(value = "信审人员（分配接收人）")
+	private String assignName;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	@ApiModelProperty(value = "分配时间")
+	private Date assignTime;
+	private String assignId;
 }

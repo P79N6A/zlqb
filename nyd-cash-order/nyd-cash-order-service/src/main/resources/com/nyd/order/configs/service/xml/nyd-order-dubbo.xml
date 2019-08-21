@@ -47,6 +47,7 @@
 	<dubbo:reference id="billContract" interface="com.nyd.zeus.api.BillContract" timeout="1000000" check="false" />
 	<dubbo:reference id="orderContractYmt" interface="com.ibank.order.api.OrderContract" timeout="1000000" check="false" />
 	<dubbo:reference id="userForSLHServise" interface="com.nyd.user.api.zzl.UserForSLHServise" timeout="1000000" check="false" />
+	<dubbo:reference id="zeusForGYTServise" interface="com.nyd.zeus.api.zzl.ZeusForGYTServise"  timeout="1000000" check="false"  />
 	<!--ymt空中金融根据子订单号找到还款详情参数-->
 	<dubbo:reference id="KzjrRepayContractYmt" interface="com.ibank.order.api.KzjrRepayContract" timeout="1000000" check="false" />
 	<dubbo:reference id="kzlicaiContractYmt" interface="com.ibank.order.api.KzlicaiContract" timeout="1000000" check="false" />

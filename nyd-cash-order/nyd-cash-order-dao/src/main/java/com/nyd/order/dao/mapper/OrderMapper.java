@@ -122,4 +122,10 @@ public interface OrderMapper {
    
    	Long sqlSum(SqlSearchForm form);
     List<OrderInfo> getOrderInfoByOrderNo(String orderNo);
+
+    /**
+     * 获取最新待审的分配的订单
+     * @return
+     */
+    OrderListVO queryNewAutoAllocatnOrder();
 }

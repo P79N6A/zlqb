@@ -1,5 +1,6 @@
 package com.nyd.order.model.order;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -9,7 +10,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 @JsonIgnoreProperties
 @ApiModel(value = "orderParam", description = "查询未分配订单参数")
-public class OrderParamVO extends PageCommon{
+public class OrderParamVO extends PageCommon implements Serializable {
 
 	/**
 	 * 
@@ -25,6 +26,14 @@ public class OrderParamVO extends PageCommon{
 	private String inTimeStart;//进入开始时间
 	@ApiModelProperty(value = "进入结束时间")
 	private String inTimeEnd;//进入结束时间
+	@ApiModelProperty(value = "信审人员（分配接收人）")
+	private String assignName;
+	@ApiModelProperty(value = "分配开始时间")
+	private String assignTimeStart;
+	@ApiModelProperty(value = "分配结束时间")
+	private String assignTimeEnd;
+	@ApiModelProperty(value = "分配状态 0为已分配，1为未分配")
+	private Integer isExistAssignId;
 	public String getUserName() {
 		return userName;
 	}
@@ -58,7 +67,35 @@ public class OrderParamVO extends PageCommon{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
-	
-	
+	public String getAssignTimeStart() {
+		return assignTimeStart;
+	}
+
+	public void setAssignTimeStart(String assignTimeStart) {
+		this.assignTimeStart = assignTimeStart;
+	}
+
+	public String getAssignTimeEnd() {
+		return assignTimeEnd;
+	}
+
+	public void setAssignTimeEnd(String assignTimeEnd) {
+		this.assignTimeEnd = assignTimeEnd;
+	}
+
+	public String getAssignName() {
+		return assignName;
+	}
+
+	public void setAssignName(String assignName) {
+		this.assignName = assignName;
+	}
+
+	public Integer getIsExistAssignId() {
+		return isExistAssignId;
+	}
+
+	public void setIsExistAssignId(Integer isExistAssignId) {
+		this.isExistAssignId = isExistAssignId;
+	}
 }

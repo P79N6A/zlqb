@@ -236,12 +236,16 @@
 		t.loan_number borrowPeriods,
 		t.create_time inTime,
 		t.loan_time regTime,
+		case when (t.assign_id is not null and t.assign_id !='') THEN 0
+		else 1 end as isExistAssignId ,
+		t.assign_name assignName,
+		t.assign_time assignTime,
 		t.app_name loanProduct 
 		from t_order t 
 		INNER JOIN
 		t_order_detail t1 on t.order_no = t1.order_no
 		where 1=1 and t.order_status = 10 AND t.who_audit =1
-		and (t.assign_id is null or t.assign_id = '')
+		and (t.reviewed_id is null or t.reviewed_id = '')
 		<if test="channel !=null and channel !=''">
 		and t1.source = #{channel}
 		</if>
@@ -251,13 +255,26 @@
 		<if test="inTimeEnd !=null and inTimeEnd !=''">
 		and t.create_time &lt;  #{inTimeEnd}
 		</if>
-		
 		<if test="userName !=null and userName !=''">
 		and t1.real_name = #{userName}
 		</if>
-		
 		<if test="phone !=null and phone !=''">
 		and t1.mobile = #{phone}
+		</if>
+		<if test="assignName != null and assignName != ''">
+			and t.assign_name = #{assignName}
+		</if>
+		<if test="assignTimeStart != null and assignTimeStart != ''">
+			and t.assign_time &gt;= #{assignTimeStart}
+		</if>
+		<if test="assignTimeEnd != null and assignTimeEnd != ''">
+			and t.assign_time &lt;= #{assignTimeEnd}
+		</if>
+		<if test="isExistAssignId != null and isExistAssignId == 0">
+			and t.assign_id is not null and t.assign_id !=''
+		</if>
+		<if test="isExistAssignId != null and isExistAssignId == 1">
+			and ( t.assign_id is null or t.assign_id ='' )
 		</if>
 		 ORDER BY t.create_time asc
 		
@@ -272,7 +289,7 @@
 		INNER JOIN
 		t_order_detail t1 on t.order_no = t1.order_no
 		where 1=1 and t.order_status = 10 AND t.who_audit =1
-		and (t.assign_id is null or t.assign_id = '')
+		and (t.reviewed_id is null or t.reviewed_id = '')
 		<if test="channel !=null and channel !=''">
 		and t1.source = #{channel}
 		</if>
@@ -289,6 +306,21 @@
 		
 		<if test="phone !=null and phone !=''">
 		and t1.mobile = #{phone}
+		</if>
+		<if test="assignName != null and assignName != ''">
+			and t.assign_name = #{assignName}
+		</if>
+		<if test="assignTimeStart != null and assignTimeStart != ''">
+			and t.assign_time &gt;= #{assignTimeStart}
+		</if>
+		<if test="assignTimeEnd != null and assignTimeEnd != ''">
+			and t.assign_time &lt;= #{assignTimeEnd}
+		</if>
+		<if test="isExistAssignId != null and isExistAssignId == 0">
+			and t.assign_id is not null and t.assign_id !=''
+		</if>
+		<if test="isExistAssignId != null and isExistAssignId == 1">
+			and ( t.assign_id is null or t.assign_id ='' )
 		</if>
 	</select>
 
@@ -325,8 +357,8 @@
 	<select id="getOrderListCount" parameterType="com.nyd.order.model.vo.OrderlistVo" resultType="java.lang.Long">
 		select 
 			count(1)
-		from t_order as o  
-		INNER JOIN t_order_detail as od 
+		from t_order as o
+		INNER JOIN t_order_detail as od
 		ON o.order_no = od.order_no
 		where od.delete_flag = 0
 		<if test="mobile !=null and mobile !=''">
@@ -424,7 +456,25 @@
 		order_status = 10 	
         where order_no = #{entity.orderNo}
 	</update>
-	
-	
+
+	<select id="queryNewAutoAllocatnOrder"  resultType="com.nyd.order.model.order.OrderListVO">
+		select
+		t.order_no orderNo,
+		t.user_id user_id,
+		t1.mobile phone,
+		t1.real_name userName,
+		t1.source channel,
+		t.loan_number borrowPeriods,
+		t.create_time inTime,
+		t.loan_time regTime,
+		t.assign_id as assignId,
+		t.app_name loanProduct
+		from t_order t
+		INNER JOIN
+		t_order_detail t1 on t.order_no = t1.order_no
+		where 1=1 and t.order_status = 10 AND t.who_audit =1
+			and ( t.assign_id is null or t.assign_id ='' )
+		ORDER BY t.assign_time desc limit 1
+	</select>
 
 </mapper>
