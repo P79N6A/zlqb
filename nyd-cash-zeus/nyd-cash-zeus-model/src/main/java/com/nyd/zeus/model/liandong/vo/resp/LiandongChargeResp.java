@@ -37,5 +37,7 @@ public class LiandongChargeResp implements Serializable {
 	
 	// 手续费
 	private String fee;
+	//查询描述
+	private String trade_desc;
 
 }

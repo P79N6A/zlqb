@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(description="签约短信")
+@ApiModel(description="协议支付查询")
 public class LiandongQueryPaymentVO implements Serializable{
 
 	/**
@@ -17,5 +17,8 @@ public class LiandongQueryPaymentVO implements Serializable{
 
 	@ApiModelProperty(value="商户订单号")
 	private String order_id;
+	
+	@ApiModelProperty(value="请求时间yyyyMMDD")
+	private String mer_date;
 	
 }

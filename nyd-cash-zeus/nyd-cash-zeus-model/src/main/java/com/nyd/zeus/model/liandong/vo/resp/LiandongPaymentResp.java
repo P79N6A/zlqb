@@ -34,5 +34,8 @@ public class LiandongPaymentResp implements Serializable {
 
 	// 商户订单号
 	private String order_id;
+	
+	//联动支付流水号
+	private String trade_no;
 
 }

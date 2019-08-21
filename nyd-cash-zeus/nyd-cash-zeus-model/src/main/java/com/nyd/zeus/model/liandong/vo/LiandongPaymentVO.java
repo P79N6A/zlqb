@@ -26,6 +26,16 @@ public class LiandongPaymentVO implements Serializable{
 	
 	@ApiModelProperty(value="联动交易号 16位")
 	private String trade_no;
+	
+	@ApiModelProperty(value="金额(分)")
+	private String amount;
+	
+	@ApiModelProperty(value="流水号")
+	private String order_no;
+	
+	@ApiModelProperty(value="请求时间yyyyMMDD")
+	private String mer_date;
+	
 	 
 	
 }

@@ -30,5 +30,9 @@ public class LiandongChargeVO implements Serializable{
 	@ApiModelProperty(value="收款方户名")
 	private String recv_user_name;
 	
+	@ApiModelProperty(value="原商户订单日期 (YYYYMMDD)")
+	private String mer_date;
+	 
+	
 	
 }
