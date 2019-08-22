@@ -98,6 +98,12 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 	private static final String SUCCESS_MSG = "S";
 	private static final String FAIL_MSG = "F";
 	private static final String PROCESS_MSG = "P";
+	
+	// 2 个支付渠道
+	String channel1 = "changjie";
+	String channel2 = "xunlian";
+	String channel3 = "xinsheng";
+	String channel4 = "liandong";
 
 	private Map<String, Object> orderNosMap = new HashMap();
 
@@ -501,7 +507,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			request.setSeriNo(paymentRiskRecord.getSeriNo());
 			request.setOrderNo(paymentRiskRecord.getOrderNo());
 			PaymentRiskRecordPayResult result = query(request,
-					paymentRiskRecord.getBackupMoney());
+					paymentRiskRecord);
 			String resultStatus = result.getStatus();
 			// 结果 ↑↑↑↑↑
 
@@ -686,6 +692,65 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 		flow.setRequestTime(new Date());
 		flow.setStatus("F");
 		return flow;
+	}
+	
+	private void afterSaveFlow4Xinsheng(PaymentRiskFlow flow, PaymentRiskRecordVo paymentRiskRecord) {
+		try {
+			if (flow.getMoney() == null) {
+				flow.setMoney(new BigDecimal(0));
+			}
+			flow.setResponseTime(new Date());
+			paymentRiskFlowDao.save(flow);
+			if (SUCCESS_MSG.equals(flow.getStatus())) {
+				try {
+					// 开始发送短信
+					String sql = "SELECT * from t_payment_risk_record_extend where order_no='"
+							+ flow.getOrderNo() + "' ";
+					JSONObject configJson = zeusSqlService.queryOne(sql);
+					if (configJson == null || configJson.isEmpty()) {
+						return;
+					}
+					// 短信数据，取数据库中的值，静态map因为异步会被其他场景修改不能使用
+					BigDecimal prince = paymentRiskRecord.getShouldMoney();
+					BigDecimal sumAmount = paymentRiskRecord.getShouldMoney()
+							.subtract(paymentRiskRecord.getRemainMoney());
+					sumAmount = sumAmount.add(flow.getMoney());
+
+					// 判断是否合理
+					if (sumAmount.doubleValue() > prince.doubleValue()) {
+						sumAmount = prince;
+					}
+
+					SmsRequest vo = new SmsRequest();
+					vo.setAppName(configJson.getString("app_name"));
+					vo.setCellphone(configJson.getString("cell_phone"));
+					vo.setSmsType(Integer.parseInt(configJson
+							.getString("sms_type")));
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("custName", configJson.getString("cust_name"));
+					map.put("prince", new DecimalFormat("##.##").format(prince));
+					map.put("amount",
+							new DecimalFormat("##.##").format(flow.getMoney()));
+					map.put("sumAmount",
+							new DecimalFormat("##.##").format(sumAmount));
+					map.put("phone", configJson.getString("phone"));
+					vo.setMap(map);
+					logger.info("-===================--请求afterSaveFlow--sendSingleSms- 参数："
+							+ JSONObject.toJSONString(vo));
+					com.tasfe.framework.support.model.ResponseData smsData = iSendSmsService
+							.sendSingleSms(vo);
+					logger.info("---请求afterSaveFlow--sendSingleSms- 结果："
+							+ JSONObject.toJSONString(smsData));
+				} catch (Exception e) {
+					logger.error("发送短信异常");
+					logger.error(e.getMessage(), e);
+				}
+			}
+
+		} catch (Exception e) {
+			logger.error("保存风控还款流水异常!");
+			logger.error(e.getMessage(), e);
+		}
 	}
 
 	private void afterSaveFlow(PaymentRiskFlow flow) {
@@ -936,11 +1001,6 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 		// 默认直接失败
 		result.setStatus("F");
 		result.setSeriNo("");
-		// 2 个支付渠道
-		String channel1 = "changjie";
-		String channel2 = "xunlian";
-		String channel3 = "xinsheng";
-		String channel4 = "liandong";
 		if (channel.equals(channel1)) {
 			try {
 				// 转到channel1 的请求类
@@ -1184,7 +1244,8 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 	 * @return
 	 */
 	private PaymentRiskRecordPayResult query(
-			PaymentRiskRecordQueryRequest request, BigDecimal thisMoney) {
+			PaymentRiskRecordQueryRequest request, PaymentRiskRecordVo paymentRiskRecord) {
+		BigDecimal thisMoney = paymentRiskRecord.getBackupMoney();
 		// 获取还款的渠道code
 		String channel = request.getChannelCode();
 		PaymentRiskRecordPayResult result = new PaymentRiskRecordPayResult();
@@ -1192,11 +1253,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 		result.setRequestTime(new Date());
 		// 默认直接失败
 		result.setStatus("F");
-		// 2 个支付渠道
-		String channel1 = "changjie";
-		String channel2 = "xunlian";
-		String channel3 = "xinsheng";
-		String channel4 = "liandong";
+		
 		// 转到channel1 的请求类
 		if (channel.equals(channel1)) {
 			try {
@@ -1340,7 +1397,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 				flow.setStatus(result.getStatus());
 				flow.setMoney(thisMoney);
 				flow.setOrderNo(request.getOrderNo());
-				afterSaveFlow(flow);
+				afterSaveFlow4Xinsheng(flow, paymentRiskRecord);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
