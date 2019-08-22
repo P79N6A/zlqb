@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,7 @@ import com.nyd.zeus.model.helibao.util.Uuid;
 
 @Service(value="orderForZLQServise")
 public class OrderForZLQServiseImpl implements OrderForZLQServise{
+	private static final Logger logger= LoggerFactory.getLogger(OrderForZLQServiseImpl.class);
 	@Autowired
     private OrderDao orderDao;
 	
@@ -49,55 +52,72 @@ public class OrderForZLQServiseImpl implements OrderForZLQServise{
 	
 	@Autowired
 	private ProductContract productContract;
-	
-	
-	
-	
-	
+
+	/**
+	 * 订单审批列表查询
+	 * @param orderCheckQuery
+	 * @return
+	 */
 	@Override
-	public PagedResponse<List<OrderCheckVo>> findByParam(OrderCheckQuery orderCheckQuery) throws Exception{
+	public PagedResponse<List<OrderCheckVo>> findByParam(OrderCheckQuery orderCheckQuery){
 		PagedResponse<List<OrderCheckVo>> result = new PagedResponse<List<OrderCheckVo>>();
-		
-		String sql ="select xo.user_id as userId,xo.assign_id as assignId, xo.assign_name as assignName,"
-                    + " xo.loan_number loanNumber,od.real_name userName, od.mobile mobile,od.source channel,"
-                    + " xo.loan_time loanTime,xo.app_name appName,xo.assign_time assignTime,xo.order_no orderNo "
-                    +" from t_order xo INNER JOIN t_order_detail od on xo.order_no=od.order_no "
-                    +" WHERE  1=1  and xo.order_status='10' and xo.who_audit='1' "
-                    +" and (xo.assign_id is not null or xo.assign_id !='')";
-		StringBuffer buff = new StringBuffer();
-		if(StringUtils.isNotBlank(orderCheckQuery.getUserName())){
-			buff.append(" and od.real_name ='").append(orderCheckQuery.getUserName()).append("'");
+		try {
+			String sql = "select xo.user_id as userId,xo.assign_id as assignId, xo.assign_name as assignName,"
+					+ " xo.loan_number loanNumber,od.real_name userName, od.mobile mobile,od.source channel,"
+					+ " xo.loan_time loanTime,xo.app_name appName,xo.assign_time assignTime,xo.order_no orderNo,"
+					+ " case when xo.order_status = " + OrderStatus.AUDIT.getCode() + " then 1 "
+					+ " when xo.audit_status = 1 and xo.reviewed_id is not null and xo.reviewed_id != '' then 2 "
+					+ " when xo.audit_status = 0 and xo.reviewed_id is not null and xo.reviewed_id != '' then 3 "
+					+ " end as auditStatus"
+					+ " from t_order xo INNER JOIN t_order_detail od on xo.order_no=od.order_no "
+					+ " WHERE  1=1 and xo.who_audit='1' "
+					+ " and (xo.assign_id is not null or xo.assign_id !='')";
+			StringBuffer buff = new StringBuffer();
+			if (orderCheckQuery.getAuditStatus() == null) {
+				buff.append(" and (xo.order_status = " + OrderStatus.AUDIT.getCode() + " or (xo.reviewed_id is not null and xo.reviewed_id != '')) ");
+			} else if (orderCheckQuery.getAuditStatus().intValue() == 1) {
+				buff.append(" and xo.order_status = " + OrderStatus.AUDIT.getCode() + " ");
+			} else if (orderCheckQuery.getAuditStatus().intValue() == 2) {
+				buff.append(" and xo.audit_status = 1 and xo.reviewed_id is not null and xo.reviewed_id != '' ");
+			} else if (orderCheckQuery.getAuditStatus().intValue() == 3) {
+				buff.append(" and xo.audit_status = 0  and xo.reviewed_id is not null and xo.reviewed_id != '' ");
+			}
+			if (StringUtils.isNotBlank(orderCheckQuery.getUserName())) {
+				buff.append(" and od.real_name ='").append(orderCheckQuery.getUserName()).append("'");
+			}
+			if (StringUtils.isNotBlank(orderCheckQuery.getAssignId())) {
+				buff.append(" and xo.assign_id ='").append(orderCheckQuery.getAssignId()).append("'");
+			}
+			if (StringUtils.isNotBlank(orderCheckQuery.getAccountNumber())) {
+				buff.append(" and od.mobile='").append(orderCheckQuery.getAccountNumber()).append("'");
+			}
+			if (StringUtils.isNotBlank(orderCheckQuery.getCheckPersonnel())) {
+				buff.append(" and  xo.assign_name='").append(orderCheckQuery.getCheckPersonnel()).append("'");
+			}
+			if (StringUtils.isNotBlank(orderCheckQuery.getAppName())) {
+				buff.append(" and  od.source='").append(orderCheckQuery.getAppName()).append("'");
+			}
+			if (StringUtils.isNotBlank(orderCheckQuery.getBeginTime())) {
+				buff.append(" and xo.assign_time>='").append(orderCheckQuery.getBeginTime() + " 00:00:00").append("'");
+			}
+			if (StringUtils.isNotBlank(orderCheckQuery.getEndTime())) {
+				buff.append(" and xo.assign_time<").append(orderCheckQuery.getEndTime() + " 23:59:59").append("'");
+			}
+			buff.append(" ORDER BY xo.assign_time");
+
+			String querySql = sql + buff.toString();
+			List<OrderCheckVo> orderList = orderSqlService.pageT(querySql, orderCheckQuery.getPageNo(), orderCheckQuery.getPageSize(), OrderCheckVo.class);
+			Long ct = orderSqlService.count(querySql);
+			result.setData(orderList);
+			result.setTotal(ct);
+			result.setSuccess(true);
+			return result;
+		}catch (Exception e){
+			logger.error("订单审批列表查询异常 e="+e.getMessage());
+			result.setSuccess(false);
+			result.setMsg("操作异常，请联系管理员");
+			return result;
 		}
-		if(StringUtils.isNotBlank(orderCheckQuery.getAssignId())){
-			buff.append(" and xo.assign_id ='").append(orderCheckQuery.getAssignId()).append("'");
-		}
-		if(StringUtils.isNotBlank(orderCheckQuery.getAccountNumber())){
-			buff.append(" and od.mobile='").append(orderCheckQuery.getAccountNumber()).append("'");
-		}
-		if(StringUtils.isNotBlank(orderCheckQuery.getCheckPersonnel())){
-			buff.append(" and  xo.assign_name='").append(orderCheckQuery.getCheckPersonnel()).append("'");
-		}
-		if(StringUtils.isNotBlank(orderCheckQuery.getAppName())){
-			buff.append(" and  od.source='").append(orderCheckQuery.getAppName()).append("'");
-		}
-		if(StringUtils.isNotBlank(orderCheckQuery.getBeginTime())){
-			buff.append(" and xo.assign_time>='").append(orderCheckQuery.getBeginTime()+" 00:00:00").append("'");
-		}
-		if(StringUtils.isNotBlank(orderCheckQuery.getEndTime())){
-			buff.append(" and xo.assign_time<").append(orderCheckQuery.getEndTime()+" 23:59:59").append("'");
-		}
-		buff.append(" ORDER BY xo.assign_time");
-		
-		String querySql = sql + buff.toString();
-		List<OrderCheckVo> orderList = orderSqlService.pageT(querySql, orderCheckQuery.getPageNo(), orderCheckQuery.getPageSize(), OrderCheckVo.class);
-		Long ct = orderSqlService.count(querySql);
-		//long ct = mapper.pageTotalOrderCheck(orderCheckQuery);
-		//@SuppressWarnings("unchecked")
-		//List<OrderCheckVo> orderList=(List<OrderCheckVo>) mapper.getOrderCheck(orderCheckQuery);
-		result.setData(orderList);
-		result.setTotal(ct);
-		result.setSuccess(true);
-		return result;
 	}
 
 	@Override

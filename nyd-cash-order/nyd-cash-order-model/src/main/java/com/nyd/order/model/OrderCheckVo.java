@@ -65,5 +65,7 @@ public class OrderCheckVo  extends PageCommon {
 	
 	@ApiModelProperty(value = "订单状态")
 	private Integer orderStatus;
+	@ApiModelProperty(value="审核状态 1待审核 2审核通过 3审核拒绝")
+	private Integer auditStatus;
 	
 }

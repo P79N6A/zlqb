@@ -15,7 +15,12 @@ import com.nyd.order.model.common.PagedResponse;
 import com.nyd.order.model.vo.ExamReq;
 
 public interface OrderForZLQServise {
-	public PagedResponse<List<OrderCheckVo>> findByParam(OrderCheckQuery orderCheckQuery) throws Exception;
+	/**
+	 * 订单审批列表查询
+	 * @param orderCheckQuery
+	 * @return
+	 */
+	public PagedResponse<List<OrderCheckVo>> findByParam(OrderCheckQuery orderCheckQuery);
 	public List<OrderRecordHisVo> findHisByUserId(UserNoParam user);
 	
 
