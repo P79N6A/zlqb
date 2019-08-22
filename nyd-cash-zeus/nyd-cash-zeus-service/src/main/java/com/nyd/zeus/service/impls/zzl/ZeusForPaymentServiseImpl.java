@@ -286,7 +286,8 @@ public class ZeusForPaymentServiseImpl implements ZeusForPaymentServise {
 		    	LiandongPaymentVO liandongPaymentVO = new LiandongPaymentVO();
 		    	liandongPaymentVO.setUsr_busi_agreement_id(liandong.getUsr_busi_agreement_id());
 		    	liandongPaymentVO.setUsr_pay_agreement_id(liandong.getUsr_pay_agreement_id());
-		    	liandongPaymentVO.setAmount(new DecimalFormat("#").format(thisMoney));
+		    	liandongPaymentVO.setAmount(new DecimalFormat("#.##")
+						.format(thisMoney));
 		    	String seriNum = new PaymentRiskRecordServiceImpl().getSerialNum();
 		    	liandongPaymentVO.setOrder_no(seriNum);
 		    	liandongPaymentVO.setMer_date(DateUtils.format(new Date(), DateUtils.STYLE_3));
@@ -421,12 +422,12 @@ public class ZeusForPaymentServiseImpl implements ZeusForPaymentServise {
 		PaymentRiskRequestCommon request = JSONObject.parseObject(record.getRequestText(),
 				PaymentRiskRequestCommon.class);
 		String channel = request.getChannelCode();
-		if(CHANNEL2.equals(channel)||CHANNEL3.equals(channel)){	
+		if(CHANNEL2.equals(channel)||CHANNEL3.equals(channel)||CHANNEL4.equals(channel)){	
 			common.setSuccess(true);
 			common.setCode("1");
 			return common;
 		}
-		common.setMsg("非讯联新生渠道不处理");
+		common.setMsg("当前渠道数据不能扣款");
 		common.setSuccess(true);
 		common.setCode("0");
 		return common;
