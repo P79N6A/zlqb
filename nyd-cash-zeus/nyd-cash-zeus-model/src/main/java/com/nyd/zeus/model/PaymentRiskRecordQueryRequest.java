@@ -26,6 +26,8 @@ public class PaymentRiskRecordQueryRequest {
 	private String channelCode;
 	
 	private String orderNo;
+	//订单时间  (联动专用)
+	private String mer_date;
 	
 
 }

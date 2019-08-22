@@ -21,7 +21,7 @@ public class LiandongChargeVO implements Serializable{
 	@ApiModelProperty(value="商户订单号")
 	private String order_id;
 	
-	@ApiModelProperty(value="付款金额")
+	@ApiModelProperty(value="付款金额（元 保留2位小数）")
 	private String amount;
 	
 	@ApiModelProperty(value="收款方账号")
