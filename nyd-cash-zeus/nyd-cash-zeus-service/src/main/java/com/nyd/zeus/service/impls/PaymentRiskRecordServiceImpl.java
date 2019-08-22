@@ -106,6 +106,18 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 	String channel4 = "liandong";
 
 	private Map<String, Object> orderNosMap = new HashMap();
+	
+	// 新生支付将返回的交易时间保存到req中
+	private void saveSubmitTime4Xinsheng(PaymentRiskRecordVo paymentRiskRecord, PaymentRiskRecordPayResult result){
+		JSONObject recordReq = JSONObject.parseObject(paymentRiskRecord.getRequestText());
+		if(String.valueOf(recordReq.get("channelCode")).equals(channel3)){
+			JSONObject req = recordReq.getJSONObject("channelJson");
+			JSONObject resp = JSONObject.parseObject(result.getResponseText());
+			req.put("submitTime", resp.get("submitTime"));
+			recordReq.put("channelJson", req);
+			paymentRiskRecord.setRequestText(JSONObject.toJSONString(recordReq));
+		}
+	}
 
 	@Override
 	public CommonResponse activeRepayment(PaymentRiskRequestCommon vo) {
@@ -139,6 +151,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			// 统一支付入口 结果 ↑↑↑↑↑
 
 			// 开始支付
+			saveSubmitTime4Xinsheng(paymentRiskRecord, result);
 			paymentRiskRecord.setResponseText(JSONObject.toJSONString(result));
 			paymentRiskRecord.setSeriNo(result.getSeriNo());
 			// 确认结果
@@ -263,7 +276,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 				PaymentRiskRecordPayResult result = pay(request, thisMoney);
 				String resultStatus = result.getStatus();
 				// 统一支付入口 结果 ↑↑↑↑↑
-
+				saveSubmitTime4Xinsheng(paymentRiskRecord, result);
 				paymentRiskRecord.setResponseText(JSONObject
 						.toJSONString(result));
 				paymentRiskRecord.setSeriNo(result.getSeriNo());
@@ -399,6 +412,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			PaymentRiskRecordPayResult result = pay(request, thisMoney);
 			String resultStatus = result.getStatus();
 			// 统一支付入口 结果 ↑↑↑↑↑
+			saveSubmitTime4Xinsheng(paymentRiskRecord, result);
 			paymentRiskRecord.setResponseText(JSONObject.toJSONString(result));
 			paymentRiskRecord.setSeriNo(result.getSeriNo());
 
@@ -498,9 +512,19 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			}
 			//联动查询用
 			JSONObject reqJson = JSONObject.parseObject(paymentRiskRecord.getRequestText());
+			String channel = String.valueOf(reqJson.get("channelCode"));
 			JSONObject ldChannelJson = JSONObject.parseObject(String.valueOf(reqJson.get("channelJson")));
-			logger.info(" 联动查询用 merDate:" + ldChannelJson);
-			String merDate = String.valueOf(ldChannelJson.get("mer_date"));
+			String merDate = null;
+			if (channel.equals(channel3)) {
+				String temp = String.valueOf(ldChannelJson.get("submitTime"));
+				if (temp.length() >= 8)
+					merDate = temp.substring(0, 8);
+				logger.info(" 新生获取查询时间 json:[{}] ,submitTime:[{}]",
+						ldChannelJson, merDate);
+			} else if (channel.equals(channel4)) {
+				logger.info(" 联动查询用 merDate:" + ldChannelJson);
+				merDate = String.valueOf(ldChannelJson.get("mer_date"));
+			}
 			if(StringUtils.isNotEmpty(merDate)){
 				request.setMer_date(merDate);
 			}
@@ -646,6 +670,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			PaymentRiskRecordPayResult result = pay(request, thisMoney);
 			// String resultStatus = result.getStatus();
 			// 统一支付入口 结果 ↑↑↑↑↑
+			saveSubmitTime4Xinsheng(paymentRiskRecord, result);
 			paymentRiskRecord.setResponseText(JSONObject.toJSONString(result));
 			paymentRiskRecord.setSeriNo(result.getSeriNo());
 
@@ -1353,7 +1378,10 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 				// 开始请求规则的判断 //
 				HnaPayQueryTransReq hnaPayQueryTransReq = new HnaPayQueryTransReq();
 				hnaPayQueryTransReq.setMerOrderId(request.getSeriNo());
-				hnaPayQueryTransReq.setSubmitTime(DateUtils.format(new Date(),
+				if(ChkUtil.isNotEmpty(request.getMer_date()))
+					hnaPayQueryTransReq.setSubmitTime(request.getMer_date());
+				else
+					hnaPayQueryTransReq.setSubmitTime(DateUtils.format(new Date(),
 						DateUtils.STYLE_3));
 				// 请求扣款
 				PaymentRiskFlow flow = beforeSaveFlow(JSONObject
@@ -1509,6 +1537,10 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 	public String getSerialNum() {
 		return new SimpleDateFormat("YYYYMMDDHHmmssSSS").format(new Date())
 				+ String.valueOf((Math.random() * 1000000)).substring(0, 5);
+	}
+	
+	public static void main(String[] args) {
+		System.out.println("20190821154046".substring(0, 8));
 	}
 
 }
