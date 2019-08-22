@@ -37,7 +37,7 @@ import com.umf.api.service.UmfService;
 import com.umf.api.service.UmfServiceImpl;
 import com.umf.api.util.StringUtil;
 
-@Service(value="liandongPayPaymentService")
+@Service(value = "liandongPayPaymentService")
 public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService {
 
 	private Logger logger = LoggerFactory.getLogger(LiandongPayPaymentServiceImpl.class);
@@ -62,9 +62,9 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		Map<String, String> reqMap = XunlianGetDataServiceImpl.convertBean(liandongSmsBindVO, Map.class);
 		reqMap.put("mer_id", memberid);
 		//
-		//media_type 
+		// media_type
 		reqMap.put("identity_type", "1");
-		//getSerialNum
+		// getSerialNum
 		String merCustId = new XunlianPayServiceimpl().getSerialNum();
 		reqMap.put("mer_cust_id", merCustId);
 		// UmfService instance = new UmfServiceImpl("60000100",
@@ -115,12 +115,12 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		// "G:/tecent/test/60000100商户签名证书/60000100_.key.p8");
 		UmfService instance = new UmfServiceImpl(memberid, priKey);
 		paychannelTempFlow.setRequestText(reqMap.toString());
-		paychannelTempFlow.setRequestTime(new Date());	
+		paychannelTempFlow.setRequestTime(new Date());
 		logger.info(" 联动确认绑卡  请求参数" + reqMap.toString());
 		Map respMap = instance.CommercialSignConfirmMap(reqMap);
 		logger.info(" 联动确认绑卡  响应参数" + respMap.toString());
 		String retCode = String.valueOf(respMap.get("ret_code"));
-		String retMsg =String.valueOf(respMap.get("ret_msg"));
+		String retMsg = String.valueOf(respMap.get("ret_msg"));
 		liandongConfirmResp.setRet_msg(retMsg);
 		liandongConfirmResp.setRet_code(retCode);
 		liandongConfirmResp.setUsr_busi_agreement_id(String.valueOf(respMap.get("usr_busi_agreement_id")));
@@ -200,7 +200,7 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		logger.info(" 联动支付  请求参数" + reqMap.toString());
 		Map respMap = instance.agreementPaymentMap(reqMap);
 		logger.info(" 联动支付  响应参数" + respMap.toString());
-		//0001 处理中   0000请求成功（不代表交易成功）
+		// 0001 处理中 0000请求成功（不代表交易成功）
 		String retCode = String.valueOf(respMap.get("ret_code")); //
 		String retMsg = String.valueOf(respMap.get("ret_msg"));
 		//
@@ -211,7 +211,7 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		liandongPaymentResp.setAmount(amount);
 		liandongPaymentResp.setRet_msg(retMsg);
 		liandongPaymentResp.setMer_date(mer_date);
-		//订单号为空
+		// 订单号为空
 		liandongPaymentResp.setOrder_id(order_id);
 		if ("00200014".equals(retCode) || "00060780".equals(retCode) || "00060761".equals(retCode)
 				|| "00080730".equals(retCode)) {
@@ -254,10 +254,10 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		logger.info(" 联动支付查询  请求参数" + reqMap.toString());
 		Map respMap = instance.queryhistoryOrderMap(reqMap);
 		logger.info("联动支付查询  响应参数" + respMap.toString());
-		//0001 处理中   0000请求成功（不代表交易成功）
+		// 0001 处理中 0000请求成功（不代表交易成功）
 		String retCode = String.valueOf(respMap.get("ret_code")); //
-		if("00060761".equals(retCode)||"00200014".equals(retCode)){
-			retCode="0001";
+		if ("00060761".equals(retCode) || "00200014".equals(retCode)) {
+			retCode = "0001";
 		}
 		String retMsg = String.valueOf(respMap.get("ret_msg"));
 		//
@@ -316,15 +316,15 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		PayConfigFileVO payConfigFileVO = list.get(0);
 		String priKey = payConfigFileVO.getPrdKey();
 		String memberid = payConfigFileVO.getMemberId();
-		//元转分
+		// 元转分
 		String amount = getAmount(liandongChargeVO.getAmount());
 		liandongChargeVO.setAmount(amount);
 		Map<String, String> reqMap = XunlianGetDataServiceImpl.convertBean(liandongChargeVO, Map.class);
 		reqMap.put("checkFlag", "0");
 		reqMap.put("mer_id", memberid);
 		reqMap.put("purpose", "purpose");
-	    reqMap.put("recv_account_type","00");//00:银行卡，02：U付账号
-	    reqMap.put("recv_bank_acc_pro","0");//0:对私，1：对公
+		reqMap.put("recv_account_type", "00");// 00:银行卡，02：U付账号
+		reqMap.put("recv_bank_acc_pro", "0");// 0:对私，1：对公
 		// UmfService instance = new UmfServiceImpl("60000100",
 		// "G:/tecent/test/60000100商户签名证书/60000100_.key.p8");
 		UmfService instance = new UmfServiceImpl(memberid, priKey);
@@ -333,15 +333,15 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		logger.info(" 联动代付  请求参数" + reqMap.toString());
 		Map respMap = instance.paymentOrderMap(reqMap);
 		logger.info(" 联动代付  响应参数" + respMap.toString());
-		//0001 处理中   0000请求成功（不代表交易成功）
+		// 0001 处理中 0000请求成功（不代表交易成功）
 		String retCode = String.valueOf(respMap.get("ret_code")); //
-		if("00180021".equals(retCode)||"00200014".equals(retCode)){
-			retCode="0001";
+		if ("00180021".equals(retCode) || "00200014".equals(retCode)) {
+			retCode = "0001";
 		}
 		String retMsg = String.valueOf(respMap.get("ret_msg"));
 		//
 		String tradeState = String.valueOf(respMap.get("trade_state"));
-		//String retAmount = String.valueOf(respMap.get("amount"));
+		// String retAmount = String.valueOf(respMap.get("amount"));
 		liandongPaymentResp.setFee(String.valueOf(respMap.get("fee")));
 		liandongPaymentResp.setMer_date(String.valueOf(respMap.get("mer_date")));
 		liandongPaymentResp.setOrder_id(String.valueOf(respMap.get("order_id")));
@@ -384,16 +384,16 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		logger.info(" 联动代付查询  请求参数" + reqMap.toString());
 		Map respMap = instance.queryPaymentStatusMap(reqMap);
 		logger.info(" 联动代付查询  响应参数" + respMap.toString());
-		//0001 处理中   0000请求成功（不代表交易成功）
+		// 0001 处理中 0000请求成功（不代表交易成功）
 		String retCode = String.valueOf(respMap.get("ret_code")); //
-		if("00131013".equals(retCode)||"00200014".equals(retCode)){
-			retCode="0001";
+		if ("00131013".equals(retCode) || "00200014".equals(retCode)) {
+			retCode = "0001";
 		}
 		String retMsg = String.valueOf(respMap.get("ret_msg"));
-		//3失败 4成功  其他处理中
+		// 3失败 4成功 其他处理中
 		String tradeState = String.valueOf(respMap.get("trade_state"));
-		//封装处理中状态为1
-		if(StringUtils.isNotEmpty(tradeState)&&!"3".equals(tradeState)&&!"4".equals(tradeState)){
+		// 封装处理中状态为1
+		if (StringUtils.isNotEmpty(tradeState) && !"3".equals(tradeState) && !"4".equals(tradeState)) {
 			tradeState = "1";
 		}
 		String amount = String.valueOf(respMap.get("amount"));
@@ -430,13 +430,13 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		String priKey = payConfigFileVO.getPrdKey();
 		String memberid = payConfigFileVO.getMemberId();
 		Map<String, String> reqMap = new HashMap();
-		//String orderId = new XunlianPayServiceimpl().getSerialNum();
+		// String orderId = new XunlianPayServiceimpl().getSerialNum();
 		reqMap.put("mer_id", memberid);
-	    reqMap.put("order_id",liandongPaymentVO.getOrder_no());
-	    reqMap.put("mer_date",liandongPaymentVO.getMer_date());
-	    //元转分
-	    String amount = getAmount(liandongPaymentVO.getAmount());
-	    reqMap.put("amount",amount);
+		reqMap.put("order_id", liandongPaymentVO.getOrder_no());
+		reqMap.put("mer_date", liandongPaymentVO.getMer_date());
+		// 元转分
+		String amount = getAmount(liandongPaymentVO.getAmount());
+		reqMap.put("amount", amount);
 		// UmfService instance = new UmfServiceImpl("60000100",
 		// "G:/tecent/test/60000100商户签名证书/60000100_.key.p8");
 		UmfService instance = new UmfServiceImpl(memberid, priKey);
@@ -445,7 +445,7 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		logger.info(" 联动支付预处理  请求参数" + reqMap.toString());
 		Map respMap = instance.quickOrderMap(reqMap);
 		logger.info(" 联动支付预处理  响应参数" + respMap.toString());
-		//   0000请求成功
+		// 0000请求成功
 		String retCode = String.valueOf(respMap.get("ret_code")); //
 		String retMsg = String.valueOf(respMap.get("ret_msg"));
 		// 0000成功会有流水号
@@ -470,23 +470,42 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 
 	@Override
 	public CommonResponse<LiandongPaymentResp> summarizeTrans(LiandongPaymentVO liandongPaymentVO) {
-		CommonResponse<LiandongPaymentResp> common  = preTrans(liandongPaymentVO);
-		if("0000".equals(common.getData().getRet_code())){
+		CommonResponse<LiandongPaymentResp> common = preTrans(liandongPaymentVO);
+		if ("0000".equals(common.getData().getRet_code())) {
 			liandongPaymentVO.setTrade_no(common.getData().getTrade_no());
 			CommonResponse<LiandongPaymentResp> realCommon = trans(liandongPaymentVO);
 			return realCommon;
-		}else{
+		} else {
 			return common;
 		}
 	}
+
 	public static void main(String[] args) {
 		System.out.println();
 		System.out.println(new LiandongPayPaymentServiceImpl().getAmount("1.01"));
 	}
-	
-	public String getAmount(String amount){
+
+	public String getAmount(String amount) {
 		return new DecimalFormat("#").format(new BigDecimal(amount).multiply(new BigDecimal(100)));
 	}
-	
+
+	@Override
+	public String notic(String requestParam) {
+		List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(LIANDONG_CODE);
+		PaychannelTempFlow paychannelTempFlow = new PaychannelTempFlow();
+		PayConfigFileVO payConfigFileVO = list.get(0);
+		String priKey = payConfigFileVO.getPrdKey();
+		String memberid = payConfigFileVO.getMemberId();
+		UmfService service = new UmfServiceImpl(memberid, priKey);
+		Map respMap = null;
+		try {
+			respMap = service.notifyDataParserMap(requestParam);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// 调用SDK生成返回联动平台字符串，加到CONTENT中
+		String resMetaData = service.responseUMFMap(respMap);
+		return resMetaData;
+	}
 
 }
