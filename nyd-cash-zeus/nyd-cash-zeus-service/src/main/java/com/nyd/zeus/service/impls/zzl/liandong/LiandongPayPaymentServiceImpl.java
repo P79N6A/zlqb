@@ -1,5 +1,7 @@
 package com.nyd.zeus.service.impls.zzl.liandong;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nyd.order.model.common.DateUtils;
 import com.nyd.zeus.api.zzl.ZeusSqlService;
 import com.nyd.zeus.api.zzl.liandong.LiandongPayPaymentService;
 import com.nyd.zeus.model.common.CommonResponse;
@@ -315,6 +316,9 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		PayConfigFileVO payConfigFileVO = list.get(0);
 		String priKey = payConfigFileVO.getPrdKey();
 		String memberid = payConfigFileVO.getMemberId();
+		//元转分
+		String amount = getAmount(liandongChargeVO.getAmount());
+		liandongChargeVO.setAmount(amount);
 		Map<String, String> reqMap = XunlianGetDataServiceImpl.convertBean(liandongChargeVO, Map.class);
 		reqMap.put("checkFlag", "0");
 		reqMap.put("mer_id", memberid);
@@ -337,7 +341,7 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		String retMsg = String.valueOf(respMap.get("ret_msg"));
 		//
 		String tradeState = String.valueOf(respMap.get("trade_state"));
-		String amount = String.valueOf(respMap.get("amount"));
+		//String retAmount = String.valueOf(respMap.get("amount"));
 		liandongPaymentResp.setFee(String.valueOf(respMap.get("fee")));
 		liandongPaymentResp.setMer_date(String.valueOf(respMap.get("mer_date")));
 		liandongPaymentResp.setOrder_id(String.valueOf(respMap.get("order_id")));
@@ -430,7 +434,9 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		reqMap.put("mer_id", memberid);
 	    reqMap.put("order_id",liandongPaymentVO.getOrder_no());
 	    reqMap.put("mer_date",liandongPaymentVO.getMer_date());
-	    reqMap.put("amount",liandongPaymentVO.getAmount());
+	    //元转分
+	    String amount = getAmount(liandongPaymentVO.getAmount());
+	    reqMap.put("amount",amount);
 		// UmfService instance = new UmfServiceImpl("60000100",
 		// "G:/tecent/test/60000100商户签名证书/60000100_.key.p8");
 		UmfService instance = new UmfServiceImpl(memberid, priKey);
@@ -473,5 +479,14 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 			return common;
 		}
 	}
+	public static void main(String[] args) {
+		System.out.println();
+		System.out.println(new LiandongPayPaymentServiceImpl().getAmount("1.01"));
+	}
+	
+	public String getAmount(String amount){
+		return new DecimalFormat("#").format(new BigDecimal(amount).multiply(new BigDecimal(100)));
+	}
+	
 
 }
