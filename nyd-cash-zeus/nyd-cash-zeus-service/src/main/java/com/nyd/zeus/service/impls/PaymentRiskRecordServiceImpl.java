@@ -1121,7 +1121,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 						request.getChannelJson(),
 						PaymentRiskRequestLiandong.class);
 				LiandongPaymentVO liandongPaymentVO = new LiandongPaymentVO();
-				liandongPaymentVO.setAmount(new DecimalFormat("#")
+				liandongPaymentVO.setAmount(new DecimalFormat("#.##")
 						.format(thisMoney));
 				liandongPaymentVO.setUsr_busi_agreement_id(liandong.getUsr_busi_agreement_id());
 				liandongPaymentVO.setUsr_pay_agreement_id(liandong.getUsr_pay_agreement_id());
