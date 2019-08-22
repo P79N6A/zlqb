@@ -59,11 +59,16 @@ public class MongoServiceImpl implements MongoService {
             if (!StringUtils.isNotBlank(userId)){
                 UserDto userDto = new UserDto();
                 userDto.setAccountNumber(phone);
-                UserInfo userInfo = userIdentityContract.getUserInfos(userDto).getData().get(0);
-                LOGGER.info("用户手机号为:{},查询出来的userid为{}",phone,userInfo.getUserId());
-                userId = userInfo.getUserId();
-                for (AddressBook addressBook : list){
-                    addressBook.setUserId(userId);
+                List<UserInfo> userInfoList = userIdentityContract.getUserInfos(userDto).getData();
+                if (userInfoList != null & userInfoList.size() > 0){
+                    UserInfo userInfo = userInfoList.get(0);
+                    LOGGER.info("用户手机号为:{},查询出来的userid为{}",phone,userInfo.getUserId());
+                    userId = userInfo.getUserId();
+                    for (AddressBook addressBook : list){
+                        addressBook.setUserId(userId);
+                    }
+                }else{
+                    return responseData;
                 }
             }
 
