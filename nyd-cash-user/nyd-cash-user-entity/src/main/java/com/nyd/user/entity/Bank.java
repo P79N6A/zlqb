@@ -54,4 +54,8 @@ public class Bank{
   	private String bizProtocolNo;
   	// 支付协议号
   	private String payProtocolNo;
+    // 联动业务协议号
+    private String usrBusiAgreementId;
+    // 联动支付协议号
+    private String usrPayAgreementId;
 }

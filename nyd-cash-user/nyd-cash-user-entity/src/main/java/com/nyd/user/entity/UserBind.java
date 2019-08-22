@@ -70,5 +70,7 @@ public class UserBind implements Serializable{
 
     //商户请求流水号
     private String merOrderId;
+    /**  联动预绑卡id */
+    private String bindId;
 }
 

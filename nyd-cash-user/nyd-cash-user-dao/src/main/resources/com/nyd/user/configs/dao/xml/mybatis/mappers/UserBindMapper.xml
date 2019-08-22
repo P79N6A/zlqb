@@ -59,6 +59,7 @@
         <result column="phone" property="phone" jdbcType="VARCHAR" />
         <result column="channel_code" property="channelCode" jdbcType="VARCHAR" />
         <result column="mer_order_id" property="merOrderId" jdbcType="VARCHAR" />
+        <result column="bind_id" property="bindId" jdbcType="VARCHAR" />
     </resultMap>
 
     <sql id="Base_Column_List" >

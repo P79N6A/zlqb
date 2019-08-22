@@ -15,12 +15,16 @@ import com.nyd.user.service.consts.UserConsts;
 import com.nyd.zeus.api.zzl.ZeusForLXYService;
 import com.nyd.zeus.api.zzl.ZeusForOrderPayBackServise;
 import com.nyd.zeus.api.zzl.hnapay.HnaPayPaymentService;
+import com.nyd.zeus.api.zzl.liandong.LiandongPayPaymentService;
 import com.nyd.zeus.api.zzl.xunlian.XunlianPayService;
 import com.nyd.zeus.model.common.CommonResponse;
 import com.nyd.zeus.model.hnapay.req.HnaPayConfirmReq;
 import com.nyd.zeus.model.hnapay.req.HnaPayContractReq;
 import com.nyd.zeus.model.hnapay.resp.HnaPayConfirmResp;
 import com.nyd.zeus.model.hnapay.resp.HnaPayContractResp;
+import com.nyd.zeus.model.liandong.vo.LiandongConfirmVO;
+import com.nyd.zeus.model.liandong.vo.LiandongSmsBindVO;
+import com.nyd.zeus.model.liandong.vo.resp.LiandongConfirmResp;
 import com.nyd.zeus.model.xunlian.req.IdentifyauthVO;
 import com.nyd.zeus.model.xunlian.req.XunlianSignVO;
 import com.nyd.zeus.model.xunlian.resp.IdentifyResp;
@@ -83,6 +87,10 @@ public class BindCardServiceImpl implements BindCardService {
 
     @Autowired
     private HnaPayPaymentService hnaPayPaymentService;
+
+    @Autowired
+    private LiandongPayPaymentService liandongPayPaymentService;
+
     /**
      * 银行卡验证获取验证码
      */
@@ -140,6 +148,7 @@ public class BindCardServiceImpl implements BindCardService {
                 LOGGER.error("讯联请求绑卡发送短信验证码服务失败，异常信息：{}", e.getMessage());
                 e.printStackTrace();
             }
+
             try {
                 if ("xinsheng".equals(req.getChannelCode())) {
                     LOGGER.info("新生请求绑卡发送短信验证码服务失败,订单号:{}",req.getUserId());
@@ -172,6 +181,37 @@ public class BindCardServiceImpl implements BindCardService {
                 LOGGER.error("新生请求绑卡发送短信验证码服务失败，异常信息：{}", e.getMessage());
                 e.printStackTrace();
             }
+            // 联动绑卡
+            try {
+                if ("liandong".equals(req.getChannelCode())) {
+                    LOGGER.info("联动请求绑卡,订单号:{}",req.getUserId());
+                    LiandongSmsBindVO liandongSmsBindVO = new LiandongSmsBindVO();
+                    liandongSmsBindVO.setCard_holder(user.getRealName());
+                    liandongSmsBindVO.setCard_id(req.getCardNo());
+                    liandongSmsBindVO.setIdentity_code(user.getIdNumber());
+                    liandongSmsBindVO.setMedia_id(req.getPhone());
+                    LOGGER.info("调用联动 预绑卡,请求信息:{}",liandongSmsBindVO);
+                    CommonResponse<LiandongConfirmResp> liandongConfirmRespCommonResponse = liandongPayPaymentService.contract(liandongSmsBindVO);
+                    LOGGER.info("调用联动 预绑卡,返回信息:{}",liandongConfirmRespCommonResponse);
+                    if(liandongConfirmRespCommonResponse.isSuccess()){
+                        ResponseData resp = new ResponseData();
+                        JSONObject json = new JSONObject();
+                        LiandongConfirmResp liandongConfirmResp = liandongConfirmRespCommonResponse.getData();
+                        json.put("bindId", liandongConfirmResp.getBind_id());
+                        json.put("channelCode",req.getChannelCode());
+                        resp.setData(json);
+                        insertUserBind(user, req, resp);
+                        return resp.success(json);
+                    }else{
+                        LOGGER.info("调用联动 预绑卡异常{}",JSON.toJSONString(liandongConfirmRespCommonResponse));
+                        return ResponseData.error(liandongConfirmRespCommonResponse.getMsg());
+                    }
+                }
+            } catch (Exception e) {
+                LOGGER.error("联动 请求绑卡发送短信验证码服务失败，异常信息：{}", e.getMessage());
+                e.printStackTrace();
+            }
+
         }
         LOGGER.info("畅捷用户绑卡发送短信验证码请求参数：" + JSON.toJSONString(req));
         // 查询客户基本信息及详情
@@ -211,7 +251,6 @@ public class BindCardServiceImpl implements BindCardService {
     }
 
     private void insertUserBind(UserInfo user, UserBindCardReq req, ResponseData resp) {
-
         UserBind bind = new UserBind();
         if (resp != null && resp.getData() != null) {
             String res = JSON.toJSONString(resp.getData());
@@ -220,6 +259,7 @@ public class BindCardServiceImpl implements BindCardService {
             bind.setSmsSendNo(re.getString("smsSendNo"));
             bind.setRequestNo(reqNo);
             bind.setChannelCode(re.getString("channelCode"));
+            bind.setBindId(re.getString("bindId"));
             String hnapayOrderId = re.getString("hnapayOrderId");
             bind.setMerOrderId(hnapayOrderId);
         }
@@ -342,8 +382,43 @@ public class BindCardServiceImpl implements BindCardService {
                         LOGGER.info("新生绑卡请求异常{}",JSON.toJSONString(hnaPayConfirmRespCommonResponse));
                         return ResponseData.error(hnaPayConfirmRespCommonResponse.getMsg());
                     }
-
-
+                }
+                // 联动确认绑卡
+                if ("liandong".equals(userBindInfo.getChannelCode())){
+                    LiandongConfirmVO liandongConfirmVO = new LiandongConfirmVO();
+                    liandongConfirmVO.setBind_id(userBindInfo.getBindId());
+                    liandongConfirmVO.setVerify_code(req.getValidatecode());
+                    LOGGER.info("联动请求绑卡确认服务信息：{}",JSON.toJSONString(liandongConfirmVO));
+                    CommonResponse<LiandongConfirmResp> liandongConfirmRespCommonResponse = liandongPayPaymentService.confirm(liandongConfirmVO);
+                    LOGGER.info("联动请求绑卡返回服务信息：{}",JSON.toJSONString(liandongConfirmRespCommonResponse));
+                    if (liandongConfirmRespCommonResponse.isSuccess()){
+                        LiandongConfirmResp liandongConfirmResp = liandongConfirmRespCommonResponse.getData();
+                        BankInfo bankInfo = new BankInfo();
+                        UserBind bind = userBind.get(0);
+                        bankInfo.setAccountName(bind.getUserName());
+                        bankInfo.setAccountNumber(bind.getIdNumber());
+                        bankInfo.setBankAccount(bind.getCardNo());
+                        bankInfo.setBankName(bind.getBankName());
+                        bankInfo.setReservedPhone(bind.getPhone());
+                        bankInfo.setSoure(5);
+                        bankInfo.setChannelCode(userBindInfo.getChannelCode());
+//                        bankInfo.setProtocolId(reslut.getData().getProtocolId());
+                        bankInfo.setUserId(bind.getUserId());
+                        bankInfo.setUsrBusiAgreementId(liandongConfirmResp.getUsr_busi_agreement_id());
+                        bankInfo.setUsrPayAgreementId(liandongConfirmResp.getUsr_pay_agreement_id());
+                        bankDao.save(bankInfo);
+                        LOGGER.info("联动更新t_user_bank表记录：" + JSON.toJSONString(bankInfo));
+                        //更新信息完整度
+                        LOGGER.info("begin to update stepInfo");
+                        Step step = new Step();
+                        step.setUserId(req.getUserId());
+                        step.setBankFlag(UserConsts.FILL_FLAG);
+                        stepDao.updateStep(step);
+                        return ResponseData.success();
+                    }else {
+                        LOGGER.info("联动绑卡请求异常{}",JSON.toJSONString(liandongConfirmRespCommonResponse));
+                        return ResponseData.error(liandongConfirmRespCommonResponse.getMsg());
+                    }
                 }
             }
         } catch (Exception e) {
