@@ -319,6 +319,7 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		// 元转分
 		String amount = getAmount(liandongChargeVO.getAmount());
 		liandongChargeVO.setAmount(amount);
+		liandongChargeVO.setNotify_url(payConfigFileVO.getNoticeUrl());
 		Map<String, String> reqMap = XunlianGetDataServiceImpl.convertBean(liandongChargeVO, Map.class);
 		reqMap.put("checkFlag", "0");
 		reqMap.put("mer_id", memberid);
