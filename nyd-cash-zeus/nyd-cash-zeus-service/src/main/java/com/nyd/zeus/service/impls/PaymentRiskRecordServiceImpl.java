@@ -108,15 +108,20 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 	private Map<String, Object> orderNosMap = new HashMap();
 	
 	// 新生支付将返回的交易时间保存到req中
-	private void saveSubmitTime4Xinsheng(PaymentRiskRecordVo paymentRiskRecord, PaymentRiskRecordPayResult result){
-		JSONObject recordReq = JSONObject.parseObject(paymentRiskRecord.getRequestText());
-		if(String.valueOf(recordReq.get("channelCode")).equals(channel3)){
+	private void saveSubmitTime4Xinsheng(PaymentRiskRecordVo paymentRiskRecord,
+			PaymentRiskRecordPayResult result) {
+		logger.info("begin saveSubmitTime4Xinsheng");
+		JSONObject recordReq = JSONObject.parseObject(paymentRiskRecord
+				.getRequestText());
+		if (String.valueOf(recordReq.get("channelCode")).equals(channel3)) {
 			JSONObject req = recordReq.getJSONObject("channelJson");
 			JSONObject resp = JSONObject.parseObject(result.getResponseText());
 			req.put("submitTime", resp.get("submitTime"));
 			recordReq.put("channelJson", req);
-			paymentRiskRecord.setRequestText(JSONObject.toJSONString(recordReq));
-			logger.info("saveSubmitTime4Xinsheng:" + paymentRiskRecord.getRequestText());
+			paymentRiskRecord
+					.setRequestText(JSONObject.toJSONString(recordReq));
+			logger.info("saveSubmitTime4Xinsheng:"
+					+ paymentRiskRecord.getRequestText());
 		}
 	}
 
