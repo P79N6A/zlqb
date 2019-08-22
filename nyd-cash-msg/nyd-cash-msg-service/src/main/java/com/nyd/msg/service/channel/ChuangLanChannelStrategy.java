@@ -45,7 +45,7 @@ public class ChuangLanChannelStrategy implements ChannelStrategy{
         map.put("report","true");//是否需要状态报告
         map.put("extend",null);//自定义扩展码 可以增加手机号
         JSONObject js = (JSONObject) JSONObject.toJSON(map);
-        System.out.println("创蓝日志" + sendSmsByPost(sendUrl,js.toString()));
+        log.info("创蓝返回日志 = {}" , sendSmsByPost(sendUrl,js.toString()));
         return true;
     }
 
