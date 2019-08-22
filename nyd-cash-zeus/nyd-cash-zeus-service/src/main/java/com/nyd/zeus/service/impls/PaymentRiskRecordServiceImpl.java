@@ -1449,6 +1449,10 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 				// 开始请求规则的判断 //
 				LiandongQueryPaymentVO liandongQueryPaymentVO = new LiandongQueryPaymentVO();
 				liandongQueryPaymentVO.setOrder_id(request.getOrderNo());
+				//做备用处理万一没值 放当天时间
+				if(StringUtils.isEmpty(request.getMer_date())){
+					request.setMer_date(DateUtils.format(new Date(), DateUtils.STYLE_3));
+				}
 				liandongQueryPaymentVO.setMer_date(request.getMer_date());
 				
 				// 请求扣款
