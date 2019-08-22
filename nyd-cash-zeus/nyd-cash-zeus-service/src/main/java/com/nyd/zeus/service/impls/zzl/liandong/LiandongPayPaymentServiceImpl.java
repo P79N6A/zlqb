@@ -393,10 +393,15 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		String retMsg = String.valueOf(respMap.get("ret_msg"));
 		// 3失败 4成功 其他处理中
 		String tradeState = String.valueOf(respMap.get("trade_state"));
+		// 封装失败状态为3
+		if (StringUtils.isNotEmpty(tradeState) && ("15".equals(tradeState) || "18".equals(tradeState))) {
+			tradeState = "3";
+		}
 		// 封装处理中状态为1
 		if (StringUtils.isNotEmpty(tradeState) && !"3".equals(tradeState) && !"4".equals(tradeState)) {
 			tradeState = "1";
 		}
+
 		String amount = String.valueOf(respMap.get("amount"));
 		liandongPaymentResp.setTrade_state(tradeState);
 		liandongPaymentResp.setAmount(amount);
