@@ -11,6 +11,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.alibaba.fastjson.JSON;
+import com.nyd.msg.dao.mapper.SendSmsLogMapper;
+import com.nyd.msg.entity.SendSmsLog;
 import com.nyd.msg.service.channel.TianRuiChannelStrategy;
 import com.nyd.msg.service.channel.model.SmsConfigDto;
 import org.apache.commons.lang3.StringUtils;
@@ -77,6 +80,8 @@ public class SendSmsService implements ISendSmsService {
 	@Autowired
 	private TianRuiChannelStrategy tianRuiChannelStrategy;
 
+	@Autowired
+	private SendSmsLogMapper sendSmsLogMapper;
 
 	public ResponseData sendSingleSmsPro(SmsRequest vo) {
 		logger.info("****新发送短信入口***" + vo.toString());
@@ -521,6 +526,27 @@ public class SendSmsService implements ISendSmsService {
         }
 		
 		return common;
+	}
+
+	/**
+	 * 增加短信流水记录
+	 * @author WangXinHua
+	 * @Date   2019/8/22 17:21
+	 * @param message 请求参数
+	 * @param response 返回参数
+	 * @param channel 短信渠道号
+	 * @return
+	 * @throws
+	 *
+	 */
+	public void saveSendSmsLog(Message message,String response,int channel){
+		SendSmsLog sendSmsLog = new SendSmsLog();
+		sendSmsLog.setCreateTime(new Date());
+		sendSmsLog.setRequest(JSON.toJSONString(message));
+		sendSmsLog.setChannel(channel);
+		sendSmsLog.setResponse(response);
+		sendSmsLog.setPhone(message.getCellPhones());
+		sendSmsLogMapper.insert(sendSmsLog);
 	}
 
 }

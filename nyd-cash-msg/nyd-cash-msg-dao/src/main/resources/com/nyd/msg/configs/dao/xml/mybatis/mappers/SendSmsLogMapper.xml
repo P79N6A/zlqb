@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.msg.dao.mapper.SendSmsLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.nyd.msg.entity.SendSmsLog">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="channel" jdbcType="INTEGER" property="channel" />
+    </resultMap>
+
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.nyd.msg.entity.SendSmsLog">
+        <result column="request" jdbcType="LONGVARCHAR" property="request" />
+        <result column="response" jdbcType="LONGVARCHAR" property="response" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, create_time, phone, channel
+    </sql>
+
+    <sql id="Base_Where_Clause">
+        <where>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="phone != null">
+                and phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="channel != null">
+                and channel = #{channel,jdbcType=INTEGER}
+            </if>
+            <if test="request != null">
+                and request = #{request,jdbcType=LONGVARCHAR}
+            </if>
+            <if test="response != null">
+                and response = #{response,jdbcType=LONGVARCHAR}
+            </if>
+        </where>
+    </sql>
+
+    <sql id="Blob_Column_List">
+        request, response
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from send_sms_log
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByCondistion" resultMap="BaseResultMap">
+        select id, create_time, phone, channel, request, response
+        from send_sms_log
+        <include refid="Base_Where_Clause" />
+    </select>
+
+    <insert id="insert" parameterType="com.nyd.msg.entity.SendSmsLog">
+        insert into send_sms_log (id, create_time, phone,
+        channel, request, response
+        )
+        values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{phone,jdbcType=VARCHAR},
+        #{channel,jdbcType=INTEGER}, #{request,jdbcType=LONGVARCHAR}, #{response,jdbcType=LONGVARCHAR}
+        )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.nyd.msg.entity.SendSmsLog">
+        insert into send_sms_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="channel != null">
+                channel,
+            </if>
+            <if test="request != null">
+                request,
+            </if>
+            <if test="response != null">
+                response,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="channel != null">
+                #{channel,jdbcType=INTEGER},
+            </if>
+            <if test="request != null">
+                #{request,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="response != null">
+                #{response,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.nyd.msg.entity.SendSmsLog">
+        update send_sms_log
+        <set>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="channel != null">
+                channel = #{channel,jdbcType=INTEGER},
+            </if>
+            <if test="request != null">
+                request = #{request,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="response != null">
+                response = #{response,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.nyd.msg.entity.SendSmsLog">
+        update send_sms_log
+        set create_time = #{createTime,jdbcType=TIMESTAMP},
+        phone = #{phone,jdbcType=VARCHAR},
+        channel = #{channel,jdbcType=INTEGER},
+        request = #{request,jdbcType=LONGVARCHAR},
+        response = #{response,jdbcType=LONGVARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.nyd.msg.entity.SendSmsLog">
+        update send_sms_log
+        set create_time = #{createTime,jdbcType=TIMESTAMP},
+        phone = #{phone,jdbcType=VARCHAR},
+        channel = #{channel,jdbcType=INTEGER}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from send_sms_log
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+</mapper>

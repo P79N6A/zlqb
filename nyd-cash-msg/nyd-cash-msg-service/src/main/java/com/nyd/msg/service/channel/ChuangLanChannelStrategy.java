@@ -1,8 +1,12 @@
 package com.nyd.msg.service.channel;
 
 import com.alibaba.fastjson.JSONObject;
+import com.nyd.msg.dao.mapper.SendSmsLogMapper;
+import com.nyd.msg.service.code.ChannelEnum;
+import com.nyd.msg.service.impl.SendSmsService;
 import com.nyd.msg.service.utils.Message;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -10,18 +14,9 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSONObject;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import com.alibaba.fastjson.JSONObject;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -32,6 +27,11 @@ import java.util.Map;
 @Slf4j
 @Component
 public class ChuangLanChannelStrategy implements ChannelStrategy{
+
+
+    @Autowired
+    private SendSmsService sendSmsService;
+
     @Override
     public boolean sendSms(Message message, boolean batch) {
         log.info("创蓝短信sendSms参数日志 = {}", message);
@@ -45,7 +45,10 @@ public class ChuangLanChannelStrategy implements ChannelStrategy{
         map.put("report","true");//是否需要状态报告
         map.put("extend",null);//自定义扩展码 可以增加手机号
         JSONObject js = (JSONObject) JSONObject.toJSON(map);
-        log.info("创蓝返回日志 = {}" , sendSmsByPost(sendUrl,js.toString()));
+        String response = sendSmsByPost(sendUrl,js.toString());
+        log.info("创蓝返回日志 = {}" , response);
+        sendSmsService.saveSendSmsLog(message,response, Integer.valueOf(ChannelEnum.CHUANG_LAN.getCode()));
+
         return true;
     }
 

@@ -63,6 +63,7 @@
         <property name="mapperLocations">
             <array>
                 <value>com/nyd/msg/configs/dao/xml/mybatis/mappers/AppNameConfigMapper.xml</value>
+                <value>com/nyd/msg/configs/dao/xml/mybatis/mappers/SendSmsLogMapper.xml</value>
             </array>
         </property>
     </bean>
