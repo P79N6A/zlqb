@@ -79,6 +79,7 @@
 	<dubbo:reference id="userBankCardService" interface="com.nyd.user.api.zzl.UserBankCardService" timeout="120000" check="false" />
 	<dubbo:reference id="xunlianPayService" interface="com.nyd.zeus.api.zzl.xunlian.XunlianPayService" timeout="120000" check="false" />
 	<dubbo:reference id="hnaPayPaymentService" interface="com.nyd.zeus.api.zzl.hnapay.HnaPayPaymentService" timeout="120000" check="false" />
+	<dubbo:reference id="liandongPayPaymentService" interface="com.nyd.zeus.api.zzl.liandong.LiandongPayPaymentService" timeout="120000" check="false" />
 	
 	
 </beans>

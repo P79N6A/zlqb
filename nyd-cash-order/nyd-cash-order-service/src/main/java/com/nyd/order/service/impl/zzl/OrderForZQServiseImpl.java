@@ -63,10 +63,12 @@ import com.nyd.zeus.api.zzl.ZeusForOrderPayBackServise;
 import com.nyd.zeus.api.zzl.ZeusForZQServise;
 import com.nyd.zeus.api.zzl.chanpay.ChangJiePaymentService;
 import com.nyd.zeus.api.zzl.hnapay.HnaPayPaymentService;
+import com.nyd.zeus.api.zzl.liandong.LiandongPayPaymentService;
 import com.nyd.zeus.api.zzl.xunlian.XunlianPayService;
 import com.nyd.zeus.model.BillExtendInfoVo;
 import com.nyd.zeus.model.BillInfo;
 import com.nyd.zeus.model.helibao.util.Uuid;
+import com.nyd.zeus.model.helibao.util.chanpay.DateUtils;
 import com.nyd.zeus.model.helibao.vo.entrustedloan.LoanConInfo;
 import com.nyd.zeus.model.helibao.vo.entrustedloan.OrderQueryResVo;
 import com.nyd.zeus.model.helibao.vo.entrustedloan.OrderQueryVo;
@@ -76,6 +78,8 @@ import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJieMerchantVO;
 import com.nyd.zeus.model.helibao.vo.pay.resp.chanpay.ChangJieDFResp;
 import com.nyd.zeus.model.hnapay.req.HnaPayPayReq;
 import com.nyd.zeus.model.hnapay.resp.HnaPayPayResp;
+import com.nyd.zeus.model.liandong.vo.LiandongChargeVO;
+import com.nyd.zeus.model.liandong.vo.resp.LiandongChargeResp;
 import com.nyd.zeus.model.xunlian.req.XunlianChargeVO;
 import com.nyd.zeus.model.xunlian.resp.XunlianChargeResp;
 
@@ -138,6 +142,9 @@ public class OrderForZQServiseImpl implements OrderForZQServise{
     
     @Autowired
 	private HnaPayPaymentService hnaPayPaymentService;
+    
+    @Autowired
+    private LiandongPayPaymentService liandongPayPaymentService;
     
 	@Override
 	public PagedResponse<List<OrderlistVo>> getOrderList(OrderlistVo vo) {
@@ -499,7 +506,47 @@ public class OrderForZQServiseImpl implements OrderForZQServise{
 					}
 					entity.setStatus("1");
 				}
+			}else if(bankInfo.getSoure()==5 && "liandong".equals(bankInfo.getChannelCode())){
+				//联动支付
+				serialNum = Uuid.getUuid26();
+				LiandongChargeVO liandong = new LiandongChargeVO();
+				liandong.setAmount(vo.getRefundAmount());
+				liandong.setRecv_account(bankInfo.getBankAccount());
+				liandong.setRecv_user_name(bankInfo.getAccountName());
+				String currentTime = DateUtils.getCurrentTime(DateUtils.STYLE_3);
+				liandong.setMer_date(currentTime);
+				logger.info("退款处理-联动请求参数："+JSONObject.toJSONString(liandong));
+				com.nyd.zeus.model.common.CommonResponse<LiandongChargeResp> result = liandongPayPaymentService.pay(liandong);
+				logger.info("退款处理-联动返回参数："+JSONObject.toJSONString(result));
+				if(null == result){
+					entity.setStatus("3");
+				}else{
+					LiandongChargeResp liandongResp = result.getData();
+					//0001 处理中   0000请求成功（不代表交易成功）
+					String resultCode = liandongResp.getRet_code();
+					String resultMsg = liandongResp.getRet_msg();
+					//1-支付中3-失败4-成功
+					String tradeState = liandongResp.getTrade_state();
+					if("0001".equals(resultCode)){
+						entity.setStatus("1");
+					}else if("0000".equals(resultCode)){
+						if("4".equals(tradeState)){
+							entity.setStatus("2");
+							
+						}else if("3".equals(tradeState)){
+							entity.setStatus("3");
+						}else{
+							entity.setStatus("1");
+						}
+					}else{
+						entity.setStatus("3");
+					}
+				}
+				
+			}else{
+				
 			}
+			entity.setReal_refund_date(DateUtils.getCurrentTime(DateUtils.STYLE_3));
 			entity.setId(vo.getRefundId());
 			entity.setReal_refund_amount(vo.getRefundAmount());
 			entity.setRemarks(vo.getRemark());

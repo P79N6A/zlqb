@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,14 @@ import com.nyd.user.model.BankInfo;
 import com.nyd.zeus.api.payment.PaymentRiskRecordService;
 import com.nyd.zeus.api.zzl.chanpay.ChangJiePaymentService;
 import com.nyd.zeus.api.zzl.hnapay.HnaPayPaymentService;
+import com.nyd.zeus.api.zzl.liandong.LiandongPayPaymentService;
 import com.nyd.zeus.api.zzl.xunlian.XunlianPayService;
 import com.nyd.zeus.model.helibao.vo.pay.req.chanpay.ChangJieQueryMerchantVO;
 import com.nyd.zeus.model.helibao.vo.pay.resp.chanpay.ChangJieDFResp;
 import com.nyd.zeus.model.hnapay.req.HnaPayQueryPayReq;
 import com.nyd.zeus.model.hnapay.resp.HnaPayQueryPayResp;
+import com.nyd.zeus.model.liandong.vo.LiandongQueryChargeVO;
+import com.nyd.zeus.model.liandong.vo.resp.LiandongChargeResp;
 import com.nyd.zeus.model.xunlian.req.XunlianQueryChargeVO;
 import com.nyd.zeus.model.xunlian.resp.XunlianQueryChargeResp;
 
@@ -63,6 +67,9 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
     
     @Autowired
 	private HnaPayPaymentService hnaPayPaymentService;
+    
+    @Autowired
+    private LiandongPayPaymentService liandongPayPaymentService;
 	
 	/**
 	 * 退款处理列表查询
@@ -233,6 +240,40 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 				}else{//失败
 					entity.setStatus("3");
 				}
+			}else if(bankInfo.getSoure()==5 && "liandong".equals(bankInfo.getChannelCode())){
+				//联动退款查询
+				LiandongQueryChargeVO liandongQueryChargeVO = new LiandongQueryChargeVO();
+				liandongQueryChargeVO.setOrder_id(entity.getSerialNum());
+				liandongQueryChargeVO.setMer_date(entity.getReal_refund_date());
+				LOGGER.info("联动退款查询请求参数:"+JSONObject.toJSONString(liandongQueryChargeVO));
+				com.nyd.zeus.model.common.CommonResponse<LiandongChargeResp> result =liandongPayPaymentService.queryPay(liandongQueryChargeVO);
+				LOGGER.info("联动退款查询返回参数:"+JSONObject.toJSONString(liandongQueryChargeVO));
+				if(null == result){
+					entity.setStatus("3");
+				}else{
+					LiandongChargeResp liandongResp = result.getData();
+					//0001 处理中   0000请求成功（不代表交易成功）
+					String resultCode = liandongResp.getRet_code();
+					String resultMsg = liandongResp.getRet_msg();
+					//1-支付中3-失败4-成功
+					String tradeState = liandongResp.getTrade_state();
+					if("0001".equals(resultCode)){
+						entity.setStatus("1");
+					}else if("0000".equals(resultCode)){
+						if("4".equals(tradeState)){
+							entity.setStatus("2");
+							
+						}else if("3".equals(tradeState)){
+							entity.setStatus("3");
+						}else{
+							entity.setStatus("1");
+						}
+					}else{
+						entity.setStatus("3");
+					}
+				}
+			}else{
+				
 			}
 			refundApplyMapper.updateInfo(entity);
 			status = true;
