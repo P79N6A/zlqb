@@ -18,7 +18,10 @@ public enum ChannelEnum {
     /**
      * UOLEEM
      */
-    UOLEEM("8");
+    UOLEEM("8"),
+
+    CHUANG_LAN("10")
+    ;
 
     private String code;
 //    private String desc;

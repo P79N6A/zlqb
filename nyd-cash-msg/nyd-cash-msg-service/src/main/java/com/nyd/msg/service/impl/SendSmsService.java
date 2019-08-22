@@ -77,8 +77,8 @@ public class SendSmsService implements ISendSmsService {
 	@Autowired
 	private TianRuiChannelStrategy tianRuiChannelStrategy;
 
-	@Override
-	public ResponseData sendSingleSms(SmsRequest vo) {
+
+	public ResponseData sendSingleSmsPro(SmsRequest vo) {
 		logger.info("****新发送短信入口***" + vo.toString());
 		// 验证码校验
 		try {
@@ -167,8 +167,8 @@ public class SendSmsService implements ISendSmsService {
 		}
 	}
 
-
-	public ResponseData sendSingleSmsPro(SmsRequest vo) {
+	@Override
+	public ResponseData sendSingleSms(SmsRequest vo) {
 		logger.info("****发送短信入口***" + vo.toString());
 		try {
 			ValidatorUtil.validateObject(vo, new SmsRequestValidator());

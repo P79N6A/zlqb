@@ -25,6 +25,8 @@ public class ChannelStrategyFactory implements ApplicationContextAware {
                 return applicationContext.getBean(CommonServiceStrategy.class);
             case "8":
                 return applicationContext.getBean(UoleemChannelStrategy.class);
+            case "10":
+                return applicationContext.getBean(ChuangLanChannelStrategy.class);
             default:
                 return applicationContext.getBean(DaHanTricomChannelStrategy.class);
         }
