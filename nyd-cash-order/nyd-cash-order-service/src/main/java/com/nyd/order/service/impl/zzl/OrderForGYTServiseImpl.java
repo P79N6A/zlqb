@@ -248,29 +248,24 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 				LOGGER.info("联动退款查询请求参数:"+JSONObject.toJSONString(liandongQueryChargeVO));
 				com.nyd.zeus.model.common.CommonResponse<LiandongChargeResp> result =liandongPayPaymentService.queryPay(liandongQueryChargeVO);
 				LOGGER.info("联动退款查询返回参数:"+JSONObject.toJSONString(liandongQueryChargeVO));
-				if(null == result){
-					entity.setStatus("3");
-				}else{
-					LiandongChargeResp liandongResp = result.getData();
-					//0001 处理中   0000请求成功（不代表交易成功）
-					String resultCode = liandongResp.getRet_code();
-					String resultMsg = liandongResp.getRet_msg();
-					//1-支付中3-失败4-成功
-					String tradeState = liandongResp.getTrade_state();
-					if("0001".equals(resultCode)){
-						entity.setStatus("1");
-					}else if("0000".equals(resultCode)){
-						if("4".equals(tradeState)){
-							entity.setStatus("2");
-							
-						}else if("3".equals(tradeState)){
-							entity.setStatus("3");
-						}else{
-							entity.setStatus("1");
-						}
-					}else{
+				LiandongChargeResp liandongResp = result.getData();
+				//0001 处理中   0000请求成功（不代表交易成功）
+				String resultCode = liandongResp.getRet_code();
+				String resultMsg = liandongResp.getRet_msg();
+				//1-支付中3-失败4-成功
+				String tradeState = liandongResp.getTrade_state();
+				if("0001".equals(resultCode)){
+					entity.setStatus("1");
+				}else if("0000".equals(resultCode)){
+					if("4".equals(tradeState)){
+						entity.setStatus("2");
+					}else if("3".equals(tradeState)){
 						entity.setStatus("3");
+					}else{
+						entity.setStatus("1");
 					}
+				}else{
+					entity.setStatus("3");
 				}
 			}else{
 				
