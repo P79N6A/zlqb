@@ -74,5 +74,10 @@ public interface LiandongPayPaymentService {
 	 */
 	public CommonResponse<LiandongChargeResp> queryPay(
 			LiandongQueryChargeVO liandongQueryChargeVO);
+	
+	/**
+	 * 代付异步通知
+	 */
+	public String notic(String requestParam);
 
 }
