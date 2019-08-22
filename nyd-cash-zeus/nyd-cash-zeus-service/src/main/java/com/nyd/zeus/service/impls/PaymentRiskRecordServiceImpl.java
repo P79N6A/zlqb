@@ -115,15 +115,14 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 				.getRequestText());
 		if (String.valueOf(recordReq.get("channelCode")).equals(channel3)) {
 			JSONObject req = recordReq.getJSONObject("channelJson");
-			JSONObject resp = JSONObject.parseObject(result.getResponseText());
+			JSONObject resp = JSONObject.parseObject(result.getResponseText())
+					.getJSONObject("data");
 			req.put("submitTime", resp.get("submitTime"));
 			logger.info("saveSubmitTime4Xinsheng req:"
 					+ JSONObject.toJSONString(req));
 			logger.info("saveSubmitTime4Xinsheng resp:"
 					+ JSONObject.toJSONString(resp));
 			recordReq.put("channelJson", req);
-			logger.info("saveSubmitTime4Xinsheng recordReq:"
-					+ JSONObject.toJSONString(recordReq));
 			paymentRiskRecord
 					.setRequestText(JSONObject.toJSONString(recordReq));
 			logger.info("saveSubmitTime4Xinsheng:"
