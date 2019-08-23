@@ -43,7 +43,7 @@ public interface XunlianPayService {
 	 * @param identifyauthVO
 	 * @return
 	 */
-	public CommonResponse<XunlianPayResp> pay(XunlianPaymentVO xunlianPaymentVO);
+	public CommonResponse<XunlianPayResp> pay(XunlianPaymentVO xunlianPaymentVO,String orderTime);
 	
 	
 	/**
@@ -51,7 +51,7 @@ public interface XunlianPayService {
 	 * @param identifyauthVO
 	 * @return
 	 */
-	public CommonResponse<XunlianQueryPayResp> queryPay(XunlianQueryPayVO xunlianQueryPayVO);
+	public CommonResponse<XunlianQueryPayResp> queryPay(XunlianQueryPayVO xunlianQueryPayVO,String orderTime);
 	
 	/**
 	 * 支付查询

@@ -118,7 +118,7 @@ public class ZeusForPaymentServiseImpl implements ZeusForPaymentServise {
 			record.setRequestTime(new SimpleDateFormat(STYLE_1).format(new Date()));
 			record.setRequestText(JSONObject.toJSONString(request));
 
-			PaymentRiskRecordPayResult result = pay(request, remainMoney);
+			PaymentRiskRecordPayResult result = pay(request, remainMoney,record.getRiskTime());
 
 			// 开始支付
 			record.setResponseText(JSONObject.toJSONString(result));
@@ -169,7 +169,7 @@ public class ZeusForPaymentServiseImpl implements ZeusForPaymentServise {
 		return flow;
 	}
 
-	private PaymentRiskRecordPayResult pay(PaymentRiskRequestCommon request, BigDecimal thisMoney) {
+	private PaymentRiskRecordPayResult pay(PaymentRiskRequestCommon request, BigDecimal thisMoney,String dealTime) {
 		// 获取还款的渠道code
 		String channel = request.getChannelCode();
 		PaymentRiskRecordPayResult result = new PaymentRiskRecordPayResult();
@@ -194,7 +194,7 @@ public class ZeusForPaymentServiseImpl implements ZeusForPaymentServise {
 				PaymentRiskFlow flow = beforeSaveFlow(JSONObject.toJSONString(xunlianPaymentVO));
 				logger.info("------------PaymentRiskRecordServiceImpl-----pay-----xunlian,参数:{}",
 						JSONObject.toJSONString(xunlianPaymentVO));
-				CommonResponse<XunlianPayResp> xlResult = xunlianPayService.pay(xunlianPaymentVO);
+				CommonResponse<XunlianPayResp> xlResult = xunlianPayService.pay(xunlianPaymentVO,dealTime);
 				logger.info("------------PaymentRiskRecordServiceImpl-----pay-----xunlian,结果:{}",
 						JSONObject.toJSONString(xlResult));
 				// 响应参数

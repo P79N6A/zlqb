@@ -148,8 +148,8 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			paymentRiskRecord.setRequestText(JSONObject.toJSONString(vo));
 			paymentRiskRecord.setStatus(0); // 设置默认
 			paymentRiskRecord.setRiskStatus(-1);
-			paymentRiskRecord.setRiskTime(new SimpleDateFormat(STYLE_1)
-					.format(vo.getRiskTime()));
+			String riskTime = new SimpleDateFormat(STYLE_1).format(vo.getRiskTime());
+			paymentRiskRecord.setRiskTime(riskTime);
 			paymentRiskRecord.setBackupMoney(new BigDecimal(0d));
 			paymentRiskRecord.setNoticeStatus(0);
 			// 赋值短信相关
@@ -158,7 +158,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 
 			// 统一支付入口 开始 ↓↓↓↓↓
 
-			PaymentRiskRecordPayResult result = pay(vo, vo.getMoney());
+			PaymentRiskRecordPayResult result = pay(vo, vo.getMoney(),riskTime);
 			// 统一支付入口 结果 ↑↑↑↑↑
 
 			// 开始支付
@@ -285,7 +285,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 					request.setChannelJson(JSONObject.toJSONString(cj));
 				}
 				recentMoney = thisMoney;
-				PaymentRiskRecordPayResult result = pay(request, thisMoney);
+				PaymentRiskRecordPayResult result = pay(request, thisMoney,paymentRiskRecord.getRiskTime());
 				String resultStatus = result.getStatus();
 				// 统一支付入口 结果 ↑↑↑↑↑
 				saveSubmitTime4Xinsheng(paymentRiskRecord, result);
@@ -330,7 +330,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 						request.setChannelJson(JSONObject.toJSONString(cj));
 					}
 					recentMoney = thisMoney;
-					PaymentRiskRecordPayResult result = pay(request, thisMoney);
+					PaymentRiskRecordPayResult result = pay(request, thisMoney,paymentRiskRecord.getRiskTime());
 					String resultStatus = result.getStatus();
 					// 统一支付入口 结果 ↑↑↑↑↑
 
@@ -422,8 +422,8 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			PaymentRiskRequestCommon request = JSONObject.parseObject(
 					paymentRiskRecord.getRequestText(),
 					PaymentRiskRequestCommon.class);
+			PaymentRiskRecordPayResult result = pay(request, thisMoney,paymentRiskRecord.getRiskTime());
 			recentMoney = thisMoney;
-			PaymentRiskRecordPayResult result = pay(request, thisMoney);
 			String resultStatus = result.getStatus();
 			// 统一支付入口 结果 ↑↑↑↑↑
 			saveSubmitTime4Xinsheng(paymentRiskRecord, result);
@@ -459,8 +459,10 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 				PaymentRiskRequestCommon request = JSONObject.parseObject(
 						paymentRiskRecord.getRequestText(),
 						PaymentRiskRequestCommon.class);
+
+				PaymentRiskRecordPayResult result = pay(request, thisMoney,paymentRiskRecord.getRiskTime());
+
 				recentMoney = thisMoney;
-				PaymentRiskRecordPayResult result = pay(request, thisMoney);
 				String resultStatus = result.getStatus();
 				// 统一支付入口 结果 ↑↑↑↑↑
 
@@ -687,7 +689,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			PaymentRiskRequestCommon request = JSONObject.parseObject(
 					paymentRiskRecord.getRequestText(),
 					PaymentRiskRequestCommon.class);
-			PaymentRiskRecordPayResult result = pay(request, thisMoney);
+			PaymentRiskRecordPayResult result = pay(request, thisMoney,paymentRiskRecord.getRiskTime());
 			// String resultStatus = result.getStatus();
 			// 统一支付入口 结果 ↑↑↑↑↑
 			saveSubmitTime4Xinsheng(paymentRiskRecord, result);
@@ -1036,7 +1038,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 	 */
 
 	private PaymentRiskRecordPayResult pay(PaymentRiskRequestCommon request,
-			BigDecimal thisMoney) {
+			BigDecimal thisMoney,String dealTime) {
 		// 获取还款的渠道code
 		String channel = request.getChannelCode();
 		PaymentRiskRecordPayResult result = new PaymentRiskRecordPayResult();
@@ -1124,7 +1126,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 						"------------PaymentRiskRecordServiceImpl-----pay-----xunlian,参数:{}",
 						JSONObject.toJSONString(xunlianPaymentVO));
 				CommonResponse<XunlianPayResp> xlResult = xunlianPayService
-						.pay(xunlianPaymentVO);
+						.pay(xunlianPaymentVO,dealTime);
 				logger.info(
 						"------------PaymentRiskRecordServiceImpl-----pay-----xunlian,结果:{}",
 						JSONObject.toJSONString(xlResult));
@@ -1360,7 +1362,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 						"------------PaymentRiskRecordServiceImpl-----query-----xunlian,参数:{}",
 						JSONObject.toJSONString(xunlianQueryPayVO));
 				CommonResponse<XunlianQueryPayResp> xunlianResult = xunlianPayService
-						.queryPay(xunlianQueryPayVO);
+						.queryPay(xunlianQueryPayVO,paymentRiskRecord.getRiskTime());
 				logger.info(
 						"------------PaymentRiskRecordServiceImpl-----query-----xunlian,结果:{}",
 						JSONObject.toJSONString(xunlianResult));
