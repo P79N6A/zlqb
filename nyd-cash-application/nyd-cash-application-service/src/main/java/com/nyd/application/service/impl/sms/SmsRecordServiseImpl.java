@@ -183,6 +183,10 @@ public class SmsRecordServiseImpl implements SmsRecordServise {
 		PagedResponse<List<JSONObject>> response = new PagedResponse<>();
 		List<JSONObject> list = new ArrayList<>();
 		try {
+			String phone=request.getCallNo();
+			if(StringUtils.isNotBlank(phone)){
+				phone=phoneDesensitization(phone);
+			}
 			String basicIdSql="SELECT id FROM t_carry_basic WHERE user_id = '"+request.getUserId()+"' ORDER BY create_time DESC LIMIT 0,1";
 			JSONObject obj = applicationSqlService.queryOne(basicIdSql);
 			String basicId = "";
@@ -205,7 +209,7 @@ public class SmsRecordServiseImpl implements SmsRecordServise {
 			sb.append(" IFNULL((SELECT time FROM t_carry_calls WHERE carry_id = '"+basicId+"' AND peer_number = a.tel ORDER BY create_time DESC LIMIT 0,1),' ') AS createTime");
 			sb.append(" FROM (select * from t_address_book  WHERE user_id = '"+ request.getUserId() +"' ");
 			if (StringUtils.isNotBlank(request.getCallNo())){
-				sb.append(" and tel = '" + request.getCallNo() +"' ");
+				sb.append(" and (tel = '" + request.getCallNo() +"' or tel = '"+phone+"') ");
 
 			}
 			if (StringUtils.isNotBlank(request.getName())){
@@ -221,7 +225,7 @@ public class SmsRecordServiseImpl implements SmsRecordServise {
 				stringBuffer.append(" and a.name = '" + request.getName() + "' ");
 			}
 			if (StringUtils.isNotBlank(request.getCallNo())){
-				stringBuffer.append(" and a.tel = '" + request.getCallNo() +"' ");
+				stringBuffer.append(" and (a.tel = '" + request.getCallNo() +"' or tel = '"+phone+"') ");
 
 			}
 			
