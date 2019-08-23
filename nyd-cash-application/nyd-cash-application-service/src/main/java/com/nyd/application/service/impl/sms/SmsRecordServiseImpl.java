@@ -182,13 +182,7 @@ public class SmsRecordServiseImpl implements SmsRecordServise {
 		try {
 			String phone=request.getCallNo();
 			if(StringUtils.isNotBlank(phone)){
-				if(phone.length()!=11){
-					response.setSuccess(false);
-					response.setMsg("手机号码错误");
-					response.setCode("0");
-					return response;
-				}
-				phone=phone.substring(0,3)+"****"+phone.substring(7);
+				phone=phoneDesensitization(phone);
 			}
 			String basicIdSql="SELECT id FROM t_carry_basic WHERE user_id = '"+request.getUserId()+"' ORDER BY create_time DESC LIMIT 0,1";
 			JSONObject obj = applicationSqlService.queryOne(basicIdSql);
@@ -212,7 +206,7 @@ public class SmsRecordServiseImpl implements SmsRecordServise {
 			sb.append(" IFNULL((SELECT time FROM t_carry_calls WHERE carry_id = '"+basicId+"' AND peer_number = a.tel ORDER BY create_time DESC LIMIT 0,1),' ') AS createTime");
 			sb.append(" FROM (select * from t_address_book  WHERE user_id = '"+ request.getUserId() +"' ");
 			if (StringUtils.isNotBlank(request.getCallNo())){
-				sb.append(" and (tel = '" + request.getCallNo() +"' or tel = "+phone+") ");
+				sb.append(" and (tel = '" + request.getCallNo() +"' or tel = '"+phone+"') ");
 
 			}
 			if (StringUtils.isNotBlank(request.getName())){
@@ -228,7 +222,7 @@ public class SmsRecordServiseImpl implements SmsRecordServise {
 				stringBuffer.append(" and a.name = '" + request.getName() + "' ");
 			}
 			if (StringUtils.isNotBlank(request.getCallNo())){
-				stringBuffer.append(" and (a.tel = '" + request.getCallNo() +"' or tel = "+phone+") ");
+				stringBuffer.append(" and (a.tel = '" + request.getCallNo() +"' or tel = '"+phone+"') ");
 
 			}
 			
@@ -248,6 +242,35 @@ public class SmsRecordServiseImpl implements SmsRecordServise {
 			response.setSuccess(false);
 		}
 		return response;
+	}
+
+	/**
+	 * 联系号码脱敏
+	 * @param phoneNo
+	 * @return
+	 */
+	private  String phoneDesensitization(String phoneNo) {
+		try {
+			phoneNo = phoneNo.replace(" ","");
+			if (phoneNo.contains("*")) {
+				return phoneNo;
+			} else {
+				if (phoneNo.length()>=8) {
+					String sub = phoneNo.substring( phoneNo.length()-8,phoneNo.length()-4);
+					String replacePhone = phoneNo.replace(sub,"****");
+					return replacePhone;
+				} else if (phoneNo.length() == 7){
+					String sub = phoneNo.substring( phoneNo.length()-7,phoneNo.length()-4);
+					String replacePhone = phoneNo.replace(sub,"***");
+					return replacePhone;
+				} else {
+					return phoneNo;
+				}
+			}
+		} catch (Exception e) {
+			return phoneNo;
+		}
+
 	}
 
 }
