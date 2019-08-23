@@ -60,7 +60,7 @@ public class MongoServiceImpl implements MongoService {
                 UserDto userDto = new UserDto();
                 userDto.setAccountNumber(phone);
                 List<UserInfo> userInfoList = userIdentityContract.getUserInfos(userDto).getData();
-                if (userInfoList != null & userInfoList.size() > 0){
+                if (userInfoList != null && userInfoList.size() > 0){
                     UserInfo userInfo = userInfoList.get(0);
                     LOGGER.info("用户手机号为:{},查询出来的userid为{}",phone,userInfo.getUserId());
                     userId = userInfo.getUserId();
