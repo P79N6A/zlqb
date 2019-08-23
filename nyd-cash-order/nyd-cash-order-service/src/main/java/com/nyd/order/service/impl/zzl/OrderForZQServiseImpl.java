@@ -513,6 +513,7 @@ public class OrderForZQServiseImpl implements OrderForZQServise{
 				liandong.setAmount(vo.getRefundAmount());
 				liandong.setRecv_account(bankInfo.getBankAccount());
 				liandong.setRecv_user_name(bankInfo.getAccountName());
+				liandong.setOrder_id(serialNum);
 				String currentTime = DateUtils.getCurrentTime(DateUtils.STYLE_3);
 				liandong.setMer_date(currentTime);
 				logger.info("退款处理-联动请求参数："+JSONObject.toJSONString(liandong));
