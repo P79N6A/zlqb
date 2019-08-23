@@ -347,7 +347,7 @@ public class BindCardServiceImpl implements BindCardService {
                     HnaPayConfirmReq hnaPayConfirmReq = new HnaPayConfirmReq();
                     hnaPayConfirmReq.setSmsCode(req.getValidatecode());
                     hnaPayConfirmReq.setHnapayOrderId(userBindInfo.getMerOrderId());
-                    hnaPayConfirmReq.setMerOrderId(userBindInfo.getUserId());
+                    hnaPayConfirmReq.setMerOrderId(userBindInfo.getUserId()+ DateUtils.gethhhhmmss());
                     LOGGER.info("新生请求绑卡确认服务信息：{}",JSON.toJSONString(hnaPayConfirmReq));
                     CommonResponse<HnaPayConfirmResp> hnaPayConfirmRespCommonResponse = hnaPayPaymentService.confirm(hnaPayConfirmReq);
                     LOGGER.info("新生请求绑卡返回服务信息：{}",JSON.toJSONString(hnaPayConfirmRespCommonResponse));
