@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.nyd.zeus.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -102,13 +103,6 @@ import com.nyd.user.model.UserInfo;
 import com.nyd.zeus.api.BillContract;
 import com.nyd.zeus.api.payment.PaymentRiskRecordService;
 import com.nyd.zeus.api.zzl.ZeusForLXYService;
-import com.nyd.zeus.model.BillInfo;
-import com.nyd.zeus.model.PaymentRiskRecordExtendVo;
-import com.nyd.zeus.model.PaymentRiskRequestChangjie;
-import com.nyd.zeus.model.PaymentRiskRequestCommon;
-import com.nyd.zeus.model.PaymentRiskRequestXinsheng;
-import com.nyd.zeus.model.PaymentRiskRequestXunlian;
-import com.nyd.zeus.model.RepayInfo;
 import com.nyd.zeus.model.common.CommonResponse;
 import com.nyd.zeus.model.helibao.util.StatusConstants;
 import com.tasfe.framework.rabbitmq.RabbitmqProducerProxy;
@@ -1141,12 +1135,13 @@ public class NewOrderInfoServiceImpl implements NewOrderInfoService {
                     xl.setName(userInfo.getRealName());
                     xl.setProtocolId(bankDetail.getProtocolId());
                     paymentRiskRequest.setChannelJson(JSONObject.toJSONString(xl));
-                }else if(!ChkUtil.isEmpty(channelCode) && "xinsheng".equals(channelCode)) {
-                	PaymentRiskRequestXinsheng xs = new PaymentRiskRequestXinsheng();
+                }else if(!ChkUtil.isEmpty(channelCode) && "liandong".equals(channelCode)) {
+                    PaymentRiskRequestLiandong xs = new PaymentRiskRequestLiandong();
                 	xs.setAmount(String.valueOf(memberFee));
-                	xs.setBizProtocolNo(bankDetail.getBizProtocolNo());
-                	xs.setMerUserId(borrowConfirmDto.getUserId());
-                	xs.setPayProtocolNo(bankDetail.getPayProtocolNo());
+                	xs.setUsr_busi_agreement_id(bankDetail.getUsrBusiAgreementId());
+                	xs.setOrder_no(orderNo);
+                    xs.setMer_date(DateUtil.format(new Date(), "yyyyMMDD"));
+                	xs.setUsr_pay_agreement_id(bankDetail.getUsrPayAgreementId());
                 	paymentRiskRequest.setChannelJson(JSONObject.toJSONString(xs));
                 }
 
