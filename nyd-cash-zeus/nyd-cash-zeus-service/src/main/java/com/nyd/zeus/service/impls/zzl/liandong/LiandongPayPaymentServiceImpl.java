@@ -69,6 +69,7 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		reqMap.put("mer_cust_id", merCustId);
 		// UmfService instance = new UmfServiceImpl("60000100",
 		// "G:/tecent/test/60000100商户签名证书/60000100_.key.p8");
+		logger.info("memberid : " + memberid + " priKey:" + priKey);
 		UmfService instance = new UmfServiceImpl(memberid, priKey);
 		paychannelTempFlow.setBusinessType("liandong_sms");
 		paychannelTempFlow.setPayChannelCode("liandong");
@@ -113,6 +114,7 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		reqMap.put("mer_id", memberid);
 		// UmfService instance = new UmfServiceImpl("60000100",
 		// "G:/tecent/test/60000100商户签名证书/60000100_.key.p8");
+		logger.info("memberid : " + memberid + " priKey:" + priKey);
 		UmfService instance = new UmfServiceImpl(memberid, priKey);
 		paychannelTempFlow.setRequestText(reqMap.toString());
 		paychannelTempFlow.setRequestTime(new Date());
@@ -194,6 +196,7 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		reqMap.put("mer_id", memberid);
 		// UmfService instance = new UmfServiceImpl("60000100",
 		// "G:/tecent/test/60000100商户签名证书/60000100_.key.p8");
+		logger.info("memberid : " + memberid + " priKey:" + priKey);
 		UmfService instance = new UmfServiceImpl(memberid, priKey);
 		paychannelTempFlow.setRequestText(reqMap.toString());
 		paychannelTempFlow.setRequestTime(new Date());
@@ -248,6 +251,7 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		reqMap.put("mer_id", memberid);
 		// UmfService instance = new UmfServiceImpl("60000100",
 		// "G:/tecent/test/60000100商户签名证书/60000100_.key.p8");
+		logger.info("memberid : " + memberid + " priKey:" + priKey);
 		UmfService instance = new UmfServiceImpl(memberid, priKey);
 		paychannelTempFlow.setRequestText(reqMap.toString());
 		paychannelTempFlow.setRequestTime(new Date());
@@ -329,6 +333,7 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		// UmfService instance = new UmfServiceImpl("60000100",
 		// "G:/tecent/test/60000100商户签名证书/60000100_.key.p8");
 		UmfService instance = new UmfServiceImpl(memberid, priKey);
+		logger.info("memberid : " + memberid + " priKey:" + priKey);
 		paychannelTempFlow.setRequestText(reqMap.toString());
 		paychannelTempFlow.setRequestTime(new Date());
 		logger.info(" 联动代付  请求参数" + reqMap.toString());
@@ -379,6 +384,8 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		reqMap.put("mer_id", memberid);
 		// UmfService instance = new UmfServiceImpl("60000100",
 		// "G:/tecent/test/60000100商户签名证书/60000100_.key.p8");
+		logger.info("memberid : " + memberid + " priKey:" + priKey);
+
 		UmfService instance = new UmfServiceImpl(memberid, priKey);
 		paychannelTempFlow.setRequestText(reqMap.toString());
 		paychannelTempFlow.setRequestTime(new Date());
@@ -445,6 +452,8 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 		reqMap.put("amount", amount);
 		// UmfService instance = new UmfServiceImpl("60000100",
 		// "G:/tecent/test/60000100商户签名证书/60000100_.key.p8");
+		logger.info("memberid : " + memberid + " priKey:" + priKey);
+
 		UmfService instance = new UmfServiceImpl(memberid, priKey);
 		paychannelTempFlow.setRequestText(reqMap.toString());
 		paychannelTempFlow.setRequestTime(new Date());
@@ -498,7 +507,7 @@ public class LiandongPayPaymentServiceImpl implements LiandongPayPaymentService 
 	@Override
 	public String notic(String requestParam) {
 		List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(LIANDONG_CODE);
-		PaychannelTempFlow paychannelTempFlow = new PaychannelTempFlow();
+		//PaychannelTempFlow paychannelTempFlow = new PaychannelTempFlow();
 		PayConfigFileVO payConfigFileVO = list.get(0);
 		String priKey = payConfigFileVO.getPrdKey();
 		String memberid = payConfigFileVO.getMemberId();
