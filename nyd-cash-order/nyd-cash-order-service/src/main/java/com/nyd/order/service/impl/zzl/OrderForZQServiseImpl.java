@@ -525,6 +525,7 @@ public class OrderForZQServiseImpl implements OrderForZQServise{
 				String resultMsg = liandongResp.getRet_msg();
 				//1-支付中3-失败4-成功
 				String tradeState = liandongResp.getTrade_state();
+				entity.setReal_refund_date(currentTime);
 				if("0001".equals(resultCode)){
 					entity.setStatus("1");
 				}else if("0000".equals(resultCode)){
@@ -542,7 +543,6 @@ public class OrderForZQServiseImpl implements OrderForZQServise{
 			}else{
 				
 			}
-			entity.setReal_refund_date(DateUtils.getCurrentTime(DateUtils.STYLE_3));
 			entity.setId(vo.getRefundId());
 			entity.setReal_refund_amount(vo.getRefundAmount());
 			entity.setRemarks(vo.getRemark());
