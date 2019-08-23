@@ -42,9 +42,9 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 
 	private Logger logger = LoggerFactory.getLogger(XunlianPayServiceimpl.class);
 
-	private static String XUNLIAN_PAY = "200008-0001";
+	private static String BINGTA_XUNLIAN_PAY = "200008-0012";
 	
-	//private static String XUNLIAN_PAY = "200008-0012";
+	private static String DAQING_XUNLIAN_PAY = "200008-0001";
 
 	@Autowired
 	private XunlianGetDataService xunlianGetDataService;
@@ -79,7 +79,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 			PaychannelTempFlow paychannelTempFlow = new PaychannelTempFlow();
 			paychannelTempFlow.setBusinessType("身份认证");
 			paychannelTempFlow.setPayChannelCode("xunlian");
-			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(XUNLIAN_PAY);
+			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(BINGTA_XUNLIAN_PAY);
 			PayConfigFileVO payConfigFileVO = list.get(0);
 			String serialNo = getSerialNum();
 			resp.setMerOrderId(serialNo);
@@ -153,7 +153,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 			paychannelTempFlow.setBusinessType("确认绑卡");
 			paychannelTempFlow.setPayChannelCode("xunlian");
 			paychannelTempFlow.setSeriNo(xunlianSignVO.getMerOrderId());
-			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(XUNLIAN_PAY);
+			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(BINGTA_XUNLIAN_PAY);
 			PayConfigFileVO payConfigFileVO = list.get(0);
 			Map<String, String> map = xunlianGetDataService.getSignData(xunlianSignVO, payConfigFileVO);
 
@@ -212,15 +212,26 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 	}
 
 	@Override
-	public CommonResponse<XunlianPayResp> pay(XunlianPaymentVO xunlianPaymentVO) {
+	public CommonResponse<XunlianPayResp> pay(XunlianPaymentVO xunlianPaymentVO,String orderTime) {
 		CommonResponse<XunlianPayResp> common = new CommonResponse<XunlianPayResp>();
 		XunlianPayResp resp = new XunlianPayResp();
 		try {
+			String code = BINGTA_XUNLIAN_PAY;
+			if(StringUtils.isNotEmpty(orderTime)){
+				Date inDate = DateUtils.formatDate(orderTime, DateUtils.STYLE_1);
+				//Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
+				Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
+				int compareTo = inDate.compareTo(sysDate);
+				if(compareTo < 0){
+					code =DAQING_XUNLIAN_PAY;
+				}
+			}
+			logger.info(" xumlian 商户：" + code);
 			// 入流水表
 			PaychannelTempFlow paychannelTempFlow = new PaychannelTempFlow();
 			paychannelTempFlow.setBusinessType("代扣");
 			paychannelTempFlow.setPayChannelCode("xunlian");
-			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(XUNLIAN_PAY);
+			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(code);
 			PayConfigFileVO payConfigFileVO = list.get(0);
 			String serialNo = getSerialNum();
 			resp.setPayOrderId(serialNo);
@@ -287,16 +298,29 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 	}
 
 	@Override
-	public CommonResponse<XunlianQueryPayResp> queryPay(XunlianQueryPayVO xunlianQueryPayVO) {
+	public CommonResponse<XunlianQueryPayResp> queryPay(XunlianQueryPayVO xunlianQueryPayVO,String orderTime) {
 		CommonResponse<XunlianQueryPayResp> common = new CommonResponse<XunlianQueryPayResp>();
 		XunlianQueryPayResp resp = new XunlianQueryPayResp();
 		try {
+			String code = BINGTA_XUNLIAN_PAY;
+			if(StringUtils.isNotEmpty(orderTime)){
+				Date inDate = DateUtils.formatDate(orderTime, DateUtils.STYLE_1);
+				//Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
+				Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
+
+				int compareTo = inDate.compareTo(sysDate);
+				if(compareTo < 0){
+					code =DAQING_XUNLIAN_PAY;
+				}
+			}
+			
+			logger.info(" xumlian 商户：" + code);
 			// 入流水表
 			PaychannelTempFlow paychannelTempFlow = new PaychannelTempFlow();
 			paychannelTempFlow.setBusinessType("代扣查询");
 			paychannelTempFlow.setPayChannelCode("xunlian");
 			paychannelTempFlow.setSeriNo(xunlianQueryPayVO.getMerOrderId());
-			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(XUNLIAN_PAY);
+			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(code);
 			PayConfigFileVO payConfigFileVO = list.get(0);
 			Map<String, String> map = xunlianGetDataService.getQueryPayData(xunlianQueryPayVO, payConfigFileVO);
 			setUrlContent(payConfigFileVO);
@@ -366,7 +390,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 			PaychannelTempFlow paychannelTempFlow = new PaychannelTempFlow();
 			paychannelTempFlow.setBusinessType("取消绑卡");
 			paychannelTempFlow.setPayChannelCode("xunlian");
-			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(XUNLIAN_PAY);
+			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(BINGTA_XUNLIAN_PAY);
 			PayConfigFileVO payConfigFileVO = list.get(0);
 			Map<String, String> map = xunlianGetDataService.getCancelBindData(xunlianCancelBindVO, payConfigFileVO);
 
@@ -422,7 +446,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 			PaychannelTempFlow paychannelTempFlow = new PaychannelTempFlow();
 			paychannelTempFlow.setBusinessType("代付");
 			paychannelTempFlow.setPayChannelCode("xunlian");
-			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(XUNLIAN_PAY);
+			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(BINGTA_XUNLIAN_PAY);
 			PayConfigFileVO payConfigFileVO = list.get(0);
 			String orderId = getSerialNum();
 			xunlianChargeVO.setOrderId(orderId);
@@ -494,7 +518,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 			PaychannelTempFlow paychannelTempFlow = new PaychannelTempFlow();
 			paychannelTempFlow.setBusinessType("代付查询");
 			paychannelTempFlow.setPayChannelCode("xunlian");
-			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(XUNLIAN_PAY);
+			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(BINGTA_XUNLIAN_PAY);
 			PayConfigFileVO payConfigFileVO = list.get(0);
 			Map<String, String> map = xunlianGetDataService.getQueryChargeData(xunlianQueryChargeVO, payConfigFileVO);
 			paychannelTempFlow.setSeriNo(xunlianQueryChargeVO.getOrderId());
@@ -576,7 +600,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 			PaychannelTempFlow paychannelTempFlow = new PaychannelTempFlow();
 			paychannelTempFlow.setBusinessType("代付对公");
 			paychannelTempFlow.setPayChannelCode("xunlian");
-			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(XUNLIAN_PAY);
+			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(BINGTA_XUNLIAN_PAY);
 			PayConfigFileVO payConfigFileVO = list.get(0);
 			String orderId = getSerialNum();
 			xunlianChargeVO.setMerOrderId(orderId);
