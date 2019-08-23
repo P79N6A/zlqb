@@ -5,17 +5,16 @@
     <resultMap id="BaseResultMap" type="com.nyd.msg.entity.SendSmsLog">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="request" jdbcType="VARCHAR" property="request" />
+        <result column="response" jdbcType="VARCHAR" property="response" />
         <result column="phone" jdbcType="VARCHAR" property="phone" />
         <result column="channel" jdbcType="INTEGER" property="channel" />
-    </resultMap>
-
-    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.nyd.msg.entity.SendSmsLog">
-        <result column="request" jdbcType="LONGVARCHAR" property="request" />
-        <result column="response" jdbcType="LONGVARCHAR" property="response" />
+        <result column="msg_code" jdbcType="VARCHAR" property="msgCode" />
+        <result column="msg_id" jdbcType="VARCHAR" property="msgId" />
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, create_time, phone, channel
+        id, create_time, request, response, phone, channel, msg_code, msg_id
     </sql>
 
     <sql id="Base_Where_Clause">
@@ -23,47 +22,47 @@
             <if test="createTime != null">
                 and create_time = #{createTime,jdbcType=TIMESTAMP}
             </if>
+            <if test="request != null">
+                and request = #{request,jdbcType=VARCHAR}
+            </if>
+            <if test="response != null">
+                and response = #{response,jdbcType=VARCHAR}
+            </if>
             <if test="phone != null">
                 and phone = #{phone,jdbcType=VARCHAR}
             </if>
             <if test="channel != null">
                 and channel = #{channel,jdbcType=INTEGER}
             </if>
-            <if test="request != null">
-                and request = #{request,jdbcType=LONGVARCHAR}
+            <if test="msgCode != null">
+                and msg_code = #{msgCode,jdbcType=VARCHAR}
             </if>
-            <if test="response != null">
-                and response = #{response,jdbcType=LONGVARCHAR}
+            <if test="msgId != null">
+                and msg_id = #{msgId,jdbcType=VARCHAR}
             </if>
         </where>
     </sql>
 
-    <sql id="Blob_Column_List">
-        request, response
-    </sql>
-
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
-        ,
-        <include refid="Blob_Column_List" />
         from send_sms_log
         where id = #{id,jdbcType=BIGINT}
     </select>
 
     <select id="selectByCondistion" resultMap="BaseResultMap">
-        select id, create_time, phone, channel, request, response
+        select id, create_time, request, response, phone, channel, msg_code, msg_id
         from send_sms_log
         <include refid="Base_Where_Clause" />
     </select>
 
     <insert id="insert" parameterType="com.nyd.msg.entity.SendSmsLog">
-        insert into send_sms_log (id, create_time, phone,
-        channel, request, response
-        )
-        values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{phone,jdbcType=VARCHAR},
-        #{channel,jdbcType=INTEGER}, #{request,jdbcType=LONGVARCHAR}, #{response,jdbcType=LONGVARCHAR}
-        )
+        insert into send_sms_log (id, create_time, request,
+        response, phone, channel,
+        msg_code, msg_id)
+        values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{request,jdbcType=VARCHAR},
+        #{response,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{channel,jdbcType=INTEGER},
+        #{msgCode,jdbcType=VARCHAR}, #{msgId,jdbcType=VARCHAR})
     </insert>
 
     <insert id="insertSelective" parameterType="com.nyd.msg.entity.SendSmsLog">
@@ -75,17 +74,23 @@
             <if test="createTime != null">
                 create_time,
             </if>
+            <if test="request != null">
+                request,
+            </if>
+            <if test="response != null">
+                response,
+            </if>
             <if test="phone != null">
                 phone,
             </if>
             <if test="channel != null">
                 channel,
             </if>
-            <if test="request != null">
-                request,
+            <if test="msgCode != null">
+                msg_code,
             </if>
-            <if test="response != null">
-                response,
+            <if test="msgId != null">
+                msg_id,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -95,17 +100,23 @@
             <if test="createTime != null">
                 #{createTime,jdbcType=TIMESTAMP},
             </if>
+            <if test="request != null">
+                #{request,jdbcType=VARCHAR},
+            </if>
+            <if test="response != null">
+                #{response,jdbcType=VARCHAR},
+            </if>
             <if test="phone != null">
                 #{phone,jdbcType=VARCHAR},
             </if>
             <if test="channel != null">
                 #{channel,jdbcType=INTEGER},
             </if>
-            <if test="request != null">
-                #{request,jdbcType=LONGVARCHAR},
+            <if test="msgCode != null">
+                #{msgCode,jdbcType=VARCHAR},
             </if>
-            <if test="response != null">
-                #{response,jdbcType=LONGVARCHAR},
+            <if test="msgId != null">
+                #{msgId,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -116,37 +127,37 @@
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=TIMESTAMP},
             </if>
+            <if test="request != null">
+                request = #{request,jdbcType=VARCHAR},
+            </if>
+            <if test="response != null">
+                response = #{response,jdbcType=VARCHAR},
+            </if>
             <if test="phone != null">
                 phone = #{phone,jdbcType=VARCHAR},
             </if>
             <if test="channel != null">
                 channel = #{channel,jdbcType=INTEGER},
             </if>
-            <if test="request != null">
-                request = #{request,jdbcType=LONGVARCHAR},
+            <if test="msgCode != null">
+                msg_code = #{msgCode,jdbcType=VARCHAR},
             </if>
-            <if test="response != null">
-                response = #{response,jdbcType=LONGVARCHAR},
+            <if test="msgId != null">
+                msg_id = #{msgId,jdbcType=VARCHAR},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
-    </update>
-
-    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.nyd.msg.entity.SendSmsLog">
-        update send_sms_log
-        set create_time = #{createTime,jdbcType=TIMESTAMP},
-        phone = #{phone,jdbcType=VARCHAR},
-        channel = #{channel,jdbcType=INTEGER},
-        request = #{request,jdbcType=LONGVARCHAR},
-        response = #{response,jdbcType=LONGVARCHAR}
         where id = #{id,jdbcType=BIGINT}
     </update>
 
     <update id="updateByPrimaryKey" parameterType="com.nyd.msg.entity.SendSmsLog">
         update send_sms_log
         set create_time = #{createTime,jdbcType=TIMESTAMP},
+        request = #{request,jdbcType=VARCHAR},
+        response = #{response,jdbcType=VARCHAR},
         phone = #{phone,jdbcType=VARCHAR},
-        channel = #{channel,jdbcType=INTEGER}
+        channel = #{channel,jdbcType=INTEGER},
+        msg_code = #{msgCode,jdbcType=VARCHAR},
+        msg_id = #{msgId,jdbcType=VARCHAR}
         where id = #{id,jdbcType=BIGINT}
     </update>
 

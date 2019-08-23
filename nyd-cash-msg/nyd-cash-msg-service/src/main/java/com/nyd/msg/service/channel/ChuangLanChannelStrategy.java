@@ -1,7 +1,9 @@
 package com.nyd.msg.service.channel;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.nyd.msg.dao.mapper.SendSmsLogMapper;
+import com.nyd.msg.service.channel.model.ChuangLanResponseDto;
 import com.nyd.msg.service.code.ChannelEnum;
 import com.nyd.msg.service.impl.SendSmsService;
 import com.nyd.msg.service.utils.Message;
@@ -47,6 +49,11 @@ public class ChuangLanChannelStrategy implements ChannelStrategy{
         JSONObject js = (JSONObject) JSONObject.toJSON(map);
         String response = sendSmsByPost(sendUrl,js.toString());
         log.info("创蓝返回日志 = {}" , response);
+        ChuangLanResponseDto chuangLanResponseDto = JSON.parseObject(response,ChuangLanResponseDto.class);
+        if (chuangLanResponseDto != null){
+            message.setMsgId(chuangLanResponseDto.getMsgId());
+            message.setMsgCode(chuangLanResponseDto.getCode());
+        }
         sendSmsService.saveSendSmsLog(message,response, Integer.valueOf(ChannelEnum.CHUANG_LAN.getCode()));
 
         return true;

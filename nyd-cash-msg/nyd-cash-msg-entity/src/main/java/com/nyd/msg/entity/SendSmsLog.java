@@ -51,6 +51,20 @@ public class SendSmsLog implements Serializable {
      * 渠道
      */
     private int channel;
+
+
+    /**
+     * 第三方返回短信code
+     */
+    private String msgCode;
+    /**
+     * 第三方返回短信msgId
+     */
+    private String msgId;
+
+
+
+
 }
 
 

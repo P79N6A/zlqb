@@ -542,10 +542,12 @@ public class SendSmsService implements ISendSmsService {
 	public void saveSendSmsLog(Message message,String response,int channel){
 		SendSmsLog sendSmsLog = new SendSmsLog();
 		sendSmsLog.setCreateTime(new Date());
-		sendSmsLog.setRequest(message.toString());
+		sendSmsLog.setRequest(JSON.toJSONString(message));
 		sendSmsLog.setChannel(channel);
 		sendSmsLog.setResponse(response);
 		sendSmsLog.setPhone(message.getCellPhones());
+		sendSmsLog.setMsgCode(message.getMsgCode());
+		sendSmsLog.setMsgId(message.getMsgId());
 		sendSmsLogMapper.insert(sendSmsLog);
 	}
 
