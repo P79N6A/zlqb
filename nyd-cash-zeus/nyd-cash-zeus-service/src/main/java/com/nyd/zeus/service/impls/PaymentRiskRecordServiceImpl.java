@@ -390,6 +390,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 		BigDecimal paidMoney = new BigDecimal(0d);
 		BigDecimal remainMoney = paymentRiskRecord.getRemainMoney();
 		BigDecimal backupMoney = new BigDecimal(0d);
+		BigDecimal recentMoney = BigDecimal.ZERO;
 
 		// 请求扣款
 		// 本次请求是否异常
@@ -420,6 +421,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			PaymentRiskRequestCommon request = JSONObject.parseObject(
 					paymentRiskRecord.getRequestText(),
 					PaymentRiskRequestCommon.class);
+			recentMoney = thisMoney;
 			PaymentRiskRecordPayResult result = pay(request, thisMoney);
 			String resultStatus = result.getStatus();
 			// 统一支付入口 结果 ↑↑↑↑↑
@@ -456,6 +458,7 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 				PaymentRiskRequestCommon request = JSONObject.parseObject(
 						paymentRiskRecord.getRequestText(),
 						PaymentRiskRequestCommon.class);
+				recentMoney = thisMoney;
 				PaymentRiskRecordPayResult result = pay(request, thisMoney);
 				String resultStatus = result.getStatus();
 				// 统一支付入口 结果 ↑↑↑↑↑
@@ -491,6 +494,11 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			paymentRiskRecord.setStatus(1);
 		}
 		paymentRiskRecord.setUpdateTime(new SimpleDateFormat(STYLE_1)
+				.format(new Date()));
+		// 以下字段仅为异步处理使用，用于处理仅会执行一次交易
+		paymentRiskRecord.setRecentMoney(recentMoney);
+		paymentRiskRecord.setFailNum(0);
+		paymentRiskRecord.setDealTime(new SimpleDateFormat(STYLE_1)
 				.format(new Date()));
 	}
 
