@@ -185,6 +185,8 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 
 			}
 
+			// 以下字段仅为异步处理使用，用于处理仅会执行一次交易(在next前保存一次，因为next可能再次执行)
+			paymentRiskRecord.setRecentMoney(vo.getMoney());
 			// 如果失败的话，则需要继续连续扣款处理
 			if (paymentRiskRecord.getStatus() == 0) {
 				nextPay(paymentRiskRecord, vo);
@@ -193,7 +195,6 @@ public class PaymentRiskRecordServiceImpl implements PaymentRiskRecordService {
 			paymentRiskRecord.setUpdateTime(new SimpleDateFormat(STYLE_1)
 					.format(new Date()));
 			// 以下字段仅为异步处理使用，用于处理仅会执行一次交易
-			paymentRiskRecord.setRecentMoney(vo.getMoney());
 			paymentRiskRecord.setFailNum(0);
 			paymentRiskRecord.setDealTime(new SimpleDateFormat(STYLE_1)
 					.format(new Date()));
