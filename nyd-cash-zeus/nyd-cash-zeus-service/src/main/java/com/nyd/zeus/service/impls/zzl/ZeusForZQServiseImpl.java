@@ -124,4 +124,17 @@ public class ZeusForZQServiseImpl implements ZeusForZQServise{
 		}
 		return pageResponse;
 	}
+
+
+	@Override
+	public JSONObject checkBillProduct(String orderId) throws Exception {
+		 String billProductSql = "select * from t_bill_product where order_no = '"+orderId+"'";
+		 List<JSONObject> list = zeusSqlService.query(billProductSql);
+		 if(null != list && list.size()>0){
+			 JSONObject j = list.get(0);
+			 return j;
+		 }
+		return null;
+	}
+	
 }

@@ -18,4 +18,7 @@ public interface ZeusForZQServise {
 	CommonResponse<JSONObject> getBillProduct(String orderId) throws Exception;
 
 	PagedResponse<List<BillRepayVo>> getBillRepayList(BillRepayListVO vo);
+	
+	
+	JSONObject checkBillProduct(String orderId) throws Exception;
 }
