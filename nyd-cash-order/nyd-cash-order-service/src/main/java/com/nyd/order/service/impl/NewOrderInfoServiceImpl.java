@@ -1135,6 +1135,13 @@ public class NewOrderInfoServiceImpl implements NewOrderInfoService {
                     xl.setName(userInfo.getRealName());
                     xl.setProtocolId(bankDetail.getProtocolId());
                     paymentRiskRequest.setChannelJson(JSONObject.toJSONString(xl));
+                }else if(!ChkUtil.isEmpty(channelCode) && "xinsheng".equals(channelCode)) {
+                    PaymentRiskRequestXinsheng xs = new PaymentRiskRequestXinsheng();
+                    xs.setAmount(String.valueOf(memberFee));
+                    xs.setBizProtocolNo(bankDetail.getBizProtocolNo());
+                    xs.setMerUserId(borrowConfirmDto.getUserId());
+                    xs.setPayProtocolNo(bankDetail.getPayProtocolNo());
+                    paymentRiskRequest.setChannelJson(JSONObject.toJSONString(xs));
                 }else if(!ChkUtil.isEmpty(channelCode) && "liandong".equals(channelCode)) {
                     PaymentRiskRequestLiandong xs = new PaymentRiskRequestLiandong();
                 	xs.setAmount(String.valueOf(memberFee));
