@@ -247,7 +247,7 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 				liandongQueryChargeVO.setMer_date(entity.getReal_refund_date());
 				LOGGER.info("联动退款查询请求参数:"+JSONObject.toJSONString(liandongQueryChargeVO));
 				com.nyd.zeus.model.common.CommonResponse<LiandongChargeResp> result =liandongPayPaymentService.queryPay(liandongQueryChargeVO);
-				LOGGER.info("联动退款查询返回参数:"+JSONObject.toJSONString(liandongQueryChargeVO));
+				LOGGER.info("联动退款查询返回参数:"+JSONObject.toJSONString(result));
 				LiandongChargeResp liandongResp = result.getData();
 				//0001 处理中   0000请求成功（不代表交易成功）
 				String resultCode = liandongResp.getRet_code();
