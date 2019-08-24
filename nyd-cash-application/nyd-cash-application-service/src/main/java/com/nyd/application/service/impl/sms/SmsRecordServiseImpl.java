@@ -204,16 +204,18 @@ public class SmsRecordServiseImpl implements SmsRecordServise {
 			}
 			StringBuffer sb  = new StringBuffer();
 			sb.append("SELECT a.name, a.tel AS tel,");
-			sb.append(" (SELECT COUNT(*) FROM t_carry_calls WHERE carry_id = '"+basicId+"' AND peer_number = a.tel) AS counts,");
-			sb.append(" (SELECT IFNULL(sum(duration),0) FROM t_carry_calls WHERE carry_id = '"+basicId+"' AND peer_number = a.tel) AS totalTime,");
-			sb.append(" IFNULL((SELECT time FROM t_carry_calls WHERE carry_id = '"+basicId+"' AND peer_number = a.tel ORDER BY create_time DESC LIMIT 0,1),' ') AS createTime");
-			sb.append(" FROM (select * from t_address_book  WHERE user_id = '"+ request.getUserId() +"' ");
+			String str_counts=" and (peer_number = a.ytel or peer_number = a.tel) ";
+
+			sb.append(" (SELECT COUNT(*) FROM t_carry_calls WHERE carry_id = '"+basicId+"' "+str_counts+") AS counts,");
+			sb.append(" (SELECT IFNULL(sum(duration),0) FROM t_carry_calls WHERE carry_id = '"+basicId+"'  "+str_counts+") AS totalTime,");
+			sb.append(" IFNULL((SELECT time FROM t_carry_calls WHERE carry_id = '"+basicId+"' "+str_counts+" ORDER BY create_time DESC LIMIT 0,1),' ') AS createTime");
+			sb.append(" FROM (select case when length(t.tel)>=11 then INSERT(t.tel,length(t.tel)-7,4,'****') when length(t.tel)=7 then INSERT(t.tel,length(t.tel)-6,3,'***') else t.tel end ytel, t.* from t_address_book t  WHERE t.user_id = '"+ request.getUserId() +"' ");
 			if (StringUtils.isNotBlank(request.getCallNo())){
-				sb.append(" and (tel = '" + request.getCallNo() +"' or tel = '"+phone+"') ");
+				sb.append(" and (t.tel = '" + request.getCallNo() +"' or t.tel = '"+phone+"') ");
 
 			}
 			if (StringUtils.isNotBlank(request.getName())){
-				sb.append(" and name = '" + request.getName() + "' ");
+				sb.append(" and t.name = '" + request.getName() + "' ");
 			}
             sb.append(" ) a");
 			sb.append(" order by counts desc");

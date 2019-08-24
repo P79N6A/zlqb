@@ -98,10 +98,16 @@ public class OrderForZLQServiseImpl implements OrderForZLQServise{
 				buff.append(" and  od.source='").append(orderCheckQuery.getAppName()).append("'");
 			}
 			if (StringUtils.isNotBlank(orderCheckQuery.getBeginTime())) {
-				buff.append(" and xo.assign_time>='").append(orderCheckQuery.getBeginTime() + " 00:00:00").append("'");
+				buff.append(" and xo.assign_time >='").append(orderCheckQuery.getBeginTime()).append("'");
 			}
 			if (StringUtils.isNotBlank(orderCheckQuery.getEndTime())) {
-				buff.append(" and xo.assign_time<").append(orderCheckQuery.getEndTime() + " 23:59:59").append("'");
+				buff.append(" and xo.assign_time <='").append(orderCheckQuery.getEndTime()).append("'");
+			}
+			if (StringUtils.isNotBlank(orderCheckQuery.getIntoTimeStart())) {
+				buff.append(" and xo.create_time >='").append(orderCheckQuery.getIntoTimeStart()).append("'");
+			}
+			if (StringUtils.isNotBlank(orderCheckQuery.getIntoTimeEnd())) {
+				buff.append(" and xo.create_time <='").append(orderCheckQuery.getIntoTimeEnd()).append("'");
 			}
 			buff.append(" ORDER BY xo.assign_time");
 

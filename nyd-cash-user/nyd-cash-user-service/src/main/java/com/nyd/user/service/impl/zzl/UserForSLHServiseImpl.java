@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import com.nyd.user.model.common.CommonResponse;
+import com.nyd.user.model.vo.UserBankVo;
 import com.tasfe.framework.support.model.ResponseData;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -115,4 +117,31 @@ public class UserForSLHServiseImpl implements UserForSLHServise{
 		}
 	}
 
+	/**
+	 * 根据用户id、银行卡类型获取绑卡信息
+	 * @param userId
+	 * @param soure
+	 * @return ResponseData<UserBankInfo>
+	 */
+	public CommonResponse<List<UserBankVo>> getUserBankListByUserIdAndSoure(String userId, String soure) {
+		CommonResponse<List<UserBankVo>> responseData = new CommonResponse<List<UserBankVo>>();
+		try {
+			String sql="select * from t_user_bank where delete_flag=0 and user_id = '"+userId+"'";
+			if(StringUtil.isNotEmpty(soure)){
+				sql+=" and soure = '"+soure+"' ";
+			}
+			sql+=" order by create_time desc ";
+			List<UserBankVo> data =new ArrayList<>();
+			data = userSqlService.queryT(sql, UserBankVo.class);
+			responseData.setSuccess(true);
+			responseData.setMsg("查询成功");
+			responseData.setData(data);
+			return responseData;
+		}catch (Exception e){
+			responseData.setSuccess(false);
+			responseData.setMsg("系统异常，请联系管理员");
+			log.error("UserForSLHServise getUserBankListByUserIdAndSoure e="+e.getMessage());
+			return responseData;
+		}
+	}
 }

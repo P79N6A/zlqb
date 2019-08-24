@@ -191,7 +191,49 @@ public class ZeusForGYTServiseImpl implements ZeusForGYTServise{
 		}
 		return response;
 	}
-
+	/**
+	 * 查询信审考勤信息列表
+	 * @param list
+	 * @return
+	 */
+	public CommonResponse<List<TimeAttendance>> queryTimeAttendanceList(List<TimeAttendance> list){
+		CommonResponse<List<TimeAttendance>> response=new CommonResponse<List<TimeAttendance>>();
+		try{
+			if(list==null||list==null){
+				response.setSuccess(true);
+				response.setMsg("查询成功");
+				return response;
+			}
+			//如果没有贷审人员的考勤信息，则设置默认考勤信息全部是出勤，如果有考勤信息，则返回查询到的考勤信息
+			for(TimeAttendance t:list){
+				AttendanceRequest request=new AttendanceRequest();
+				request.setSysUserId(request.getSysUserId());
+				List<TimeAttendance> tlist = timeAttendanceMapper.queryList(request);
+				if(tlist!=null&&tlist.size()!=0){
+					t=tlist.get(0);
+				}else{
+					t.setFriday(0);
+					t.setMonday(0);
+					t.setThursday(0);
+					t.setTuesday(0);
+					t.setWednesday(0);
+					t.setSaturday(1);
+					t.setSunday(1);
+					t.setStatus(0);
+				}
+			}
+			response.setSuccess(true);
+			response.setMsg("查询成功");
+			response.setData(list);
+			return response;
+		}catch (Exception e){
+			LOGGER.error("查询信审考勤信息列表异常 e="+e.getMessage());
+			response.setSuccess(false);
+			response.setMsg("查询异常");
+			response.setData(list);
+			return response;
+		}
+	}
 	private Map<String, Object> objectToMap(Object obj) throws Exception {
 		if(obj == null){
 			return null;

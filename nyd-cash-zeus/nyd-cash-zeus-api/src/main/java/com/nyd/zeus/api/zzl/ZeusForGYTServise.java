@@ -30,4 +30,11 @@ public interface ZeusForGYTServise {
 	 */
 	public CommonResponse<List<TimeAttendance>> getNowAttendance(List<TimeAttendance> list);
 
+	/**
+	 * 查询信审考勤信息列表
+	 * @param list
+	 * @return
+	 */
+	public CommonResponse<List<TimeAttendance>> queryTimeAttendanceList(List<TimeAttendance> list);
+
 }

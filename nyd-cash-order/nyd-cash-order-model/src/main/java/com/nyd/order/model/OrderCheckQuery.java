@@ -42,6 +42,11 @@ public class OrderCheckQuery extends PageCommon{
 	@ApiModelProperty(value="分配结束时间")
     private String endTime;
 
+    @ApiModelProperty(value="进入开始时间")
+	private String intoTimeStart;
+
+    @ApiModelProperty(value="进入结束时间")
+	private String intoTimeEnd;
     @ApiModelProperty(value="审核状态 默认全部 1待审核 2审核通过 3审核拒绝")
 	private Integer auditStatus;
     //分配id
