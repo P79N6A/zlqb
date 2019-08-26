@@ -229,7 +229,10 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 				if(StringUtils.isBlank(submitTime)){
 					return status;
 				}
-			   if(difCurrentTime(submitTime)){
+				LOGGER.info("新生提交时间："+submitTime);
+				Boolean difFlag = difCurrentTime(submitTime);
+				LOGGER.info("新生时间差返boolean："+difFlag);
+			   if(difFlag){
 				   return status;
 			   }
 				//新生代付
@@ -237,7 +240,9 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 				payReq.setMerOrderId(entity.getSerialNum());
 				//原商户订单请求时间 格式：YYYYMMDD
 				payReq.setSubmitTime(!ChkUtil.isEmpty(entity.getSubmitTime()) ? entity.getSubmitTime().substring(0,8) : null);
+				LOGGER.info("新生代付查询请求参数："+JSONObject.toJSONString(payReq));
 				com.nyd.zeus.model.common.CommonResponse<HnaPayQueryPayResp> result = hnaPayPaymentService.queryPay(payReq);
+				LOGGER.info("新生代付查询返回参数："+JSONObject.toJSONString(result));
 				if(result.isSuccess()){
 					HnaPayQueryPayResp payResp = result.getData();
 					if("0000".equals(payResp.getResultCode()) && "1".equals(payResp.getOrderStatus())){//成功
