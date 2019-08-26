@@ -334,16 +334,16 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 		return response;
 	}
 	
-	private  Boolean difCurrentTime(String submitTime){
+	private   Boolean difCurrentTime(String submitTime){
 		submitTime = submitTime.substring(0,14);
 		System.out.println(submitTime);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		try {
 			Date submitDate = sdf.parse(submitTime);
 			Calendar c1 = Calendar.getInstance();
 	        c1.setTime(submitDate);
-	        c1.add(Calendar.MINUTE, 60);
-	        System.out.println("60分钟之后时间："+sdf.format(c1.getTime()));
+	        c1.add(Calendar.HOUR, 1);
+	        System.out.println("小时之后时间："+sdf.format(c1.getTime()));
 	        Date d2 = new Date();
 	        Calendar c2 = Calendar.getInstance();
 			c2.setTime(d2);
@@ -358,6 +358,5 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 		return true;
 	}
 
-	
 	
 }
