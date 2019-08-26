@@ -370,8 +370,9 @@ public class BankInfoServiceImpl implements BankInfoService,UserBankContract {
 		String sql = "select * from channel_bank_list where status = 1 and ratio > 0 and bank_name = '%s'";
 		List<JSONObject> list = userSqlService.query(String.format(sql, info.getBankName()));
 		
-		if (CollectionUtils.isEmpty(list))
+		if (CollectionUtils.isEmpty(list)){
 			res = (ResponseData<ChannelBankData>) ResponseData.error("该银行没有支持渠道");
+		}
 
 		List<Paychannel> limitList = new ArrayList<>();
 		int startIndex = 0;

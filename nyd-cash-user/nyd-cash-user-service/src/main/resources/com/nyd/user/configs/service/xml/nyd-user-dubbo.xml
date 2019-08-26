@@ -29,6 +29,8 @@
 	<!--银码头数据同步到侬要贷所提供的接口-->
 	<dubbo:service ref="getYmtUserDataService" interface="com.nyd.user.api.GetYmtUserDataService" protocol="dubbo" />
 	<dubbo:service ref="userStepContractNyd" interface="com.nyd.user.api.UserStepContract" protocol="dubbo" />
+	<!-- 引流渠道 -->
+	<dubbo:service ref="drainageChannelService" interface="com.nyd.user.api.DrainageChannelService" protocol="dubbo" />
 
     <dubbo:service ref="userForGYTServise" interface="com.nyd.user.api.zzl.UserForGYTServise" protocol="dubbo" />
 	<dubbo:service ref="userForZQServise" interface="com.nyd.user.api.zzl.UserForZQServise" protocol="dubbo" />

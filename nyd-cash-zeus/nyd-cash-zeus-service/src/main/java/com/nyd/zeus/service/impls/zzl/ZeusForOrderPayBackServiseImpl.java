@@ -319,17 +319,18 @@ public class ZeusForOrderPayBackServiseImpl implements
 		String sql = "select * from t_paychannel_temp_ratio";
 		List<JSONObject> list = zeusSqlService.query(sql);
 
-		String channel = "changjie";
-		if (CollectionUtils.isEmpty(list))
+		String channel = "liandong";
+		if (CollectionUtils.isEmpty(list)){
 			return channel;
-
+		}
 		List<Paychannel> limitList = new ArrayList<>();
 		int startIndex = 0;
 		for (JSONObject json : list) {
 			try {
 				int ratio = json.getInteger("ratio");
-				if (ratio <= 0)
+				if (ratio <= 0){
 					continue;
+				}
 				String code = json.getString("code");
 				Paychannel channelObj = new ZeusForOrderPayBackServiseImpl().new Paychannel();
 				channelObj.code = code;
@@ -346,8 +347,9 @@ public class ZeusForOrderPayBackServiseImpl implements
 		int number = 1 + r.nextInt(startIndex);
 		Optional<Paychannel> opt = limitList
 				.stream()
-				.filter(channelObj -> channelObj.begin < number
-						&& number <= channelObj.end).findFirst();
+				.filter(channelObj ->
+						channelObj.begin < number && number <= channelObj.end
+				).findFirst();
 		if (opt.isPresent())
 			channel = opt.get().code;
 		return channel;

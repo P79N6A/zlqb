@@ -227,6 +227,7 @@ public class OrderForZLQServiseImpl implements OrderForZLQServise{
 					bool=true;
 				}
 			}else if(orderinfo.getMark().equals("2")) {
+				// 3天改8天
 				String sql ="select * from  t_order  where  order_status='20'  and order_no='"+orderinfo.getOrderNo()+"'";
 				List<OrderInfo> orderList=orderSqlService.queryT(sql, OrderInfo.class);
 				if(orderList!=null &&orderList.size()>0) {

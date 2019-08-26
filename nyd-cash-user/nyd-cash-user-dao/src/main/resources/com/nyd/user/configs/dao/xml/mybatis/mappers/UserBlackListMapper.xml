@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.user.mapper.UserBlackListMapper">
+    
+    <resultMap id="BaseResultMap" type="com.nyd.user.entity.UserBlackList">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="create_name" jdbcType="VARCHAR" property="createName" />
+        <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, phone, create_time,  state , create_name, remarks
+    </sql>
+    
+    <sql id="Base_Where_Clause">
+        <where>
+            <if test="phone != null">
+                 and phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                 and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="state != null">
+                 and  state  = #{state,jdbcType=INTEGER}
+            </if>
+            <if test="createName != null">
+                 and create_name = #{createName,jdbcType=VARCHAR}
+            </if>
+            <if test="remarks != null">
+                 and remarks = #{remarks,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </sql>
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_user_black_list
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    
+    <select id="selectByCondistion" resultMap="BaseResultMap">
+        select id, phone, create_time,  state , create_name, remarks
+        from t_user_black_list
+        <include refid="Base_Where_Clause" />
+    </select>
+    
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.nyd.user.entity.UserBlackList" useGeneratedKeys="true">
+        insert into t_user_black_list (phone, create_time,  state , 
+            create_name, remarks)
+        values (#{phone,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER}, 
+            #{createName,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR})
+    </insert>
+    
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.nyd.user.entity.UserBlackList" useGeneratedKeys="true">
+        insert into t_user_black_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="state != null">
+                 state ,
+            </if>
+            <if test="createName != null">
+                create_name,
+            </if>
+            <if test="remarks != null">
+                remarks,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=INTEGER},
+            </if>
+            <if test="createName != null">
+                #{createName,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.nyd.user.entity.UserBlackList">
+        update t_user_black_list
+        <set>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="state != null">
+                 state  = #{state,jdbcType=INTEGER},
+            </if>
+            <if test="createName != null">
+                create_name = #{createName,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.nyd.user.entity.UserBlackList">
+        update t_user_black_list
+        set phone = #{phone,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+             state  = #{state,jdbcType=INTEGER},
+            create_name = #{createName,jdbcType=VARCHAR},
+            remarks = #{remarks,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from t_user_black_list
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+</mapper>

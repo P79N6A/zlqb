@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nyd.user.dao.mapper.UserDrainageChannelMapper">
+    
+    <resultMap id="BaseResultMap" type="com.nyd.user.entity.UserDrainageChannel">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="drainage_channel_name" jdbcType="VARCHAR" property="drainageChannelName" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="create_man" jdbcType="VARCHAR" property="createMan" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="update_man" jdbcType="VARCHAR" property="updateMan" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        id, drainage_channel_name,  state , create_time, create_man, update_time, update_man
+    </sql>
+    
+    <sql id="Base_Where_Clause">
+        <where>
+            <if test="drainageChannelName != null">
+                 and drainage_channel_name = #{drainageChannelName,jdbcType=VARCHAR}
+            </if>
+            <if test="state != null">
+                 and  state  = #{state,jdbcType=INTEGER}
+            </if>
+            <if test="createTime != null">
+                 and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createMan != null">
+                 and create_man = #{createMan,jdbcType=VARCHAR}
+            </if>
+            <if test="updateTime != null">
+                 and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateMan != null">
+                 and update_man = #{updateMan,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </sql>
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select 
+        <include refid="Base_Column_List" />
+        from t_user_drainage_channel
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="getUserDrainageChannelByDrainageChannelName" parameterType="String" resultMap="BaseResultMap">
+        select
+        drainage_channel_name, state
+        from t_user_drainage_channel
+        where drainage_channel_name = #{drainageChannelName}
+    </select>
+    
+    <select id="selectByCondistion" resultMap="BaseResultMap">
+        select id, drainage_channel_name,  state , create_time, create_man, update_time, 
+        update_man
+        from t_user_drainage_channel
+        <include refid="Base_Where_Clause" />
+    </select>
+    
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.nyd.user.entity.UserDrainageChannel" useGeneratedKeys="true">
+        insert into t_user_drainage_channel (drainage_channel_name,  state , create_time, 
+            create_man, update_time, update_man
+            )
+        values (#{drainageChannelName,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+            #{createMan,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateMan,jdbcType=VARCHAR}
+            )
+    </insert>
+    
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.nyd.user.entity.UserDrainageChannel" useGeneratedKeys="true">
+        insert into t_user_drainage_channel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="drainageChannelName != null">
+                drainage_channel_name,
+            </if>
+            <if test="state != null">
+                 state ,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createMan != null">
+                create_man,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateMan != null">
+                update_man,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="drainageChannelName != null">
+                #{drainageChannelName,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createMan != null">
+                #{createMan,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateMan != null">
+                #{updateMan,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="com.nyd.user.entity.UserDrainageChannel">
+        update t_user_drainage_channel
+        <set>
+            <if test="drainageChannelName != null">
+                drainage_channel_name = #{drainageChannelName,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                 state  = #{state,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createMan != null">
+                create_man = #{createMan,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateMan != null">
+                update_man = #{updateMan,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="com.nyd.user.entity.UserDrainageChannel">
+        update t_user_drainage_channel
+        set drainage_channel_name = #{drainageChannelName,jdbcType=VARCHAR},
+             state  = #{state,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            create_man = #{createMan,jdbcType=VARCHAR},
+            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            update_man = #{updateMan,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_user_drainage_channel
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+</mapper>

@@ -73,6 +73,7 @@
            	    <value>com/nyd/user/configs/dao/xml/mybatis/mappers/RefundOrderMapper.xml</value>           	           
            	    <value>com/nyd/user/configs/dao/xml/mybatis/mappers/AccountResetMapper.xml</value>           	           
            	    <value>com/nyd/user/configs/dao/xml/mybatis/mappers/GeetestConfigMapper.xml</value>
+           	    <value>com/nyd/user/configs/dao/xml/mybatis/mappers/UserDrainageChannelMapper.xml</value>
             </array>
         </property>
     </bean>
