@@ -694,6 +694,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 	public static void main(String[] args) throws ParseException {
 
 		Date inDate = new Date(Long.valueOf("1566792015000"));
+		System.out.println(inDate);
 		Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
 		//Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
 		int compareTo = inDate.compareTo(sysDate);
