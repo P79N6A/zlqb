@@ -342,8 +342,8 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 			Date submitDate = sdf.parse(submitTime);
 			Calendar c1 = Calendar.getInstance();
 	        c1.setTime(submitDate);
-	        c1.add(Calendar.MINUTE, 10);
-	        System.out.println("10分钟之后时间："+sdf.format(c1.getTime()));
+	        c1.add(Calendar.MINUTE, 60);
+	        System.out.println("60分钟之后时间："+sdf.format(c1.getTime()));
 	        Date d2 = new Date();
 	        Calendar c2 = Calendar.getInstance();
 			c2.setTime(d2);
