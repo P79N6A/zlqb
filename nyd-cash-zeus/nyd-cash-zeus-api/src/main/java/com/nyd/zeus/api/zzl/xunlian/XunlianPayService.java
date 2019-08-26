@@ -66,14 +66,14 @@ public interface XunlianPayService {
 	 * @param identifyauthVO
 	 * @return
 	 */
-	public CommonResponse<XunlianChargeResp> charge(XunlianChargeVO xunlianChargeVO);
+	public CommonResponse<XunlianChargeResp> charge(XunlianChargeVO xunlianChargeVO,String orderTime);
 	
 	/**
 	 * 代付接口
 	 * @param identifyauthVO
 	 * @return
 	 */
-	public CommonResponse<XunlianQueryChargeResp> queryCharge(XunlianQueryChargeVO xunlianQueryChargeVO);
+	public CommonResponse<XunlianQueryChargeResp> queryCharge(XunlianQueryChargeVO xunlianQueryChargeVO,String orderTime);
 	
 	/**
 	 * 代付接口
