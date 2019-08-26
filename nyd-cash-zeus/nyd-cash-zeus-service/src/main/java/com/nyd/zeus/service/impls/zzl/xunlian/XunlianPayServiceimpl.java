@@ -438,7 +438,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 	}
 
 	@Override
-	public CommonResponse<XunlianChargeResp> charge(XunlianChargeVO xunlianChargeVO) {
+	public CommonResponse<XunlianChargeResp> charge(XunlianChargeVO xunlianChargeVO,String orderTime) {
 		CommonResponse<XunlianChargeResp> common = new CommonResponse<XunlianChargeResp>();
 		XunlianChargeResp resp = new XunlianChargeResp();
 		try {
@@ -510,7 +510,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 	}
 
 	@Override
-	public CommonResponse<XunlianQueryChargeResp> queryCharge(XunlianQueryChargeVO xunlianQueryChargeVO) {
+	public CommonResponse<XunlianQueryChargeResp> queryCharge(XunlianQueryChargeVO xunlianQueryChargeVO,String orderTime) {
 		CommonResponse<XunlianQueryChargeResp> common = new CommonResponse<XunlianQueryChargeResp>();
 		XunlianQueryChargeResp resp = new XunlianQueryChargeResp();
 		try {
