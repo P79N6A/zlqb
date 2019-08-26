@@ -219,8 +219,8 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 			String code = BINGTA_XUNLIAN_PAY;
 			if(StringUtils.isNotEmpty(orderTime)){
 				Date inDate = DateUtils.formatDate(orderTime, DateUtils.STYLE_1);
-				//Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
-				Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
+				Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
+				//Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
 				int compareTo = inDate.compareTo(sysDate);
 				if(compareTo < 0){
 					code =DAQING_XUNLIAN_PAY;
@@ -305,8 +305,8 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 			String code = BINGTA_XUNLIAN_PAY;
 			if(StringUtils.isNotEmpty(orderTime)){
 				Date inDate = DateUtils.formatDate(orderTime, DateUtils.STYLE_1);
-				//Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
-				Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
+				Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
+				//Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
 
 				int compareTo = inDate.compareTo(sysDate);
 				if(compareTo < 0){
@@ -442,11 +442,22 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 		CommonResponse<XunlianChargeResp> common = new CommonResponse<XunlianChargeResp>();
 		XunlianChargeResp resp = new XunlianChargeResp();
 		try {
+			String code = BINGTA_XUNLIAN_PAY;
+			if(StringUtils.isNotEmpty(orderTime)){
+				Date inDate = DateUtils.formatDate(orderTime, DateUtils.STYLE_1);
+				Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
+				//Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
+				int compareTo = inDate.compareTo(sysDate);
+				if(compareTo < 0){
+					code =DAQING_XUNLIAN_PAY;
+				}
+			}
+			logger.info(" xumlian 商户：" + code);
 			// 入流水表
 			PaychannelTempFlow paychannelTempFlow = new PaychannelTempFlow();
 			paychannelTempFlow.setBusinessType("代付");
 			paychannelTempFlow.setPayChannelCode("xunlian");
-			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(BINGTA_XUNLIAN_PAY);
+			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(code);
 			PayConfigFileVO payConfigFileVO = list.get(0);
 			String orderId = getSerialNum();
 			xunlianChargeVO.setOrderId(orderId);
@@ -514,11 +525,22 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 		CommonResponse<XunlianQueryChargeResp> common = new CommonResponse<XunlianQueryChargeResp>();
 		XunlianQueryChargeResp resp = new XunlianQueryChargeResp();
 		try {
+			String code = BINGTA_XUNLIAN_PAY;
+			if(StringUtils.isNotEmpty(orderTime)){
+				Date inDate = DateUtils.formatDate(orderTime, DateUtils.STYLE_1);
+				Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
+				//Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
+				int compareTo = inDate.compareTo(sysDate);
+				if(compareTo < 0){
+					code =DAQING_XUNLIAN_PAY;
+				}
+			}
+			logger.info(" xumlian 商户：" + code);
 			// 入流水表
 			PaychannelTempFlow paychannelTempFlow = new PaychannelTempFlow();
 			paychannelTempFlow.setBusinessType("代付查询");
 			paychannelTempFlow.setPayChannelCode("xunlian");
-			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(BINGTA_XUNLIAN_PAY);
+			List<PayConfigFileVO> list = payConfigFileService.queryByCodeId(code);
 			PayConfigFileVO payConfigFileVO = list.get(0);
 			Map<String, String> map = xunlianGetDataService.getQueryChargeData(xunlianQueryChargeVO, payConfigFileVO);
 			paychannelTempFlow.setSeriNo(xunlianQueryChargeVO.getOrderId());
