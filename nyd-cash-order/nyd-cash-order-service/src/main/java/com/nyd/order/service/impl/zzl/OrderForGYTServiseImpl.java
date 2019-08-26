@@ -1,7 +1,10 @@
 package com.nyd.order.service.impl.zzl;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.nyd.order.api.zzl.OrderForGYTServise;
@@ -18,6 +22,7 @@ import com.nyd.order.dao.mapper.RefundApplyMapper;
 import com.nyd.order.entity.refund.RefundApplyEntity;
 import com.nyd.order.model.common.ChkUtil;
 import com.nyd.order.model.common.CommonResponse;
+import com.nyd.order.model.common.DateUtils;
 import com.nyd.order.model.common.PagedResponse;
 import com.nyd.order.model.enums.OrderStatus;
 import com.nyd.order.model.refund.request.RefundListRequest;
@@ -220,6 +225,13 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 					}
 				}
 			}else if(bankInfo.getSoure()==4 && "xinsheng".equals(bankInfo.getChannelCode())){
+				String submitTime = entity.getSubmitTime();
+				if(StringUtils.isBlank(submitTime)){
+					return status;
+				}
+			   if(difCurrentTime(submitTime)){
+				   return status;
+			   }
 				//新生代付
 				HnaPayQueryPayReq payReq = new HnaPayQueryPayReq();
 				payReq.setMerOrderId(entity.getSerialNum());
@@ -317,6 +329,30 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 		return response;
 	}
 	
-	
+	private  Boolean difCurrentTime(String submitTime){
+		submitTime = submitTime.substring(0,14);
+		System.out.println(submitTime);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+		try {
+			Date submitDate = sdf.parse(submitTime);
+			Calendar c1 = Calendar.getInstance();
+	        c1.setTime(submitDate);
+	        c1.add(Calendar.MINUTE, 10);
+	        System.out.println("10分钟之后时间："+sdf.format(c1.getTime()));
+	        Date d2 = new Date();
+	        Calendar c2 = Calendar.getInstance();
+			c2.setTime(d2);
+			int dif = c1.compareTo(c2);
+			if(dif<0){
+				return false;
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return true;
+	}
 
+	
+	
 }
