@@ -1,5 +1,6 @@
 package com.nyd.zeus.service.impls.zzl.xunlian;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.utils.StringUtils;
+import com.alibaba.dubbo.container.Main;
 import com.alibaba.fastjson.JSONObject;
 import com.nyd.zeus.api.zzl.ZeusSqlService;
 import com.nyd.zeus.api.zzl.xunlian.XunlianGetDataService;
@@ -377,9 +379,6 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 		return common;
 	}
 
-	public static void main(String[] args) {
-
-	}
 
 	@Override
 	public CommonResponse<JSONObject> cancelBind(XunlianCancelBindVO xunlianCancelBindVO) {
@@ -444,7 +443,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 		try {
 			String code = BINGTA_XUNLIAN_PAY;
 			if(StringUtils.isNotEmpty(orderTime)){
-				Date inDate = DateUtils.formatDate(orderTime, DateUtils.STYLE_1);
+				Date inDate = new Date(Long.valueOf(orderTime));
 				Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
 				//Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
 				int compareTo = inDate.compareTo(sysDate);
@@ -527,7 +526,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 		try {
 			String code = BINGTA_XUNLIAN_PAY;
 			if(StringUtils.isNotEmpty(orderTime)){
-				Date inDate = DateUtils.formatDate(orderTime, DateUtils.STYLE_1);
+				Date inDate = new Date(Long.valueOf(orderTime));
 				Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
 				//Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
 				int compareTo = inDate.compareTo(sysDate);
@@ -690,6 +689,15 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 		}
 
 		return common;
+	}
+	
+	public static void main(String[] args) throws ParseException {
+
+		Date inDate = new Date(Long.valueOf("1566792015000"));
+		Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
+		//Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
+		int compareTo = inDate.compareTo(sysDate);
+		System.out.println(compareTo);	
 	}
 
 }
