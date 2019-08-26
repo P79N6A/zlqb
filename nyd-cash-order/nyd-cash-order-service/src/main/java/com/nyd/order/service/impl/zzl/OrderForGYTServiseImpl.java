@@ -209,7 +209,9 @@ public class OrderForGYTServiseImpl implements OrderForGYTServise{
 				//迅联
 				XunlianQueryChargeVO xunlianVo = new XunlianQueryChargeVO();
 				xunlianVo.setOrderId(entity.getSerialNum());//流水号
-				com.nyd.zeus.model.common.CommonResponse<XunlianQueryChargeResp> result = xunlianPayService.queryCharge(xunlianVo);
+				LOGGER.info("退款跑批--查询时间：{}",entity.getCreate_time());
+				LOGGER.info("退款跑批--请求迅联返回结果：{}",JSON.toJSONString(xunlianVo));
+				com.nyd.zeus.model.common.CommonResponse<XunlianQueryChargeResp> result = xunlianPayService.queryCharge(xunlianVo,entity.getCreate_time());
 				LOGGER.info("退款跑批--请求迅联返回结果：{}",JSON.toJSONString(result));
 				if(!ChkUtil.isEmpty(result) && result.isSuccess()){
 					XunlianQueryChargeResp xunlianResp = result.getData();

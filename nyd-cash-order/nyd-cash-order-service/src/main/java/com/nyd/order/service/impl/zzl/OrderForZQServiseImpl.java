@@ -476,7 +476,15 @@ public class OrderForZQServiseImpl implements OrderForZQServise{
 				xunlianVo.setBankName(bankInfo.getBankName());//银行名称
 				xunlianVo.setName(bankInfo.getAccountName());//姓名
 				xunlianVo.setIdCode(userInfo.getString("id_number"));//身份证号
-				com.nyd.zeus.model.common.CommonResponse<XunlianChargeResp> result = xunlianPayService.charge(xunlianVo);
+				String querySql="select * from t_refund_apply where id = '"+vo.getRefundId()+"'";
+				List<RefundApplyEntity> list = orderSqlService.queryT(querySql,RefundApplyEntity.class);
+				String orderTime = "";
+				if(null != list && list.size()>0){
+					orderTime = list.get(0).getCreate_time();
+				}
+				logger.info("退款处理--创建时间：{}",orderTime);
+				logger.info("退款处理--确认退款讯联代付请求参数：{}",JSON.toJSONString(xunlianVo));
+				com.nyd.zeus.model.common.CommonResponse<XunlianChargeResp> result = xunlianPayService.charge(xunlianVo,orderTime);
 				logger.info("退款处理--确认退款讯联代付返回参数：{}",JSON.toJSONString(result));
 				if(!ChkUtil.isEmpty(result) && result.isSuccess()){
 					XunlianChargeResp xunlianResp = result.getData();
