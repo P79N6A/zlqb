@@ -221,7 +221,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 			String code = BINGTA_XUNLIAN_PAY;
 			if(StringUtils.isNotEmpty(orderTime)){
 				Date inDate = DateUtils.formatDate(orderTime, DateUtils.STYLE_1);
-				Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
+				Date sysDate = DateUtils.formatDate("2019-08-26 17:30:00", DateUtils.STYLE_1);
 				//Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
 				int compareTo = inDate.compareTo(sysDate);
 				if(compareTo < 0){
@@ -307,7 +307,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 			String code = BINGTA_XUNLIAN_PAY;
 			if(StringUtils.isNotEmpty(orderTime)){
 				Date inDate = DateUtils.formatDate(orderTime, DateUtils.STYLE_1);
-				Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
+				Date sysDate = DateUtils.formatDate("2019-08-26 17:30:00", DateUtils.STYLE_1);
 				//Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
 
 				int compareTo = inDate.compareTo(sysDate);
@@ -444,7 +444,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 			String code = BINGTA_XUNLIAN_PAY;
 			if(StringUtils.isNotEmpty(orderTime)){
 				Date inDate = new Date(Long.valueOf(orderTime));
-				Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
+				Date sysDate = DateUtils.formatDate("2019-08-26 17:30:00", DateUtils.STYLE_1);
 				//Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
 				int compareTo = inDate.compareTo(sysDate);
 				if(compareTo < 0){
@@ -527,7 +527,7 @@ public class XunlianPayServiceimpl implements XunlianPayService {
 			String code = BINGTA_XUNLIAN_PAY;
 			if(StringUtils.isNotEmpty(orderTime)){
 				Date inDate = new Date(Long.valueOf(orderTime));
-				Date sysDate = DateUtils.formatDate("2019-08-26 20:00:00", DateUtils.STYLE_1);
+				Date sysDate = DateUtils.formatDate("2019-08-26 17:30:00", DateUtils.STYLE_1);
 				//Date sysDate = DateUtils.formatDate("2019-08-23 19:00:00", DateUtils.STYLE_1);
 				int compareTo = inDate.compareTo(sysDate);
 				if(compareTo < 0){
